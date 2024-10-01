@@ -1,0 +1,856 @@
+We gratefully ackowledge that the source code for the irregular terrain model
+(ITM), the extended Hata (eHata) model and the ITU-R P.528-5 model was
+developped by the US National Telecommunications and Information Administration
+(NTIA).
+
+Files under the src/ntia_itm/, src/ntia_ehata/, src/ntia_p528/src/ and
+src/ntia_p528/include/ directories is source code from the NTIA. Provided 
+crc-covlib.dll, iturp528.dll and iturp528.so binary files were built in part
+using source code from the NTIA.
+
+These files are provided under the following notice:
+
+    SOFTWARE DISCLAIMER / RELEASE
+
+    This software was developed by employees of the National Telecommunications
+    and Information Administration (NTIA), an agency of the Federal Government
+    and is provided to you as a public service. Pursuant to Title 15 United
+    States Code Section 105, works of NTIA employees are not subject to
+    copyright protection within the United States.
+
+    The software is provided by NTIA “AS IS.” NTIA MAKES NO WARRANTY OF ANY
+    KIND, EXPRESS, IMPLIED OR STATUTORY, INCLUDING, WITHOUT LIMITATION, THE
+    IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE,
+    NON-INFRINGEMENT AND DATA ACCURACY. NTIA does not warrant or make any
+    representations regarding the use of the software or the results thereof,
+    including but not limited to the correctness, accuracy, reliability or
+    usefulness of the software.
+
+    To the extent that NTIA holds rights in countries other than the United
+    States, you are hereby granted the non-exclusive irrevocable and
+    unconditional right to print, publish, prepare derivative works and
+    distribute the NTIA software, in any medium, or authorize others to do so
+    on your behalf, on a royalty-free basis throughout the World.
+
+    You may improve, modify, and create derivative works of the software or any
+    portion of the software, and you may copy and distribute such modifications
+    or works. Modified works should carry a notice stating that you changed the
+    software and should note the date and nature of any such change.
+
+    You are solely responsible for determining the appropriateness of using and
+    distributing the software and you assume all risks associated with its use,
+    including but not limited to the risks and costs of program errors,
+    compliance with applicable laws, damage to or loss of data, programs or
+    equipment, and the unavailability or interruption of operation. This
+    software is not intended to be used in any situation where a failure could
+    cause risk of injury or damage to property.
+
+    Please provide appropriate acknowledgments of NTIA’s creation of the
+    software in any copies or derivative works of this software.
+
+https://github.com/NTIA/itm
+https://github.com/NTIA/ehata
+https://github.com/NTIA/p528
+
+-------------------------------------------------------------------------------
+
+We gratefully ackowledge that the src/RTree.h file was obtained from
+https://github.com/nushoin/RTree, and accepted under the MIT license.
+Provided crc-covlib.dll binary file was built in part using this file.
+
+    Copyright (c) 2024 Yariv Barkan
+
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the “Software”),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+
+-------------------------------------------------------------------------------
+
+GeographicLib is redistributed in binary form as a statically linked dependency
+to crc-covlib's binary (crc-covlib.dll).
+
+This license applies to GeographicLib.
+
+    The MIT License (MIT).
+
+    Copyright (c) 2008-2023, Charles Karney
+    
+    Permission is hereby granted, free of charge, to any person obtaining a
+    copy of this software and associated documentation files (the "Software"),
+    to deal in the Software without restriction, including without limitation
+    the rights to use, copy, modify, merge, publish, distribute, sublicense,
+    and/or sell copies of the Software, and to permit persons to whom the
+    Software is furnished to do so, subject to the following conditions:
+    
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+    
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+    THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+    DEALINGS IN THE SOFTWARE.
+
+https://geographiclib.sourceforge.io/
+
+-------------------------------------------------------------------------------
+
+LibTIFF is redistributed in binary form as a statically linked dependency to
+crc-covlib's binary (crc-covlib.dll).
+
+This license applies to LibTIFF.
+
+    LibTIFF License
+    
+    Copyright © 1988-1997 Sam Leffler
+    Copyright © 1991-1997 Silicon Graphics, Inc.
+    
+    Permission to use, copy, modify, distribute, and sell this software and its
+    documentation for any purpose is hereby granted without fee, provided that
+    (i) the above copyright notices and this permission notice appear in all
+    copies of the software and related documentation, and (ii) the names of Sam
+    Leffler and Silicon Graphics may not be used in any advertising or
+    publicity relating to the software without the specific, prior written
+    permission of Sam Leffler and Silicon Graphics.
+    
+    THE SOFTWARE IS PROVIDED “AS-IS” AND WITHOUT WARRANTY OF ANY KIND, EXPRESS,
+    IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY WARRANTY OF
+    MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+    
+    IN NO EVENT SHALL SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR ANY SPECIAL,
+    INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY DAMAGES
+    WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER OR NOT
+    ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF LIABILITY,
+    ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+    SOFTWARE.
+
+http://www.libtiff.org
+
+-------------------------------------------------------------------------------
+
+The Independent JPEG Group's software (libjpeg) is redistributed in binary form
+as a statically linked dependency to crc-covlib's binary (crc-covlib.dll).
+
+This license applies to libjpeg.
+
+    LICENSE TERMS (ships as a part of the libjpeg package in the README file)
+    =============
+
+    1. We don't promise that this software works.  (But if you find any bugs,
+    please let us know!)
+    2. You can use this software for whatever you want.  You don't have to pay
+    us.
+    3. You may not pretend that you wrote this software.  If you use it in a
+    program, you must acknowledge somewhere in your documentation that
+    you've used the IJG code.
+
+    In legalese:
+
+    The authors make NO WARRANTY or representation, either express or implied,
+    with respect to this software, its quality, accuracy, merchantability, or
+    fitness for a particular purpose.  This software is provided "AS IS", and
+    you, its user, assume the entire risk as to its quality and accuracy.
+
+    This software is copyright (C) 1991-2016, Thomas G. Lane, Guido Vollbeding.
+    All Rights Reserved except as specified below.
+
+    Permission is hereby granted to use, copy, modify, and distribute this
+    software (or portions thereof) for any purpose, without fee, subject to
+    these conditions:
+    (1) If any part of the source code for this software is distributed, then
+    this README file must be included, with this copyright and no-warranty
+    notice unaltered; and any additions, deletions, or changes to the original
+    files must be clearly indicated in accompanying documentation.
+    (2) If only executable code is distributed, then the accompanying
+    documentation must state that "this software is based in part on the work
+    of the Independent JPEG Group".
+    (3) Permission for use of this software is granted only if the user accepts
+    full responsibility for any undesirable consequences; the authors accept
+    NO LIABILITY for damages of any kind.
+
+    These conditions apply to any software derived from or based on the IJG
+    code, not just to the unmodified library.  If you use our work, you ought
+    to acknowledge us.
+
+    Permission is NOT granted for the use of any IJG author's name or company
+    name in advertising or publicity relating to this software or products
+    derived from it.  This software may be referred to only as "the Independent
+    JPEG Group's software".
+
+    We specifically permit and encourage the use of this software as the basis
+    of commercial products, provided that all warranty or liability claims are
+    assumed by the product vendor.
+
+https://jpegclub.org/reference/about-ijg/
+
+-------------------------------------------------------------------------------
+
+zlib is redistributed in binary form as a statically linked dependency to
+crc-covlib's binary (crc-covlib.dll).
+
+This license applies to zlib.
+
+    Copyright notice:
+
+    (C) 1995-2024 Jean-loup Gailly and Mark Adler
+
+    This software is provided 'as-is', without any express or implied
+    warranty.  In no event will the authors be held liable for any damages
+    arising from the use of this software.
+
+    Permission is granted to anyone to use this software for any purpose,
+    including commercial applications, and to alter it and redistribute it
+    freely, subject to the following restrictions:
+
+    1. The origin of this software must not be misrepresented; you must not
+        claim that you wrote the original software. If you use this software
+        in a product, an acknowledgment in the product documentation would be
+        appreciated but is not required.
+    2. Altered source versions must be plainly marked as such, and must not be
+        misrepresented as being the original software.
+    3. This notice may not be removed or altered from any source distribution.
+
+    Jean-loup Gailly        Mark Adler
+    jloup@gzip.org          madler@alumni.caltech.edu
+
+https://www.zlib.net/
+
+-------------------------------------------------------------------------------
+
+libzma is redistributed in binary form as a statically linked dependency to
+crc-covlib's binary (crc-covlib.dll).
+
+This license applies to libzma.
+
+    BSD Zero Clause License (0BSD)
+
+    Copyright (C) The XZ Utils authors and contributors
+
+    Permission to use, copy, modify, and/or distribute this software for
+    any purpose with or without fee is hereby granted.
+
+    THE SOFTWARE IS PROVIDED “AS IS” AND THE AUTHOR DISCLAIMS ALL
+    WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE
+    FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY
+    DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
+    AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
+    OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+http://zlib.net/zlib.html
+https://github.com/tukaani-project/xz
+
+-------------------------------------------------------------------------------
+
+libdeflate is redistributed in binary form as a statically linked dependency to
+crc-covlib's binary (crc-covlib.dll).
+
+This license applies to libdeflate.
+
+    MIT License
+
+    Copyright 2016 Eric Biggers
+    Copyright 2024 Google LLC
+
+    Permission is hereby granted, free of charge, to any person
+    obtaining a copy of this software and associated documentation files
+    (the "Software"), to deal in the Software without restriction,
+    including without limitation the rights to use, copy, modify, merge,
+    publish, distribute, sublicense, and/or sell copies of the Software,
+    and to permit persons to whom the Software is furnished to do so,
+    subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+    BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+https://github.com/ebiggers/libdeflate
+
+-------------------------------------------------------------------------------
+
+libwebp and libsharpyuv are redistributed in binary form as statically linked
+dependencies to crc-covlib's binary (crc-covlib.dll).
+
+This license applies to libwebp and libsharpyuv.
+
+    BSD-3-Clause license
+
+    Copyright (c) 2010, Google Inc. All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are
+    met:
+
+    * Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in
+        the documentation and/or other materials provided with the
+        distribution.
+
+    * Neither the name of Google nor the names of its contributors may
+        be used to endorse or promote products derived from this software
+        without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+    A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+    HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+    LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+https://github.com/webmproject/libwebp
+
+-------------------------------------------------------------------------------
+
+Zstandard, or zstd, is redistributed in binary form as a statically linked
+dependency to crc-covlib's binary (crc-covlib.dll).
+
+This license applies to Zstandard.
+
+    BSD License
+
+    For Zstandard software
+
+    Copyright (c) Meta Platforms, Inc. and affiliates. All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+    * Neither the name Facebook, nor Meta, nor the names of its contributors
+    may be used to endorse or promote products derived from this software
+    without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
+
+https://facebook.github.io/zstd/
+https://github.com/facebook/zstd
+
+-------------------------------------------------------------------------------
+
+LERC (libLerc) is redistributed in binary form as a statically linked
+dependency to crc-covlib's binary (crc-covlib.dll).
+
+This license applies to LERC.
+
+    Copyright 2015-2022 Esri
+
+    Apache License - 2.0
+
+    TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+    1. Definitions.
+
+    "License" shall mean the terms and conditions for use, reproduction, and
+    distribution as defined by Sections 1 through 9 of this document.
+
+    "Licensor" shall mean the copyright owner or entity authorized by the
+    copyright owner that is granting the License.
+
+    "Legal Entity" shall mean the union of the acting entity and all other
+    entities that control, are controlled by, or are under common control with
+    that entity. For the purposes of this definition, "control" means (i) the
+    power, direct or indirect, to cause the direction or management of such
+    entity, whether by contract or otherwise, or (ii) ownership of fifty
+    percent (50%) or more of the outstanding shares, or (iii) beneficial
+    ownership of such entity.
+
+    "You" (or "Your") shall mean an individual or Legal Entity exercising
+    permissions granted by this License.
+
+    "Source" form shall mean the preferred form for making modifications,
+    including but not limited to software source code, documentation source,
+    and configuration files.
+
+    "Object" form shall mean any form resulting from mechanical transformation
+    or translation of a Source form, including but not limited to compiled
+    object code, generated documentation, and conversions to other media types.
+
+    "Work" shall mean the work of authorship, whether in Source or Object form,
+    made available under the License, as indicated by a copyright notice that
+    is included in or attached to the work (an example is provided in the
+    Appendix below).
+
+    "Derivative Works" shall mean any work, whether in Source or Object form,
+    that is based on (or derived from) the Work and for which the editorial
+    revisions, annotations, elaborations, or other modifications represent, as
+    a whole, an original work of authorship. For the purposes of this License,
+    Derivative Works shall not include works that remain separable from, or
+    merely link (or bind by name) to the interfaces of, the Work and Derivative
+    Works thereof.
+
+    "Contribution" shall mean any work of authorship, including the original
+    version of the Work and any modifications or additions to that Work or
+    Derivative Works thereof, that is intentionally submitted to Licensor for
+    inclusion in the Work by the copyright owner or by an individual or Legal
+    Entity authorized to submit on behalf of the copyright owner. For the
+    purposes of this definition, "submitted" means any form of electronic,
+    verbal, or written communication sent to the Licensor or its
+    representatives, including but not limited to communication on electronic
+    mailing lists, source code control systems, and issue tracking systems that
+    are managed by, or on behalf of, the Licensor for the purpose of discussing
+    and improving the Work, but excluding communication that is conspicuously
+    marked or otherwise designated in writing by the copyright owner as "Not a
+    Contribution."
+
+    "Contributor" shall mean Licensor and any individual or Legal Entity on
+    behalf of whom a Contribution has been received by Licensor and
+    subsequently incorporated within the Work.
+
+    2. Grant of Copyright License. Subject to the terms and conditions of this
+    License, each Contributor hereby grants to You a perpetual, worldwide,
+    non-exclusive, no-charge, royalty-free, irrevocable copyright license to
+    reproduce, prepare Derivative Works of, publicly display, publicly perform,
+    sublicense, and distribute the Work and such Derivative Works in Source or
+    Object form.
+
+    3. Grant of Patent License. Subject to the terms and conditions of this
+    License, each Contributor hereby grants to You a perpetual, worldwide,
+    non-exclusive, no-charge, royalty-free, irrevocable (except as stated in
+    this section) patent license to make, have made, use, offer to sell, sell,
+    import, and otherwise transfer the Work, where such license applies only to
+    those patent claims licensable by such Contributor that are necessarily
+    infringed by their Contribution(s) alone or by combination of their
+    Contribution(s) with the Work to which such Contribution(s) was submitted.
+    If You institute patent litigation against any entity (including a
+    cross-claim or counterclaim in a lawsuit) alleging that the Work or a
+    Contribution incorporated within the Work constitutes direct or
+    contributory patent infringement, then any patent licenses granted to You
+    under this License for that Work shall terminate as of the date such
+    litigation is filed.
+
+    4. Redistribution. You may reproduce and distribute copies of the Work or
+    Derivative Works thereof in any medium, with or without modifications, and
+    in Source or Object form, provided that You meet the following conditions:
+
+        1. You must give any other recipients of the Work or Derivative Works a
+        copy of this License; and
+
+        2. You must cause any modified files to carry prominent notices stating
+        that You changed the files; and
+
+        3. You must retain, in the Source form of any Derivative Works that You
+        distribute, all copyright, patent, trademark, and attribution notices 
+        from the Source form of the Work, excluding those notices that do not
+        pertain to any part of the Derivative Works; and
+
+        4. If the Work includes a "NOTICE" text file as part of its
+        distribution, then any Derivative Works that You distribute must
+        include a readable copy of the attribution notices contained within
+        such NOTICE file, excluding those notices that do not pertain to any
+        part of the Derivative Works, in at least one of the following places:
+        within a NOTICE text file distributed as part of the Derivative Works;
+        within the Source form or documentation, if provided along with the
+        Derivative Works; or, within a display generated by the Derivative
+        Works, if and wherever such third-party notices normally appear. The
+        contents of the NOTICE file are for informational purposes only and do
+        not modify the License. You may add Your own attribution notices within
+        Derivative Works that You distribute, alongside or as an addendum to
+        the NOTICE text from the Work, provided that such additional
+        attribution notices cannot be construed as modifying the License. You
+        may add Your own copyright statement to Your modifications and may
+        provide additional or different license terms and conditions for use,
+        reproduction, or distribution of Your modifications, or for any such
+        Derivative Works as a whole, provided Your use, reproduction, and
+        distribution of the Work otherwise complies with the conditions stated
+        in this License.
+
+    5. Submission of Contributions. Unless You explicitly state otherwise, any
+    Contribution intentionally submitted for inclusion in the Work by You to
+    the Licensor shall be under the terms and conditions of this License,
+    without any additional terms or conditions. Notwithstanding the above,
+    nothing herein shall supersede or modify the terms of any separate license
+    agreement you may have executed with Licensor regarding such Contributions.
+
+    6. Trademarks. This License does not grant permission to use the trade
+    names, trademarks, service marks, or product names of the Licensor, except
+    as required for reasonable and customary use in describing the origin of
+    the Work and reproducing the content of the NOTICE file.
+
+    7. Disclaimer of Warranty. Unless required by applicable law or agreed to
+    in writing, Licensor provides the Work (and each Contributor provides its
+    Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied, including, without limitation, any
+    warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or
+    FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for
+    determining the appropriateness of using or redistributing the Work and
+    assume any risks associated with Your exercise of permissions under this
+    License.
+
+    8. Limitation of Liability. In no event and under no legal theory, whether
+    in tort (including negligence), contract, or otherwise, unless required by
+    applicable law (such as deliberate and grossly negligent acts) or agreed to
+    in writing, shall any Contributor be liable to You for damages, including
+    any direct, indirect, special, incidental, or consequential damages of any
+    character arising as a result of this License or out of the use or
+    inability to use the Work (including but not limited to damages for loss of
+    goodwill, work stoppage, computer failure or malfunction, or any and all
+    other commercial damages or losses), even if such Contributor has been
+    advised of the possibility of such damages.
+
+    9. Accepting Warranty or Additional Liability. While redistributing the
+    Work or Derivative Works thereof, You may choose to offer, and charge a fee
+    for, acceptance of support, warranty, indemnity, or other liability
+    obligations and/or rights consistent with this License. However, in
+    accepting such obligations, You may act only on Your own behalf and on Your
+    sole responsibility, not on behalf of any other Contributor, and only if
+    You agree to indemnify, defend, and hold each Contributor harmless for any
+    liability incurred by, or claims asserted against, such Contributor by
+    reason of your accepting any such warranty or additional liability.
+
+    END OF TERMS AND CONDITIONS
+
+https://github.com/Esri/lerc
+
+-------------------------------------------------------------------------------
+
+JBIG-KIT (libjbig) is redistributed in binary form as a statically linked
+dependency to crc-covlib's binary (crc-covlib.dll).
+
+crc-covlib links to libjbig in order to use functionalities from the LibTIFF
+library but without using any of the JBIG encoding functionalities.
+Furthermore, crc-covlib's code explicitly prevents from using tiff files with
+the JBIG encoding. Therefore it is our understanding that crc-covlib links to
+libjbig in the context of a "dependency license".
+
+Extract from https://www.cl.cam.ac.uk/~mgk25/jbigkit/ on 2024-07-23:
+
+    Dependency licence: We sometimes receive licence enquiries from people who
+    want to link their proprietary application software with JBIG-KIT solely to
+    satisfy an installation dependency of a precompiled third-party library,
+    but whose application software is designed such that it can never actually
+    use the JBIG encoding. A common example is the libtiff library on Linux:
+    many Linux distributions include that under a BSD-like licence, but
+    commonly compile it such that the GPL-licenced JBIG-KIT package also has to
+    be installed as a prerequisite, to ensure that libtiff loads without
+    dynamic-linking error message. As the author of JBIG-KIT, it is my personal
+    opinion that you only need a licence for JBIG-KIT if you actually intend to
+    use it to encode or decode JBIG data. If your application software makes
+    sure that its users never can actually process JBIG data, in other words if
+    the JBIG-KIT code is not actually reachable in the control flow of your
+    software, then in my opinion you do not need a licence for JBIG-KIT, even
+    if a precompiled JBIG-KIT shipped with the operating system is loaded by
+    the operating system's linker for your application. (Should your lawyers
+    still be worried, you can ask Cambridge Enterprise to issue a properly
+    executed “dependency licence” for a reduced fee.)
+
+-------------------------------------------------------------------------------
+
+libgcc and libstdc++ are redistributed in binary form as a statically linked
+dependency to crc-covlib's binary (crc-covlib.dll).
+
+The libgcc and libstdc++ libraries are covered by GPL-3.0-or-later with
+GCC-exception-3.1.
+
+    GCC RUNTIME LIBRARY EXCEPTION
+
+    Version 3.1, 31 March 2009
+
+    Copyright (C) 2009 Free Software Foundation, Inc. <http://fsf.org/>
+
+    Everyone is permitted to copy and distribute verbatim copies of this
+    license document, but changing it is not allowed.
+
+    This GCC Runtime Library Exception ("Exception") is an additional
+    permission under section 7 of the GNU General Public License, version
+    3 ("GPLv3"). It applies to a given file (the "Runtime Library") that
+    bears a notice placed by the copyright holder of the file stating that
+    the file is governed by GPLv3 along with this Exception.
+
+    When you use GCC to compile a program, GCC may combine portions of
+    certain GCC header files and runtime libraries with the compiled
+    program. The purpose of this Exception is to allow compilation of
+    non-GPL (including proprietary) programs to use, in this way, the
+    header files and runtime libraries covered by this Exception.
+
+    0. Definitions.
+
+    A file is an "Independent Module" if it either requires the Runtime
+    Library for execution after a Compilation Process, or makes use of an
+    interface provided by the Runtime Library, but is not otherwise based
+    on the Runtime Library.
+
+    "GCC" means a version of the GNU Compiler Collection, with or without
+    modifications, governed by version 3 (or a specified later version) of
+    the GNU General Public License (GPL) with the option of using any
+    subsequent versions published by the FSF.
+
+    "GPL-compatible Software" is software whose conditions of propagation,
+    modification and use would permit combination with GCC in accord with
+    the license of GCC.
+
+    "Target Code" refers to output from any compiler for a real or virtual
+    target processor architecture, in executable form or suitable for
+    input to an assembler, loader, linker and/or execution
+    phase. Notwithstanding that, Target Code does not include data in any
+    format that is used as a compiler intermediate representation, or used
+    for producing a compiler intermediate representation.
+
+    The "Compilation Process" transforms code entirely represented in
+    non-intermediate languages designed for human-written code, and/or in
+    Java Virtual Machine byte code, into Target Code. Thus, for example,
+    use of source code generators and preprocessors need not be considered
+    part of the Compilation Process, since the Compilation Process can be
+    understood as starting with the output of the generators or
+    preprocessors.
+
+    A Compilation Process is "Eligible" if it is done using GCC, alone or
+    with other GPL-compatible software, or if it is done without using any
+    work based on GCC. For example, using non-GPL-compatible Software to
+    optimize any GCC intermediate representations would not qualify as an
+    Eligible Compilation Process.
+
+    1. Grant of Additional Permission.
+
+    You have permission to propagate a work of Target Code formed by
+    combining the Runtime Library with Independent Modules, even if such
+    propagation would otherwise violate the terms of GPLv3, provided that
+    all Target Code was generated by Eligible Compilation Processes. You
+    may then convey such a combination under terms of your choice,
+    consistent with the licensing of the Independent Modules.
+
+    2. No Weakening of GCC Copyleft.
+
+    The availability of this Exception does not imply any general
+    presumption that third-party software is unaffected by the copyleft
+    requirements of the license of GCC.
+
+-------------------------------------------------------------------------------
+
+Contains information licensed under the Open Government Licence – Canada.
+
+The data/terrain-elev-samples/NRCAN_CDEM/ directory contains Canadian Digital
+Elevation Model (CDEM) sample(s) from Natural Resources Canada licensed under
+the Open Government Licence - Canada.
+
+The data/surface-elev-samples/NRCAN_CDSM/ directory contains Canadian Digital
+Surface Model (CDSM) sample(s) from Natural Resources Canada licensed under the
+Open Government Licence - Canada.
+
+The data/terrain-elev-samples/NRCAN_HRDEM_DTM/ and
+data/surface-elev-samples/NRCAN_HRDEM_DSM/ directories contain High Resolution
+Digital Elevation Model (HRDEM) sample(s) from Natural Resources Canada
+licensed under the Open Government Licence - Canada.
+
+The data/terrain-elev-samples/custom/ directory contains a custom data sample
+that was produced using the Canadian Digital Elevation Model (CDEM) product.
+
+    Open Government Licence - Canada
+
+    You are encouraged to use the Information that is available under this
+    licence with only a few conditions.
+
+    Using Information under this licence
+      * Use of any Information indicates your acceptance of the terms below.
+      * The Information Provider grants you a worldwide, royalty-free,
+        perpetual, non-exclusive licence to use the Information, including for
+        commercial purposes, subject to the terms below.
+
+    You are free to:
+      * Copy, modify, publish, translate, adapt, distribute or otherwise use
+        the Information in any medium, mode or format for any lawful purpose.
+    
+    You must, where you do any of the above:
+      * Acknowledge the source of the Information by including any attribution
+        statement specified by the Information Provider(s) and, where possible,
+        provide a link to this licence.
+      * If the Information Provider does not provide a specific attribution
+        statement, or if you are using Information from several information
+        providers and multiple attributions are not practical for your product
+        or application, you must use the following attribution statement:
+        Contains information licensed under the Open Government Licence –
+        Canada.
+
+    The terms of this licence are important, and if you fail to comply with any
+    of them, the rights granted to you under this licence, or any similar
+    licence granted by the Information Provider, will end automatically.
+
+    Exemptions
+    This licence does not grant you any right to use:
+      * Personal Information;
+      * third party rights the Information Provider is not authorized to
+        license;
+      * the names, crests, logos, or other official symbols of the Information
+        Provider; and
+      * Information subject to other intellectual property rights, including
+        patents, trade-marks and official marks.
+
+    Non-endorsement
+    This licence does not grant you any right to use the Information in a way
+    that suggests any official status or that the Information Provider endorses
+    you or your use of the Information.
+
+    No Warranty
+    The Information is licensed “as is”, and the Information Provider excludes
+    all representations, warranties, obligations, and liabilities, whether
+    express or implied, to the maximum extent permitted by law.
+    The Information Provider is not liable for any errors or omissions in the
+    Information, and will not under any circumstances be liable for any direct,
+    indirect, special, incidental, consequential, or other loss, injury or
+    damage caused by its use or otherwise arising in connection with this
+    licence or the Information, even if specifically advised of the possibility
+    of such loss, injury or damage.
+
+    Governing Law
+    This licence is governed by the laws of the province of Ontario and the
+    applicable laws of Canada.
+    Legal proceedings related to this licence may only be brought in the courts
+    of Ontario or the Federal Court of Canada.
+
+    Definitions
+    In this licence, the terms below have the following meanings:
+
+      "Information"
+      means information resources protected by copyright or other information
+      that is offered for use under the terms of this licence.
+
+      "Information Provider"
+      means His Majesty the King in right of Canada.
+
+      “Personal Information”
+      means “personal information” as defined in section 3 of the Privacy Act,
+      R.S.C. 1985, c. P-21.
+
+      "You"
+      means the natural or legal person, or body of persons corporate or
+      incorporate, acquiring rights under this licence.
+
+    Versioning
+    This is version 2.0 of the Open Government Licence – Canada. The
+    Information Provider may make changes to the terms of this licence from
+    time to time and issue a new version of the licence. Your use of the
+    Information will be governed by the terms of the licence in force as of the
+    date you accessed the information.
+
+-------------------------------------------------------------------------------
+
+The data/surface-elev-samples/SRTMGL1/ and data/surface-elev-samples/SRTMGL30/
+directories contain Shuttle Radar Topography Mission Global 1 arc second
+(SRTMGL1) and 30 arc second (SRTMGL30) public domain data samples, distributed
+by NASA's Land Processes Distributed Active Archive Center (LP DAAC).
+
+    NASA JPL. NASA Shuttle Radar Topography Mission Global 1 arc second.
+    2013, distributed by NASA EOSDIS Land Processes Distributed Active Archive
+    Center, https://doi.org/10.5067/MEaSUREs/SRTM/SRTMGL1.003.
+    Accessed 2023-08-25.
+
+    NASA JPL. NASA Shuttle Radar Topography Mission Global 30 arc second.
+    2013, distributed by NASA EOSDIS Land Processes Distributed Active Archive
+    Center, https://doi.org/10.5067/MEaSUREs/SRTM/SRTMGL30.002.
+    Accessed 2023-08-28.
+
+Extract from https://lpdaac.usgs.gov/data/data-citation-and-policies/ on 
+2024-08-22:
+
+    All LP DAAC current data and products acquired through the LP DAAC have no
+    restrictions on reuse, sale, or redistribution.
+
+-------------------------------------------------------------------------------
+
+The data/land-cover-samples/ESA_Worldcover/ directory contains land cover data
+sample(s) from the ESA WorldCover project under the Creative Commons
+Attribution 4.0 International License. No modification were made to the
+original file(s).
+
+    © ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data
+    (2021) processed by ESA WorldCover consortium.
+
+    Zanaga, D., Van De Kerchove, R., Daems, D., De Keersmaecker, W., Brockmann,
+    C., Kirches, G., Wevers, J., Cartus, O., Santoro, M., Fritz, S., Lesiv, M.,
+    Herold, M., Tsendbazar, N.E., Xu, P., Ramoino, F., Arino, O., 2022. ESA
+    WorldCover 10 m 2021 v200. https://doi.org/10.5281/zenodo.7254221.
+
+    CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+
+    You are free to:
+      Share — copy and redistribute the material in any medium or format for
+      any purpose, even commercially.
+      
+      Adapt — remix, transform, and build upon the material for any purpose,
+      even commercially.
+      
+      The licensor cannot revoke these freedoms as long as you follow the
+      license terms.
+
+    Under the following terms:
+      Attribution — You must give appropriate credit , provide a link to the
+      license, and indicate if changes were made . You may do so in any
+      reasonable manner, but not in any way that suggests the licensor endorses
+      you or your use.
+      
+      No additional restrictions — You may not apply legal terms or
+      technological measures that legally restrict others from doing anything
+      the license permits.
+
+    Notices:
+      You do not have to comply with the license for elements of the material
+      in the public domain or where your use is permitted by an applicable
+      exception or limitation .
+
+      No warranties are given. The license may not give you all of the
+      permissions necessary for your intended use. For example, other rights
+      such as publicity, privacy, or moral rights may limit how you use the
+      material.
+
+-------------------------------------------------------------------------------
+
+The data/itu-radio-climatic-zones/ directory contains files that were produced
+using public domain data from the following third-party sources:
+
+    NASA Goddard Space Flight Center, Ocean Ecology Laboratory, Ocean Biology
+    Processing Group; Distance to the Nearest Coast data.
+    https://oceancolor.gsfc.nasa.gov/docs/distfromcoast/
+    Accessed on December 2022.
+
+    Natural Earth. Free vector and raster map data @ naturalearthdata.com.
+
+    Shuttle Radar Topography Mission (SRTM) 30 arcseconds data.
+
+-------------------------------------------------------------------------------

@@ -1,0 +1,43 @@
+#include <winver.h>
+
+#define VER_PRODUCTVERSION     4,1,0,0
+#define VER_PRODUCTVERSION_STR "4,1,0,0"
+
+#define VER_FILEVERSION        0,0,0,0
+#define VER_FILEVERSION_STR    "0,0,0,0"
+
+#ifndef DEBUG
+#define VER_DEBUG       0
+#else
+#define VER_DEBUG       VS_FF_DEBUG
+#endif
+
+VS_VERSION_INFO         VERSIONINFO
+FILEVERSION             VER_FILEVERSION
+PRODUCTVERSION          VER_PRODUCTVERSION
+FILEFLAGSMASK           VS_FFI_FILEFLAGSMASK
+FILEFLAGS               (VS_FF_PRERELEASE|VER_DEBUG)
+FILEOS                  VOS_NT
+FILETYPE                VFT_DLL
+FILESUBTYPE             0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName",      "Communications Research Centre Canada"
+            VALUE "FileDescription",  ""
+            VALUE "FileVersion",      VER_FILEVERSION_STR
+            VALUE "InternalName",     ""
+            VALUE "LegalCopyright",   "Copyright (c) 2024 His Majesty the King in Right of Canada, as represented by the Minister of Industry"
+            VALUE "OriginalFilename", "crc-covlib.dll"
+            VALUE "ProductName",      "crc-covlib"
+            VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
+        END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1200
+    END
+END

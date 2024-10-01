@@ -1,0 +1,6 @@
+lowerLeftCornerLat_degree: 44.95875000
+lowerLeftCornerLon_degree: -76.37583333
+upperRightCornerLat_degrees: 45.52791667
+upperRightCornerLon_degrees: -75.24104167
+numHorizSamples: 5448
+numVertSamples: 2733
