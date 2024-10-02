@@ -141,6 +141,9 @@
   - [IntermediatePathPoint](./helper.itur_p2001.md#intermediatepathpoint)
 
 - [itur_p2108 module](./helper.itur_p2108.md)
+  - [ClutterType (Enum)](./helper.itur_p2108.md#cluttertype)
+  - [GetDefaultRepresentativeHeight](./helper.itur_p2108.md#getdefaultrepresentativeheight)
+  - [HeightGainModelClutterLoss](./helper.itur_p2108.md#heightgainmodelclutterloss)
   - [TerrestrialPathClutterLoss](./helper.itur_p2108.md#terrestrialpathclutterloss)
   - [EarthSpaceClutterLoss](./helper.itur_p2108.md#earthspaceclutterloss)
 

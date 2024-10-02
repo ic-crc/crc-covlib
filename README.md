@@ -106,6 +106,7 @@ On Linux the usual GNU Toolchain can be used for the build process. Before build
 # On Ubuntu and derivatives
 sudo apt install libtiff-dev
 sudo apt install libgeographic-dev
+sudo apt install libgeographiclib-dev # alternately if previous one is not available
 
 # On CentOS, Amazon Linux 2
 sudo yum install libtiff-devel

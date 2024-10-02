@@ -130,7 +130,7 @@ Les fonctionnalités du sous-paquet _helper_ incluent:
 * La génération de patrons pour antennes à formation de faisceaux selon la section 5 de la recommandation [UIT-R M.2101-0](https://www.itu.int/rec/R-REC-M.2101/fr).
 * La lecture de nombreux formats de fichiers matriciels pour l'obtention des données topographiques à utiliser avec les simulations crc-covlib, utilisant [_Rasterio_](https://rasterio.readthedocs.io/en/latest/index.html) and [_NumPy_](https://numpy.org/).
 * L'implémentation partielle de plusieurs recommandations de l'UIT utilisant [_Numba_](https://numba.pydata.org/) \
-(_Note: l'utilisation de Numba peut être désactivée en modifiant la valeur de la variable `config.DISABLE_JIT` présente dans le fichier \_\_init\_\_.py du répertoire crc_covlib/helper/_).
+(_Note: l'utilisation de Numba peut être désactivée à l'aide de la variable `config.DISABLE_JIT` dans le fichier \_\_init\_\_.py du répertoire crc_covlib/helper/_).
   -  [UIT-R P.453-14](https://www.itu.int/rec/R-REC-P.453/fr) (Indice de réfraction radioélectrique: formules et données de réfractivité)
   -  [UIT-R P.528-5](https://www.itu.int/rec/R-REC-P.528/fr) (Méthode de prévision de la propagation dans les bandes d'ondes métriques, décimétriques et centimétriques pour le service mobile aéronautique et le service de radionavigation aéronautique	 )
   - [UIT-R P.530-18](https://www.itu.int/rec/R-REC-P.530/fr) (Données de propagation et méthodes de prévision nécessaires pour la conception de faisceaux hertziens à visibilité directe de Terre)

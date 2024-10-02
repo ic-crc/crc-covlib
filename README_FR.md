@@ -112,6 +112,7 @@ Sous Linux, la suite d'outils GNU peut être utilisée pour compiler et génére
 # Ubuntu et dérivés
 sudo apt install libtiff-dev
 sudo apt install libgeographic-dev
+sudo apt install libgeographiclib-dev # utiliser celui-ci si le paquet précédent n'est pas disponible
 
 # CentOS, Amazon Linux 2
 sudo yum install libtiff-devel

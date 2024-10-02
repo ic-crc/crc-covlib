@@ -129,7 +129,7 @@ crc-covlib's _helper_ functionalities include:
 * Generating beamforming antenna patterns in accordance with the [ITU-R M.2101-0](https://www.itu.int/rec/R-REC-M.2101/en) recommendation (Section 5).
 * Reading a wide variety of georeferenced raster file types to obtain topographic data for crc-covlib simulations, using [_Rasterio_](https://rasterio.readthedocs.io/en/latest/index.html) and [_NumPy_](https://numpy.org/).
 * Providing partial implementations for different ITU recommendations with fast code execution using [_Numba_](https://numba.pydata.org/) \
-(_Note: usage of Numba may be disabled by editing the `config.DISABLE_JIT` variable in the \_\_init\_\_.py file of the crc_covlib/helper/ directory_).
+(_Note: usage of Numba may be disabled by setting the `config.DISABLE_JIT` variable to True in the \_\_init\_\_.py file of the crc_covlib/helper/ directory_).
   - [ITU-R P.453-14](https://www.itu.int/rec/R-REC-P.453/en) (The radio refractive index: its formula and refractivity data)
   - [ITU-R P.528-5](https://www.itu.int/rec/R-REC-P.528/en) (A propagation prediction method for aeronautical mobile and radionavigation services using the VHF, UHF and SHF bands	 )
   - [ITU-R P.530-18](https://www.itu.int/rec/R-REC-P.530/en) (Propagation data and prediction methods required for the design of terrestrial line-of-sight systems)

@@ -1,15 +1,91 @@
-"""Implementation of ITU-R P.2108-1, Annex 1, Sections 3.2 and 3.3.
+"""Implementation of ITU-R P.2108-1.
 """
 
-from math import log10, sqrt, pi, log, tan
+from math import log10, sqrt, pi, log, tan, degrees, atan
+import enum
 from . import itur_p1057
 from numba import jit
 
 
-__all__ = ['TerrestrialPathClutterLoss',
+__all__ = ['ClutterType', # enum
+           'GetDefaultRepresentativeHeight',
+           'HeightGainModelClutterLoss',
+           'TerrestrialPathClutterLoss',
            'EarthSpaceClutterLoss',
            'FIGURE_1',
            'FIGURE_2']
+
+
+class ClutterType(enum.Enum):
+    WATER_SEA          = 1
+    OPEN_RURAL         = 2
+    SUBURBAN           = 3
+    URBAN_TREES_FOREST = 4
+    DENSE_URBAN        = 5
+
+
+@jit(nopython=True)
+def GetDefaultRepresentativeHeight(clut: ClutterType) -> float:
+    """
+    ITU-R P.2108-1, Annex 1, Section 3.1
+    Gets the default representative clutter height, as defined in Table 3 of the recommendation.
+
+    Args:
+        clut (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter type from Table 3 in
+            the recommendation.
+
+    Returns:
+        (float): Representative clutter height (m).
+    """
+    if clut == ClutterType.URBAN_TREES_FOREST:
+        return 15.0
+    elif clut == ClutterType.DENSE_URBAN:
+        return 20.0
+    else:
+        return 10.0
+
+
+@jit(nopython=True)
+def HeightGainModelClutterLoss(f_GHz: float, h_m: float, clut: ClutterType, R_m: float=-1.0,
+                               ws_m: float=27.0) -> float:
+    """
+    ITU-R P.2108-1, Annex 1, Section 3.1
+    "An additional loss, Ah, is calculated which can be added to the basic transmission loss of a
+    path calculated above the clutter, therefore basic transmission loss should be calculated
+    to/from the height of the representative clutter height used. This model can be applied to both
+    transmitting and receiving ends of the path."
+
+    Args:
+        f_GHz (float): Frequency (GHz), with 0.03 <= f_GHz <= 3.
+        h_m (float): Antenna height (m), with 0 <= h_m.
+        clut (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter type from Table 3 in
+            the recommendation.
+        R_m (float): Representative clutter height (m). If R_m is smaller than or equal to 0, the
+            default representative clutter height from Table 3 in the recommendation is used.
+        ws_m (float): Street width (m).
+    
+    Returns:
+        Ah (float): Clutter loss (dB).
+    """
+    if R_m <= 0.0:
+        R_m = GetDefaultRepresentativeHeight(clut)
+    if h_m >= R_m:
+        Ah = 0.0
+    else:
+        if clut==ClutterType.SUBURBAN or clut==ClutterType.URBAN_TREES_FOREST or clut==ClutterType.DENSE_URBAN:
+            Knu = 0.342*sqrt(f_GHz)
+            hdif = R_m - h_m
+            theta_clut_deg = degrees(atan(hdif/ws_m))
+            v = Knu*sqrt(hdif*theta_clut_deg)
+            if v <= -0.78:
+                Jv = 0.0
+            else:
+                Jv = 6.9 + 20.0*log10(sqrt((v-0.1)*(v-0.1)+1.0)+v-0.1)
+            Ah = Jv - 6.03
+        else:
+            Kh2 = 21.8 + 6.2*log10(f_GHz)
+            Ah = -Kh2*log10(h_m/R_m)
+    return Ah
 
 
 @jit(nopython=True)
@@ -36,12 +112,12 @@ def TerrestrialPathClutterLoss(f_GHz: float, d_km: float, loc_percent: float) ->
     clutter loss modelling provided terminal heights are well below the clutter height.
 
     Args:
-        f_GHz (float): frequency (GHz), with 0.5 <= f_GHz <= 67
-        d_km: distance (km), with 0.25 <= d_km
-        loc_percent: percentage of locations (%), with 0 < loc_percent < 100
+        f_GHz (float): Frequency (GHz), with 0.5 <= f_GHz <= 67.
+        d_km: Distance (km), with 0.25 <= d_km.
+        loc_percent: Percentage of locations (%), with 0 < loc_percent < 100.
     
     Returns:
-        (float): clutter loss (dB)
+        (float): Clutter loss (dB).
     """
     Lctt = _TerrestrialPathClutterLoss(f_GHz, d_km, loc_percent)
     Lctt2km = _TerrestrialPathClutterLoss(f_GHz, 2.0, loc_percent)
@@ -57,13 +133,13 @@ def EarthSpaceClutterLoss(f_GHz: float, elevAngle_deg: float, loc_percent: float
     of the Earth. This model is applicable to urban and suburban environments.
 
     Args:
-        f_GHz (float): frequency (GHz), with 0.5 <= f_GHz <= 67
-        elevAngle_deg (float): elevation angle (deg). The angle of the airborne platform or
-            satellite as seen from the terminal, with 0 <= elevAngle_deg <= 90
-        loc_percent (float): percentage of locations (%), with 0 < loc_percent < 100
+        f_GHz (float): Frequency (GHz), with 0.5 <= f_GHz <= 67.
+        elevAngle_deg (float): Elevation angle (deg). The angle of the airborne platform or
+            satellite as seen from the terminal, with 0 <= elevAngle_deg <= 90.
+        loc_percent (float): Percentage of locations (%), with 0 < loc_percent < 100.
     
     Returns:
-        (float): clutter loss (dB)
+        (float): Clutter loss (dB).
     """
     th = elevAngle_deg
     A1 = 0.05

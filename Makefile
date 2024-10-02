@@ -25,7 +25,12 @@ ifeq ($(OS), Windows_NT)
 	LDLIBS += -lstdc++fs 
 else
 #   dynamically linked
-	LDLIBS = -lGeographic -ltiff
+	LDLIBS = -lGeographicLib -ltiff
+#   Use libGeographic.so if libGeographicLib.so is not available
+	LDCONF = $(shell ldconfig -p | grep libGeographicLib)
+	ifeq ($(LDCONF), )
+		LDLIBS = -lGeographic -ltiff
+	endif
 	LDLIBS += -lstdc++fs
 #	LDLIBS += -Wl,-rpath,'$$ORIGIN'	
 endif
