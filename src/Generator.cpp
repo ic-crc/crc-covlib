@@ -62,7 +62,8 @@ double Generator::RunPointCalculation(Simulation& sim, double lat, double lon, u
                                       const double* customTerrainElevProfile/*=nullptr*/,
                                       const int* customLandCoverMappedValueProfile/*=nullptr*/,
                                       const double* customSurfaceElevProfile/*=nullptr*/,
-                                      const Crc::Covlib::ITURadioClimaticZone* customItuRadioClimaticZoneProfile/*=nullptr*/)
+                                      const Crc::Covlib::ITURadioClimaticZone* customItuRadioClimaticZoneProfile/*=nullptr*/,
+									  ReceptionPointDetailedResult* detailedResult/*=nullptr*/)
 {
 PathLossFuncOutput pathlossOutput = {0, {0,0,0,0,0}};
 Position rxPos = {lat, lon};
@@ -81,7 +82,8 @@ double result;
 
 	pathlossOutput = pPathLoss(sim, rxPos.m_lat, rxPos.m_lon, customData, nullptr);
 	sim.pGenerateStatus = pGetStatus(pathlossOutput.stats);
-	result = pToSelectedResultType(sim, rxPos.m_lat, rxPos.m_lon, pLatLonProfile.size(), pDistKmProfile.data(), pTerrainElevProfile.data(), pathlossOutput.pathLoss);
+	result = pToSelectedResultType(sim, rxPos.m_lat, rxPos.m_lon, pLatLonProfile.size(), pDistKmProfile.data(),
+	                               pTerrainElevProfile.data(), pathlossOutput.pathLoss, detailedResult);
 
 	pRunPointCount++;
 
@@ -278,7 +280,8 @@ double txAntennaGain_dBi, rxAntennaGain_dBi;
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
-		pGetAntennaGains(sim, rxLat, rxLon, pLatLonProfile.size(), pDistKmProfile.data(), pTerrainElevProfile.data(), &txAntennaGain_dBi, &rxAntennaGain_dBi);
+		txAntennaGain_dBi = pGetTransmitterAntennaGain(sim, rxLat, rxLon, pLatLonProfile.size(), pDistKmProfile.data(), pTerrainElevProfile.data());
+		rxAntennaGain_dBi = pGetReceiverAntennaGain(sim, rxLat, rxLon, pLatLonProfile.size(), pDistKmProfile.data(), pTerrainElevProfile.data());
 		result.pathLoss = sim.pIturp452v17Model.CalcPathLoss(sim.pTx.freqMHz/1000.0, sim.pTx.lat, sim.pTx.lon, rxLat, rxLon, sim.pTx.rcagl, sim.pRx.heightAGL,
 		                                                     txAntennaGain_dBi, rxAntennaGain_dBi, sim.pTx.pol, pLatLonProfile.size(), pDistKmProfile.data(),
 		                                                     pTerrainElevProfile.data(), pRadioClimaticZoneProfile.data(),
@@ -290,8 +293,8 @@ double txAntennaGain_dBi, rxAntennaGain_dBi;
 		optionalOutputPathLossProfile->reserve(pLatLonProfile.size());
 		for(unsigned int i=0 ; i<pLatLonProfile.size() ; i++)
 		{
-			pGetAntennaGains(sim, pLatLonProfile[i].first, pLatLonProfile[i].second, i+1, pDistKmProfile.data(), pTerrainElevProfile.data(),
-			                 &txAntennaGain_dBi, &rxAntennaGain_dBi);
+			txAntennaGain_dBi = pGetTransmitterAntennaGain(sim, pLatLonProfile[i].first, pLatLonProfile[i].second, i+1, pDistKmProfile.data(), pTerrainElevProfile.data());
+			rxAntennaGain_dBi = pGetReceiverAntennaGain(sim, pLatLonProfile[i].first, pLatLonProfile[i].second, i+1, pDistKmProfile.data(), pTerrainElevProfile.data());
 			result.pathLoss = sim.pIturp452v17Model.CalcPathLoss(sim.pTx.freqMHz/1000.0, sim.pTx.lat, sim.pTx.lon, pLatLonProfile[i].first, pLatLonProfile[i].second,
 			                                                     sim.pTx.rcagl, sim.pRx.heightAGL, txAntennaGain_dBi, rxAntennaGain_dBi, sim.pTx.pol, i+1, 
 			                                                     pDistKmProfile.data(), pTerrainElevProfile.data(), pRadioClimaticZoneProfile.data(),
@@ -313,7 +316,8 @@ double txAntennaGain_dBi, rxAntennaGain_dBi;
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
-		pGetAntennaGains(sim, rxLat, rxLon, pLatLonProfile.size(), pDistKmProfile.data(), pTerrainElevProfile.data(), &txAntennaGain_dBi, &rxAntennaGain_dBi);
+		txAntennaGain_dBi = pGetTransmitterAntennaGain(sim, rxLat, rxLon, pLatLonProfile.size(), pDistKmProfile.data(), pTerrainElevProfile.data());
+		rxAntennaGain_dBi = pGetReceiverAntennaGain(sim, rxLat, rxLon, pLatLonProfile.size(), pDistKmProfile.data(), pTerrainElevProfile.data());
 		result.pathLoss = sim.pIturp452v18Model.CalcPathLoss(sim.pTx.freqMHz/1000.0, sim.pTx.lat, sim.pTx.lon, rxLat, rxLon, sim.pTx.rcagl, sim.pRx.heightAGL,
 		                                                     txAntennaGain_dBi, rxAntennaGain_dBi, sim.pTx.pol, pLatLonProfile.size(), pDistKmProfile.data(),
 		                                                     pTerrainElevProfile.data(), pMappedLandCoverProfile.data(), pSurfaceElevProfile.data(),
@@ -325,8 +329,8 @@ double txAntennaGain_dBi, rxAntennaGain_dBi;
 		optionalOutputPathLossProfile->reserve(pLatLonProfile.size());
 		for(unsigned int i=0 ; i<pLatLonProfile.size() ; i++)
 		{
-			pGetAntennaGains(sim, pLatLonProfile[i].first, pLatLonProfile[i].second, i+1, pDistKmProfile.data(), pTerrainElevProfile.data(),
-			                 &txAntennaGain_dBi, &rxAntennaGain_dBi);
+			txAntennaGain_dBi = pGetTransmitterAntennaGain(sim, pLatLonProfile[i].first, pLatLonProfile[i].second, i+1, pDistKmProfile.data(), pTerrainElevProfile.data());
+			rxAntennaGain_dBi = pGetReceiverAntennaGain(sim, pLatLonProfile[i].first, pLatLonProfile[i].second, i+1, pDistKmProfile.data(), pTerrainElevProfile.data());
 			result.pathLoss = sim.pIturp452v18Model.CalcPathLoss(sim.pTx.freqMHz/1000.0, sim.pTx.lat, sim.pTx.lon, pLatLonProfile[i].first, pLatLonProfile[i].second,
 			                                                     sim.pTx.rcagl, sim.pRx.heightAGL, txAntennaGain_dBi, rxAntennaGain_dBi, sim.pTx.pol, i+1, pDistKmProfile.data(),
 			                                                     pTerrainElevProfile.data(), pMappedLandCoverProfile.data(), pSurfaceElevProfile.data(), pRadioClimaticZoneProfile.data());
@@ -419,50 +423,24 @@ bool customSurf = (customData.numSamples >= MIN_SAMPLES && customData.surfaceEle
 	}
 	stats.numPoints = (int)pLatLonProfile.size();
 
+	// always get a terrain elevation profile, needed for elev angle calculation, antenna gains
+	if( customElev )
+	{
+		pTerrainElevProfile.resize(customData.numSamples);
+		std::memcpy(pTerrainElevProfile.data(), customData.terrainElevProfile, customData.numSamples*sizeof(double));
+	}
+	else
+		stats.terrainElevMisses = sim.pTopoManager.GetTerrainElevProfile(pLatLonProfile, &pTerrainElevProfile);
+
 	if( propagModel->IsUsingSurfaceElevData() )
 	{
-		// Priority on using custom data if present.
-		// Do not apply pairing if either or both custom terrain profile and custom surface profile is present.
 		if( customSurf )
 		{
 			pSurfaceElevProfile.resize(customData.numSamples);
 			std::memcpy(pSurfaceElevProfile.data(), customData.surfaceElevProfile, customData.numSamples*sizeof(double));
 		}
-		if( customElev )
-		{
-			pTerrainElevProfile.resize(customData.numSamples);
-			std::memcpy(pTerrainElevProfile.data(), customData.terrainElevProfile, customData.numSamples*sizeof(double));
-		}
-
-		if( pSurfaceElevProfile.size() == 0 && pTerrainElevProfile.size() > 0 )
-			stats.surfaceElevMisses = sim.pTopoManager.GetSurfaceElevProfile(pLatLonProfile, &pSurfaceElevProfile);
-		else if( pSurfaceElevProfile.size() > 0 && pTerrainElevProfile.size() == 0 )
-			stats.terrainElevMisses = sim.pTopoManager.GetTerrainElevProfile(pLatLonProfile, &pTerrainElevProfile);
-		else if( pSurfaceElevProfile.size() == 0 && pTerrainElevProfile.size() == 0 )
-		{
-			if( sim.pPairSurfAndTerrSources )
-			{
-				stats.surfaceElevMisses = sim.pTopoManager.GetPairedTerrainAndSurfaceElevProfiles(pLatLonProfile, &pTerrainElevProfile, &pSurfaceElevProfile);
-				stats.terrainElevMisses = stats.surfaceElevMisses;
-			}
-			else
-			{
-				stats.terrainElevMisses = sim.pTopoManager.GetTerrainElevProfile(pLatLonProfile, &pTerrainElevProfile);
-				stats.surfaceElevMisses = sim.pTopoManager.GetSurfaceElevProfile(pLatLonProfile, &pSurfaceElevProfile);
-			}
-		}
-	}
-
-	// always get a terrain elevation profile, needed for elev angle calculation, antenna gains
-	if( pTerrainElevProfile.size() == 0 )
-	{
-		if( customElev )
-		{
-			pTerrainElevProfile.resize(customData.numSamples);
-			std::memcpy(pTerrainElevProfile.data(), customData.terrainElevProfile, customData.numSamples*sizeof(double));
-		}
 		else
-			stats.terrainElevMisses = sim.pTopoManager.GetTerrainElevProfile(pLatLonProfile, &pTerrainElevProfile);
+			stats.surfaceElevMisses = sim.pTopoManager.GetSurfaceElevProfile(pLatLonProfile, &pSurfaceElevProfile);
 	}
 
 	if( propagModel->IsUsingMappedLandCoverData() )
@@ -501,7 +479,7 @@ double f_GHz = sim.pTx.freqMHz/1000.0;
 unsigned int firstIndex;
 unsigned int lastIndex = pLatLonProfile.size()-1;
 double rxLat_i, rxLon_i;
-double txElevAngleDeg, rxElevAngleDeg;
+double rxElevAngleDeg;
 double additionalLosses_dB;
 
 	if( optionalOutputPathLossProfile != nullptr )
@@ -520,8 +498,7 @@ double additionalLosses_dB;
 
 		if( applyP2109 )
 		{
-			pGetElevationAngles(sim.pTx.lat, sim.pTx.lon, rxLat_i, rxLon_i, sim.pTx.rcagl, sim.pRx.heightAGL,
-								i+1, pDistKmProfile.data(), pTerrainElevProfile.data(), &txElevAngleDeg, &rxElevAngleDeg);
+			rxElevAngleDeg = pGetReceiverToTransmitterElevAngle(sim, rxLat_i, rxLon_i, i+1, pDistKmProfile.data(), pTerrainElevProfile.data());
 			additionalLosses_dB += sim.pIturp2109Model.CalcBuildingEntryLoss(f_GHz, rxElevAngleDeg);
 		}
 
@@ -537,34 +514,90 @@ double additionalLosses_dB;
 }
 
 double Generator::pToSelectedResultType(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles,
-                                        double* distKmProfile, double* terrainElevProfile, double pathLoss_dB)
+                                        double* distKmProfile, double* terrainElevProfile, double pathLoss_dB,
+										Crc::Covlib::ReceptionPointDetailedResult* detailedResult/*=nullptr*/)
 {
+double result, txAzmDeg, rxAzmDeg, txElevAngleDeg, rxElevAngleDeg, txAntGain_dBi, rxAntGain_dBi;
+
+	if( detailedResult != nullptr )
+	{
+		txAzmDeg = pGetTransmitterToReceiverAzimuth(sim, rxLat, rxLon);
+		txElevAngleDeg = pGetTransmitterToReceiverElevAngle(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+		txAntGain_dBi = GetTransmitterAntennaGain(sim, txAzmDeg, txElevAngleDeg, rxLat, rxLon);
+		rxAzmDeg = pGetReceiverToTransmitterAzimuth(sim, rxLat, rxLon);
+		rxElevAngleDeg = pGetReceiverToTransmitterElevAngle(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+		rxAntGain_dBi = GetReceiverAntennaGain(sim, rxAzmDeg, rxElevAngleDeg, rxLat, rxLon);
+
+		switch (sim.pResultType)
+		{
+		case FIELD_STRENGTH_DBUVM:
+			result = pToFieldStrength(sim, pathLoss_dB, txAntGain_dBi);
+			break;
+		case PATH_LOSS_DB:
+			result = pathLoss_dB;
+			break;
+		case TRANSMISSION_LOSS_DB:
+			result = pToTransmissionLoss(sim, pathLoss_dB, txAntGain_dBi, rxAntGain_dBi);
+			break;
+		case RECEIVED_POWER_DBM:
+			result = pToReceivedPower(sim, pathLoss_dB, txAntGain_dBi, rxAntGain_dBi);
+			break;
+		default:
+			result = 0;
+			break;
+		}
+
+		detailedResult->result = result;
+		detailedResult->pathLoss_dB = pathLoss_dB;
+		if( sizeProfiles > 0 )
+		{
+			detailedResult->pathLength_km = distKmProfile[sizeProfiles-1];
+			detailedResult->transmitterHeightAMSL_m = terrainElevProfile[0] + sim.pTx.rcagl;
+			detailedResult->receiverHeightAMSL_m = terrainElevProfile[sizeProfiles-1] + sim.pRx.heightAGL;
+		}
+		else
+		{
+			detailedResult->pathLength_km = 0;
+			detailedResult->transmitterHeightAMSL_m = sim.pTx.rcagl;
+			detailedResult->receiverHeightAMSL_m = sim.pRx.heightAGL;
+		}
+		detailedResult->transmitterAntennaGain_dBi = txAntGain_dBi;
+		detailedResult->receiverAntennaGain_dBi = rxAntGain_dBi;
+		detailedResult->azimuthFromTransmitter_degrees = txAzmDeg;
+		detailedResult->azimuthFromReceiver_degrees = rxAzmDeg;
+		detailedResult->elevAngleFromTransmitter_degrees = txElevAngleDeg;
+		detailedResult->elevAngleFromReceiver_degrees = rxElevAngleDeg;
+
+		return result;
+	}
+
 	switch (sim.pResultType)
 	{
 	case FIELD_STRENGTH_DBUVM:
-		return pToFieldStrength(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile, pathLoss_dB);
+		txAntGain_dBi = pGetTransmitterAntennaGain(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+		return pToFieldStrength(sim, pathLoss_dB, txAntGain_dBi);
 	case PATH_LOSS_DB:
 		return pathLoss_dB;
 	case TRANSMISSION_LOSS_DB:
-		return pToTransmissionLoss(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile, pathLoss_dB);
+		txAntGain_dBi = pGetTransmitterAntennaGain(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+		rxAntGain_dBi = pGetReceiverAntennaGain(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+		return pToTransmissionLoss(sim, pathLoss_dB, txAntGain_dBi, rxAntGain_dBi);
 	case RECEIVED_POWER_DBM:
-		return pToReceivedPower(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile, pathLoss_dB);
+		txAntGain_dBi = pGetTransmitterAntennaGain(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+		rxAntGain_dBi = pGetReceiverAntennaGain(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+		return pToReceivedPower(sim, pathLoss_dB, txAntGain_dBi, rxAntGain_dBi);
 	default:
 		return 0;
 	}
 }
 
-double Generator::pToFieldStrength(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles,
-                                   double* distKmProfile, double* terrainElevProfile, double pathLoss_dB)
+double Generator::pToFieldStrength(Simulation& sim, double pathLoss_dB, double txAntGain_dBi)
 {
-double fs_dBuVm, fs_1kW_erp_dBuVm, txAntGain_dBi;
+double fs_dBuVm, fs_1kW_erp_dBuVm;
 double freq_GHz = sim.pTx.freqMHz/1000.0;
 double erp_dBkW = sim.pTx.erp(Transmitter::PowerUnit::DBW) - 30;
 
 	fs_1kW_erp_dBuVm = ITURP_1812::FieldStrength(freq_GHz, pathLoss_dB);
-
-	// get tx anntenna gain (note: rx antenna gain is never included in field strength)
-	pGetAntennaGains(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile, &txAntGain_dBi, nullptr);
 
 	// substract max gain since it is already included in the ERP/EIRP
 	// do not add tx losses since they are already included in the ERP/EIRP
@@ -576,121 +609,206 @@ double erp_dBkW = sim.pTx.erp(Transmitter::PowerUnit::DBW) - 30;
 	return fs_dBuVm;
 }
 
-double Generator::pToTransmissionLoss(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles,
-                                      double* distKmProfile, double* terrainElevProfile, double pathLoss_dB)
+double Generator::pToTransmissionLoss(Simulation& sim, double pathLoss_dB, double txAntGain_dBi, double rxAntGain_dBi)
 {
-double tl_dB, txAntGain_dBi, rxAntGain_dBi;
-
-	pGetAntennaGains(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile, &txAntGain_dBi, &rxAntGain_dBi);
-	tl_dB = pathLoss_dB - txAntGain_dBi + sim.pTx.losses_dB - rxAntGain_dBi + sim.pRx.losses_dB;
+	double tl_dB = pathLoss_dB - txAntGain_dBi + sim.pTx.losses_dB - rxAntGain_dBi + sim.pRx.losses_dB;
 	return tl_dB;
 }
 
 // see https://en.wikipedia.org/wiki/Link_budget
-double Generator::pToReceivedPower(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles,
-                                   double* distKmProfile, double* terrainElevProfile, double pathLoss_dB)
+double Generator::pToReceivedPower(Simulation& sim, double pathLoss_dB, double txAntGain_dBi, double rxAntGain_dBi)
 {
 double tpo_dBm = sim.pTx.tpo(Transmitter::PowerUnit::DBM);
-double rp_dbuVm, txAntGain_dBi, rxAntGain_dBi;
+double rp_dbuVm;
 
-	pGetAntennaGains(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile, &txAntGain_dBi, &rxAntGain_dBi);
 	rp_dbuVm = tpo_dBm - pathLoss_dB + txAntGain_dBi - sim.pTx.losses_dB + rxAntGain_dBi - sim.pRx.losses_dB;
 	return rp_dbuVm;
 }
 
-void Generator::pGetAntennaGains(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile,
-                                 double* terrainElevProfile, double* txGain_dBi, double* rxGain_dBi)
+// azmDeg: from 0 to 360 degrees, 0 = True North
+// elevAngleDeg: from -90 (towards sky) to +90 (towards ground)
+// return value in dBi
+double Generator::GetTransmitterAntennaGain(const Simulation& sim, double azmDeg, double elevAngleDeg, double rxLat, double rxLon) const
 {
-const GeographicLib::Geodesic& geod = GeographicLib::Geodesic::WGS84();
-double txElevAngleDeg, rxElevAngleDeg;
-double txToRxAzmDeg, rxToTxAzmDeg, tempAzm;
-double azmDeg;
+	if( sim.pTx.antPattern.IsPatternDefined() == false )
+		return sim.pTx.maxGain_dBi;
 
-	pGetElevationAngles(sim.pTx.lat, sim.pTx.lon, rxLat, rxLon, sim.pTx.rcagl, sim.pRx.heightAGL, sizeProfiles, distKmProfile,
-	                    terrainElevProfile, &txElevAngleDeg, &rxElevAngleDeg);
+	double gain_dBi;
+	double patternAzmDeg = azmDeg;
+	if( sim.pTx.bearingRef == OTHER_TERMINAL )
+		patternAzmDeg -= pGetTransmitterToReceiverAzimuth(sim, rxLat, rxLon) + sim.pTx.bearingDeg;
+	else // TRUE_NORTH
+		patternAzmDeg -= sim.pTx.bearingDeg;
 
-	if( txGain_dBi != nullptr )
-	{
-		if( sim.pTx.bearingRef == OTHER_TERMINAL )
-			azmDeg = sim.pTx.bearingDeg;
-		else // sim.pTx.bearingRef == TRUE_NORTH
-		{
-			geod.Inverse(sim.pTx.lat, sim.pTx.lon, rxLat, rxLon, txToRxAzmDeg, tempAzm);
-			azmDeg = txToRxAzmDeg - sim.pTx.bearingDeg;
-		}
-		*txGain_dBi = sim.pTx.antPattern.Gain(azmDeg, txElevAngleDeg, (AntennaPattern::INTERPOLATION_ALGORITHM)sim.pTx.patternApproxMethod, true);
-		*txGain_dBi += sim.pTx.maxGain_dBi;
-	}
-
-	if( rxGain_dBi != nullptr )
-	{
-		if( sim.pRx.bearingRef == OTHER_TERMINAL )
-			azmDeg = sim.pRx.bearingDeg;
-		else // sim.pRx.bearingRef == TRUE_NORTH
-		{
-			geod.Inverse(rxLat, rxLon, sim.pTx.lat, sim.pTx.lon, rxToTxAzmDeg, tempAzm);
-			azmDeg = rxToTxAzmDeg - sim.pRx.bearingDeg;
-		}
-		
-		*rxGain_dBi = sim.pRx.antPattern.Gain(azmDeg, rxElevAngleDeg, (AntennaPattern::INTERPOLATION_ALGORITHM)sim.pRx.patternApproxMethod, true);
-		*rxGain_dBi += sim.pRx.maxGain_dBi;
-	}
+	gain_dBi = sim.pTx.antPattern.Gain(patternAzmDeg, elevAngleDeg, (AntennaPattern::INTERPOLATION_ALGORITHM)sim.pTx.patternApproxMethod, true);
+	gain_dBi += sim.pTx.maxGain_dBi;
+	return gain_dBi;
 }
 
-// Calculates elevation angles for getting tx and rx antenna pattern gains.
-// This corresponds to the terminal-to-terminal angle in line-of-sight situations, or the terrain clearance angle in non-LOS situations.
-// For output values (txElevAngleDeg, rxElevAngleDeg): -90 degrees = towards sky, +90 degrees = towards ground, 0 = parallel to ground.
-// Algorithm derived from:
-//   ITU-R P.1812-6, Attachment 1 to Annex 1, Section 4 & 5.3
-//   ITU-R P.452-17, Attachment 2 to Annex 1, Section 4 & 5.1.3
-void Generator::pGetElevationAngles(double txLat, double txLon, double rxLat, double rxLon, double txHeightAGL, double rxHeightAGL,
-                                    unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile,
-                                    double* txElevAngleDeg, double* rxElevAngleDeg)
+// azmDeg: from 0 to 360 degrees, 0 = True North
+// elevAngleDeg: from -90 (towards sky) to +90 (towards ground)
+// return value in dBi
+double Generator::GetReceiverAntennaGain(const Simulation& sim, double azmDeg, double elevAngleDeg, double rxLat, double rxLon) const
 {
-	if( sizeProfiles < 2 )
+	if( sim.pRx.antPattern.IsPatternDefined() == false )
+		return sim.pRx.maxGain_dBi;
+
+	double gain_dBi;
+	double patternAzmDeg = azmDeg;
+	if( sim.pRx.bearingRef == OTHER_TERMINAL )
+		patternAzmDeg -= pGetReceiverToTransmitterAzimuth(sim, rxLat, rxLon) + sim.pRx.bearingDeg;
+	else // TRUE_NORTH
+		patternAzmDeg -= sim.pRx.bearingDeg;
+
+	gain_dBi = sim.pRx.antPattern.Gain(patternAzmDeg, elevAngleDeg, (AntennaPattern::INTERPOLATION_ALGORITHM)sim.pRx.patternApproxMethod, true);
+	gain_dBi += sim.pRx.maxGain_dBi;
+	return gain_dBi;
+}
+
+double Generator::pGetTransmitterToReceiverAzimuth(const Simulation& sim, double rxLat, double rxLon) const
+{
+	return pGetAzimuth(sim.pTx.lat, sim.pTx.lon, rxLat, rxLon);
+}
+	
+double Generator::pGetReceiverToTransmitterAzimuth(const Simulation& sim, double rxLat, double rxLon) const
+{
+	return pGetAzimuth(rxLat, rxLon, sim.pTx.lat, sim.pTx.lon);
+}
+
+double Generator::pGetAzimuth(double fromLat, double fromLon, double toLat, double toLon) const
+{
+const GeographicLib::Geodesic& geod = GeographicLib::Geodesic::WGS84();
+double azmDeg, tempAzm;
+
+	geod.Inverse(fromLat, fromLon, toLat, toLon, azmDeg, tempAzm);
+	if( azmDeg < 0 )
+		azmDeg += 360.0;
+	return azmDeg;
+}
+
+// Calculates elevation angle for getting the tx antenna gain.
+// This corresponds to the terminal-to-terminal angle in line-of-sight situations, or the terrain clearance angle in non-LOS situations.
+// Profiles must be from tx to rx.
+// Return value in degrees: -90 = towards sky, +90 = towards ground, 0 = parallel to ground.
+// Algorithm derived from:
+//   ITU-R P.1812-7, Attachment 1 to Annex 1, Section 4 & 5.3
+//   ITU-R P.452-18, Attachment 2 to Annex 1, Section 4 & 5.1.3
+double Generator::pGetTransmitterToReceiverElevAngle(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles,
+                                                     double* distKmProfile, double* terrainElevProfile)
+{
+double txHeightAGL = sim.pTx.rcagl;
+double rxHeightAGL = sim.pRx.heightAGL;
+	
+	if( sizeProfiles < 2 || distKmProfile[sizeProfiles-1] < 1E-5 )
 	{
-		*txElevAngleDeg = *rxElevAngleDeg = 0;
-		return;
-	}
-	if( distKmProfile[sizeProfiles-1] < 1E-5 )
-	{
-		*txElevAngleDeg = *rxElevAngleDeg = 0;
-		return;
+        if( txHeightAGL > rxHeightAGL )
+			return 90;
+		else if( txHeightAGL < rxHeightAGL )
+			return -90;
+		else
+			return 0;
 	}
 
 double pathCentreLat, pathCentreLon;
-unsigned int n = sizeProfiles;
-double* d = distKmProfile;
-double* h = terrainElevProfile;
-double dn = d[n-1]; // total path distance in km
-double txHeight_mamsl = h[0] + txHeightAGL; // tx height in meters above mean sea level
-double rxHeight_mamsl = h[n-1] + rxHeightAGL; // rx height in meters above mean sea level
-double txMaxAngleRad, rxMaxAngleRad;
-double terminalToTerrainAngleRad;
+double totalDistKm = distKmProfile[sizeProfiles-1];
+double txHeight_mamsl = terrainElevProfile[0] + txHeightAGL; // tx height in meters above mean sea level
+double rxHeight_mamsl = terrainElevProfile[sizeProfiles-1] + rxHeightAGL; // rx height in meters above mean sea level
+double elevAngleRad, maxElevAngleRad;
 double deltaN; // average radio-refractivity lapse-rate through the lowest 1 km of the atmosphere (N-units/km)
 double ae; // median effective Earth radius (km)
 
-	ITURP_2001::GreatCircleIntermediatePoint(txLat, txLon, rxLat, rxLon, dn/2.0, pathCentreLat, pathCentreLon);
+	ITURP_2001::GreatCircleIntermediatePoint(sim.pTx.lat, sim.pTx.lon, rxLat, rxLon, totalDistKm/2.0, pathCentreLat, pathCentreLon);
 	deltaN = ITURP_DigitalMaps::DN50(pathCentreLat, pathCentreLon);
 	ae = 157.0*ITURP_2001::Re / (157.0-deltaN);
 
-	auto ElevationAngleRad = [ae] (double hamsl_from, double hamsl_to, double distKm) -> double
+	maxElevAngleRad = pElevationAngleRad(txHeight_mamsl, rxHeight_mamsl, totalDistKm, ae);
+	for(unsigned int i=1 ; i<sizeProfiles-1 ; i++) // excludes transmit and receive locations
 	{
-		return atan(((hamsl_to-hamsl_from)/(1000.0*distKm))-(distKm/(2.0*ae))); // elev angle in radians
-	};
+		elevAngleRad = pElevationAngleRad(txHeight_mamsl, terrainElevProfile[i], distKmProfile[i], ae);
+		maxElevAngleRad = std::max(elevAngleRad, maxElevAngleRad);
+	}
+	return -maxElevAngleRad/ITURP_2001::PI_ON_180;
+}
 
-	txMaxAngleRad = ElevationAngleRad(txHeight_mamsl, rxHeight_mamsl, dn); // elevation angle from the transmit to the receive antenna (radians)
-	rxMaxAngleRad =  ElevationAngleRad(rxHeight_mamsl, txHeight_mamsl, dn); // elevation angle from the receive to the transmit antenna (radians)
-	for(unsigned int i=1 ; i<n-1 ; i++) // excludes transmit and receive locations
+// Calculates elevation angle for getting the rx antenna gain.
+// This corresponds to the terminal-to-terminal angle in line-of-sight situations, or the terrain clearance angle in non-LOS situations.
+// Profiles must be from tx to rx.
+// Return value in degrees: -90 = towards sky, +90 = towards ground, 0 = parallel to ground.
+// Algorithm derived from:
+//   ITU-R P.1812-7, Attachment 1 to Annex 1, Section 4 & 5.3
+//   ITU-R P.452-18, Attachment 2 to Annex 1, Section 4 & 5.1.3
+double Generator::pGetReceiverToTransmitterElevAngle(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles,
+                                                     double* distKmProfile, double* terrainElevProfile)
+{
+double txHeightAGL = sim.pTx.rcagl;
+double rxHeightAGL = sim.pRx.heightAGL;
+
+	if( sizeProfiles < 2 || distKmProfile[sizeProfiles-1] < 1E-5 )
 	{
-		terminalToTerrainAngleRad = ElevationAngleRad(txHeight_mamsl, h[i], d[i]);
-		txMaxAngleRad = std::max(terminalToTerrainAngleRad, txMaxAngleRad);
-		terminalToTerrainAngleRad = ElevationAngleRad(rxHeight_mamsl, h[i], dn-d[i]);
-		rxMaxAngleRad = std::max(terminalToTerrainAngleRad, rxMaxAngleRad);
+        if( txHeightAGL > rxHeightAGL )
+			return -90;
+		else if( txHeightAGL < rxHeightAGL )
+			return 90;
+		else
+			return 0;
 	}
 
-	*txElevAngleDeg = -txMaxAngleRad/ITURP_2001::PI_ON_180;
-	*rxElevAngleDeg = -rxMaxAngleRad/ITURP_2001::PI_ON_180;
+double pathCentreLat, pathCentreLon;
+double totalDistKm = distKmProfile[sizeProfiles-1];
+double txHeight_mamsl = terrainElevProfile[0] + txHeightAGL; // tx height in meters above mean sea level
+double rxHeight_mamsl = terrainElevProfile[sizeProfiles-1] + rxHeightAGL; // rx height in meters above mean sea level
+double elevAngleRad, maxElevAngleRad;
+double deltaN; // average radio-refractivity lapse-rate through the lowest 1 km of the atmosphere (N-units/km)
+double ae; // median effective Earth radius (km)
+
+	ITURP_2001::GreatCircleIntermediatePoint(sim.pTx.lat, sim.pTx.lon, rxLat, rxLon, totalDistKm/2.0, pathCentreLat, pathCentreLon);
+	deltaN = ITURP_DigitalMaps::DN50(pathCentreLat, pathCentreLon);
+	ae = 157.0*ITURP_2001::Re / (157.0-deltaN);
+
+	maxElevAngleRad = pElevationAngleRad(rxHeight_mamsl, txHeight_mamsl, totalDistKm, ae);
+	for(unsigned int i=1 ; i<sizeProfiles-1 ; i++) // excludes transmit and receive locations
+	{
+		elevAngleRad = pElevationAngleRad(rxHeight_mamsl, terrainElevProfile[i], totalDistKm-distKmProfile[i], ae);
+		maxElevAngleRad = std::max(elevAngleRad, maxElevAngleRad);
+	}
+	return -maxElevAngleRad/ITURP_2001::PI_ON_180;
+}
+
+double Generator::pElevationAngleRad(double hamsl_from, double hamsl_to, double distKm, double aeKm)
+{
+	return atan(((hamsl_to-hamsl_from)/(1000.0*distKm))-(distKm/(2.0*aeKm)));
+}
+
+// Profiles must be from tx to rx.
+// Return value in dBi.
+double Generator::pGetTransmitterAntennaGain(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles,
+                                             double* distKmProfile, double* terrainElevProfile)
+{
+double azmDeg, elevAngleDeg;
+
+	// avoid calculating azimuth and elevation angle when not needed as it can be time consuming for large terrain profiles
+	if( sim.pTx.antPattern.IsPatternDefined() == false )
+		return sim.pTx.maxGain_dBi;
+
+	azmDeg = pGetTransmitterToReceiverAzimuth(sim, rxLat, rxLon);
+	elevAngleDeg = pGetTransmitterToReceiverElevAngle(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+	return GetTransmitterAntennaGain(sim, azmDeg, elevAngleDeg, rxLat, rxLon);
+}
+
+// Profiles must be from tx to rx.
+// Return value in dBi.
+double Generator::pGetReceiverAntennaGain(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles,
+                                          double* distKmProfile, double* terrainElevProfile)
+{
+double azmDeg, elevAngleDeg;
+
+	// avoid calculating azimuth and elevation angle when not needed as it can be time consuming for large terrain profiles
+	if( sim.pRx.antPattern.IsPatternDefined() == false )
+		return sim.pRx.maxGain_dBi;
+
+	azmDeg = pGetReceiverToTransmitterAzimuth(sim, rxLat, rxLon);
+	elevAngleDeg = pGetReceiverToTransmitterElevAngle(sim, rxLat, rxLon, sizeProfiles, distKmProfile, terrainElevProfile);
+	return GetReceiverAntennaGain(sim, azmDeg, elevAngleDeg, rxLat, rxLon);
 }
 
 int Generator::pGetStatus(MissesStats stats)

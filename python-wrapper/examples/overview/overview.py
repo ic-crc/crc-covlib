@@ -354,7 +354,11 @@ if __name__ == '__main__':
     # Generating results using the NRCAN CDEM
     print('\nSingle point simulation')
     sim.SetPrimaryTerrainElevDataSource(CDEM)
-    print('Result at ({:.6f}, {:.6f}): {:.2f}  dB'.format(rx_lat, rx_lon, sim.GenerateReceptionPointResult(rx_lat, rx_lon)))
+    print('Result at ({:.6f}, {:.6f}): {:.2f} dB'.format(rx_lat, rx_lon, sim.GenerateReceptionPointResult(rx_lat, rx_lon)))
+    printStatus(sim.GetGenerateStatus())
+    result = sim.GenerateReceptionPointDetailedResult(rx_lat, rx_lon)
+    print('Detailed result at ({:.6f}, {:.6f}): {:.2f} dB, tx gain = {:.2f}, azm from tx = {:.2f} deg, elev angle from tx = {:.2f} deg, etc.'.format(
+          rx_lat, rx_lon, result.result, result.transmitterAntennaGain_dBi, result.azimuthFromTransmitter_degrees, result.elevAngleFromTransmitter_degrees))
     printStatus(sim.GetGenerateStatus())
     sim.ExportProfilesToCsvFile(os.path.join(script_dir, './profiles.csv'), rx_lat, rx_lon)
     print('Terrain and result profiles have been exported to .csv file for reception point at (lat={:.6f}, lon={:.6f})'.format(rx_lat, rx_lon))

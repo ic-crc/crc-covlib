@@ -12,6 +12,7 @@ TopographicDataManager::TopographicDataManager()
 {
 	pRadioClimaticZonesGeotiffs[ITU_R_P_1812] = GeoTIFFReader();
 	pRadioClimaticZonesGeotiffs[ITU_R_P_452_V18] = GeoTIFFReader();
+	pUsePairedSources = false;
 }
 
 TopographicDataManager::~TopographicDataManager()
@@ -73,7 +74,28 @@ const char* TopographicDataManager::GetRadioClimaticZonesFile(Crc::Covlib::Propa
 	return pRadioClimaticZonesGeotiffs.at(propagModel).GetFile();
 }
 
+void TopographicDataManager::UsePairedTerrainAndSurfaceElevSources(bool usePairedSources)
+{
+	pUsePairedSources = usePairedSources;
+}
+
+bool TopographicDataManager::UsePairedTerrainAndSurfaceElevSources() const
+{
+	return pUsePairedSources;
+}
+
 bool TopographicDataManager::GetTerrainElevation(double lat, double lon, float* terrainElevation)
+{
+	if( pUsePairedSources == false )
+		return pGetUnpairedTerrainElevation(lat, lon, terrainElevation);
+	else
+	{
+		float surfaceElevation;
+		return pGetPairedTerrainAndSurfaceElev(lat, lon, terrainElevation, &surfaceElevation);
+	}
+}
+
+bool TopographicDataManager::pGetUnpairedTerrainElevation(double lat, double lon, float* terrainElevation)
 {
 bool success;
 
@@ -141,6 +163,17 @@ bool success;
 
 bool TopographicDataManager::GetSurfaceElevation(double lat, double lon, float* surfaceElevation)
 {
+	if( pUsePairedSources == false )
+		return pGetUnpairedSurfaceElevation(lat, lon, surfaceElevation);
+	else
+	{
+		float terrainElevation;
+		return pGetPairedTerrainAndSurfaceElev(lat, lon, &terrainElevation, surfaceElevation);
+	}	
+}
+
+bool TopographicDataManager::pGetUnpairedSurfaceElevation(double lat, double lon, float* surfaceElevation)
+{
 bool success;
 
 	for(std::size_t i=0 ; i<pSurfaceElevSources.size() ; i++)
@@ -161,7 +194,7 @@ bool success;
 	return false;
 }
 
-bool TopographicDataManager::GetPairedTerrainAndSurfaceElev(double lat, double lon, float* terrainElevation, float* surfaceElevation)
+bool TopographicDataManager::pGetPairedTerrainAndSurfaceElev(double lat, double lon, float* terrainElevation, float* surfaceElevation)
 {
 bool successTerr, successSurf;
 
@@ -435,38 +468,6 @@ int numMisses = 0;
 		}
 		else
 			surfaceElevProfile->push_back(surfaceElev);
-	}
-	return numMisses;
-}
-
-int TopographicDataManager::GetPairedTerrainAndSurfaceElevProfiles(std::vector<std::pair<double,double>>& latLonProfile,
-                                                                   std::vector<double>* terrainElevProfile, std::vector<double>* surfaceElevProfile)
-{
-double lat, lon;
-float terrainElev, surfaceElev;
-int numMisses = 0;
-
-	terrainElevProfile->clear();
-	terrainElevProfile->reserve(latLonProfile.size());
-	surfaceElevProfile->clear();
-	surfaceElevProfile->reserve(latLonProfile.size());
-
-	for(unsigned int i=0 ; i<latLonProfile.size() ; i++)
-	{
-		lat = latLonProfile[i].first;
-		lon = latLonProfile[i].second;
-		if ( GetPairedTerrainAndSurfaceElev(lat, lon, &terrainElev, &surfaceElev) == false)
-		{
-			terrainElevProfile->push_back(0);
-			surfaceElevProfile->push_back(0);
-			if( pTerrainElevSources.size() > 0 || pSurfaceElevSources.size() > 0 )
-				numMisses++;
-		}
-		else
-		{
-			terrainElevProfile->push_back(terrainElev);
-			surfaceElevProfile->push_back(surfaceElev);
-		}
 	}
 	return numMisses;
 }

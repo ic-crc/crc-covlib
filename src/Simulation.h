@@ -259,6 +259,7 @@ public:
 
 	// Generating and accessing results
 	virtual double GenerateReceptionPointResult(double latitude_degrees, double longitude_degrees);
+	virtual Crc::Covlib::ReceptionPointDetailedResult GenerateReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees);
 	virtual double GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const Crc::Covlib::ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL);
 	virtual void GenerateReceptionAreaResults();
 	virtual int GetGenerateStatus() const;
@@ -335,7 +336,6 @@ private:
 	Crc::Covlib::SurfaceElevDataSource pPrimarySurfElevSourceId;
 	Crc::Covlib::SurfaceElevDataSource pSecondarySurfElevSourceId;
 	Crc::Covlib::SurfaceElevDataSource pTertiarySurfElevSourceId;
-	bool pPairSurfAndTerrSources;
 	SRTMSurfaceElevSource pSurfElevSrtm;
 	CustomSurfaceElevSource pSurfElevCustom;
 	GeoTIFFSurfaceElevSource pSurfElevCdsm;

@@ -2,6 +2,7 @@
 """
 
 from math import log10, sqrt, pi, log, tan, degrees, atan
+from typing import Union
 import enum
 from . import itur_p1057
 from numba import jit
@@ -28,11 +29,11 @@ class ClutterType(enum.Enum):
 def GetDefaultRepresentativeHeight(clut: ClutterType) -> float:
     """
     ITU-R P.2108-1, Annex 1, Section 3.1
-    Gets the default representative clutter height, as defined in Table 3 of the recommendation.
+    Gets the default representative clutter height, as defined in the recommendation's Table 3.
 
     Args:
-        clut (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter type from Table 3 in
-            the recommendation.
+        clut (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter types from the
+            recommendation's Table 3.
 
     Returns:
         (float): Representative clutter height (m).
@@ -46,8 +47,8 @@ def GetDefaultRepresentativeHeight(clut: ClutterType) -> float:
 
 
 @jit(nopython=True)
-def HeightGainModelClutterLoss(f_GHz: float, h_m: float, clut: ClutterType, R_m: float=-1.0,
-                               ws_m: float=27.0) -> float:
+def HeightGainModelClutterLoss(f_GHz: float, h_m: float, clut: ClutterType,
+                               R_m: Union[float, None]=None, ws_m: float=27.0) -> float:
     """
     ITU-R P.2108-1, Annex 1, Section 3.1
     "An additional loss, Ah, is calculated which can be added to the basic transmission loss of a
@@ -58,21 +59,22 @@ def HeightGainModelClutterLoss(f_GHz: float, h_m: float, clut: ClutterType, R_m:
     Args:
         f_GHz (float): Frequency (GHz), with 0.03 <= f_GHz <= 3.
         h_m (float): Antenna height (m), with 0 <= h_m.
-        clut (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter type from Table 3 in
-            the recommendation.
-        R_m (float): Representative clutter height (m). If R_m is smaller than or equal to 0, the
-            default representative clutter height from Table 3 in the recommendation is used.
+        clut (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter types from the 
+            recommendation's Table 3.
+        R_m (float|None): Representative clutter height (m), with 0 < R_m. When R_m is set to None,
+            the default representative clutter height for the specified clutter type is used.
         ws_m (float): Street width (m).
     
     Returns:
         Ah (float): Clutter loss (dB).
     """
-    if R_m <= 0.0:
+    if R_m is None:
         R_m = GetDefaultRepresentativeHeight(clut)
     if h_m >= R_m:
         Ah = 0.0
     else:
-        if clut==ClutterType.SUBURBAN or clut==ClutterType.URBAN_TREES_FOREST or clut==ClutterType.DENSE_URBAN:
+        if clut==ClutterType.SUBURBAN or clut==ClutterType.URBAN_TREES_FOREST or \
+           clut==ClutterType.DENSE_URBAN:
             Knu = 0.342*sqrt(f_GHz)
             hdif = R_m - h_m
             theta_clut_deg = degrees(atan(hdif/ws_m))

@@ -1,7 +1,7 @@
 """Implementation of Section 3.7 and Attachment H from ITU-R P.2001-5.
 """
 
-from math import sin, cos, radians, acos, atan2, fabs, asin, degrees
+from math import sin, cos, radians, acos, atan2, fabs, asin, degrees, atan
 import numpy.typing as npt
 from . import itur_p1144
 from numba import jit
@@ -46,11 +46,19 @@ def _Nd1km50(lat: float, lon: float) -> float:
 @jit(nopython=True)
 def _ElevAngle(h_from_mamsl, h_to_mamsl, dist_km, ae_km) -> float:
     """
-    Returns the elevation angle (mrad) relative to the horizontal.
+    Returns the elevation angle (mrad) relative to the horizontal, does not appear to be suitable
+    for short paths (about 100m or less, but possibly more depending on provided heights).
     """
-    # note: formula does not seem reliable for very short paths (i.e. smaller than a few meters).
-    # P.452 and P.1812 use a slightly different formula using atan() that appear to be more acurate.
     return ((h_to_mamsl-h_from_mamsl)/dist_km)-(500*dist_km/ae_km) # eq. (16) without max
+
+
+@jit(nopython=True)
+def _ElevAngleFromP1812(h_from_mamsl, h_to_mamsl, dist_km, ae_km) -> float:
+    """
+    Returns the elevation angle (mrad) relative to the horizontal, using equation from
+    ITU-R P.1812-7, Annex 1, Section 4
+    """
+    return 1000.0*atan(((h_to_mamsl-h_from_mamsl)/(1000.0*dist_km))-(dist_km/(2.0*ae_km)))
 
 
 @jit(nopython=True)
@@ -58,7 +66,8 @@ def IsLOS(latt: float, lont: float, ht_mamsl: float, latr: float, lonr: float, h
           dProfile_km: npt.ArrayLike, hProfile_mamsl: npt.ArrayLike) -> bool:
     """
     ITU-R P.2001-5, Annex, Section 3.7
-    Determines whether a path is line-of-sight or non-line-of-sight.
+    Determines whether a path is line-of-sight or non-line-of-sight under median refractivity
+    conditions.
 
     Args:
         latt (float): Latitude of transmitter (degrees), with -90 <= lat <= 90.
@@ -80,28 +89,27 @@ def IsLOS(latt: float, lont: float, ht_mamsl: float, latr: float, lonr: float, h
         return True
     Re_km = 6371 # average Earth radius (km)
     n = len(dProfile_km)
-    mid_path_lat, mid_path_lon = IntermediatePathPoint(latt, lont, latr, lonr, path_length_km)
+    mid_path_lat, mid_path_lon = IntermediatePathPoint(latt, lont, latr, lonr, path_length_km/2.0)
     ae_km = 157*Re_km/(157+_Nd1km50(mid_path_lat, mid_path_lon)) # median effective Earth radius (km)
     theta_tr = _ElevAngle(ht_mamsl, hr_mamsl, path_length_km, ae_km)
     theta_tim = -1E20
     for i in range(1, n-1):
         theta_tim_i = _ElevAngle(ht_mamsl, hProfile_mamsl[i], dProfile_km[i], ae_km)
         theta_tim = max(theta_tim, theta_tim_i)
+    # Note: Using _ElevAngle() or _ElevAngleFromP1812() yields the same LOS/NLOS result since the
+    #       angle comparison is consistent.
     return theta_tim < theta_tr
 
 
 @jit(nopython=True)
 def ElevationAngles(latt: float, lont: float, ht_mamsl: float,
                     latr: float, lonr: float, hr_mamsl: float,
-                    dProfile_km: npt.ArrayLike, hProfile_mamsl: npt.ArrayLike
-                    ) -> tuple[float, float]:
+                    dProfile_km: npt.ArrayLike, hProfile_mamsl: npt.ArrayLike,
+                    useP1812Variation: bool=True) -> tuple[float, float]:
     """
     ITU-R P.2001-5, Annex, Section 3.7
     Calculates the transmitter and receiver elevation angles (degrees) under median refractivity
     conditions.
-
-    Note: the algorithm does not appear to be adequate for very short paths (i.e. smaller than
-    about 10 meters).
 
     Args:
         latt (float): Latitude of transmitter (degrees), with -90 <= lat <= 90.
@@ -114,6 +122,9 @@ def ElevationAngles(latt: float, lont: float, ht_mamsl: float,
         hProfile_mamsl (numpy.typing.ArrayLike): Terrain height profile (meters above mean sea
             level) from the transmitter to the receiver. hProfile and dProfile must have the same
             number of values.
+        useP1812Variation (bool): The formula provided in ITU-R P.2001 to calculate elevation
+            angles does not appear to be suitable for short distances. When set to True, the
+            formula from ITU-R P.1812-7 is used instead.
     
     Returns:
         (float): Transmitter elevation angle (degrees). 0°=horizon, +90°=zenith, -90°=nadir.
@@ -129,15 +140,25 @@ def ElevationAngles(latt: float, lont: float, ht_mamsl: float,
             return (0, 0)
     Re_km = 6371
     n = len(dProfile_km)
-    mid_path_lat, mid_path_lon = IntermediatePathPoint(latt, lont, latr, lonr, path_length_km)
+    mid_path_lat, mid_path_lon = IntermediatePathPoint(latt, lont, latr, lonr, path_length_km/2.0)
     ae_km = 157*Re_km/(157+_Nd1km50(mid_path_lat, mid_path_lon))
-    theta_t = _ElevAngle(ht_mamsl, hr_mamsl, path_length_km, ae_km)
-    theta_r = _ElevAngle(hr_mamsl, ht_mamsl, path_length_km, ae_km)
-    for i in range(1, n-1):
-        theta_t_i = _ElevAngle(ht_mamsl, hProfile_mamsl[i], dProfile_km[i], ae_km)
-        theta_t = max(theta_t, theta_t_i)
-        theta_r_i = _ElevAngle(hr_mamsl, hProfile_mamsl[i], path_length_km-dProfile_km[i], ae_km)
-        theta_r = max(theta_r, theta_r_i)
+    # not using function type here since it is experimental in Numba
+    if useP1812Variation == True:
+        theta_t = _ElevAngleFromP1812(ht_mamsl, hr_mamsl, path_length_km, ae_km)
+        theta_r = _ElevAngleFromP1812(hr_mamsl, ht_mamsl, path_length_km, ae_km)
+        for i in range(1, n-1):
+            theta_t_i = _ElevAngleFromP1812(ht_mamsl, hProfile_mamsl[i], dProfile_km[i], ae_km)
+            theta_r_i = _ElevAngleFromP1812(hr_mamsl, hProfile_mamsl[i], path_length_km-dProfile_km[i], ae_km)
+            theta_t = max(theta_t, theta_t_i)
+            theta_r = max(theta_r, theta_r_i)
+    else:
+        theta_t = _ElevAngle(ht_mamsl, hr_mamsl, path_length_km, ae_km)
+        theta_r = _ElevAngle(hr_mamsl, ht_mamsl, path_length_km, ae_km)
+        for i in range(1, n-1):
+            theta_t_i = _ElevAngle(ht_mamsl, hProfile_mamsl[i], dProfile_km[i], ae_km)
+            theta_r_i = _ElevAngle(hr_mamsl, hProfile_mamsl[i], path_length_km-dProfile_km[i], ae_km)
+            theta_t = max(theta_t, theta_t_i)
+            theta_r = max(theta_r, theta_r_i)
     theta_t_deg = degrees(theta_t/1000) # convert from mrad to degrees
     theta_r_deg = degrees(theta_r/1000)
     return (theta_t_deg, theta_r_deg)

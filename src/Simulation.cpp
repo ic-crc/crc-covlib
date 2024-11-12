@@ -25,7 +25,6 @@ Simulation::Simulation(void)
 	pPrimarySurfElevSourceId = SURF_ELEV_NONE;
 	pSecondarySurfElevSourceId = SURF_ELEV_NONE;
 	pTertiarySurfElevSourceId = SURF_ELEV_NONE;
-	pPairSurfAndTerrSources = false;
 	pUpdateTerrainManagerSourcePtrs();
 	pTerrainElevDataSamplingResKm = 0.100;
 
@@ -105,7 +104,6 @@ const Simulation& Simulation::operator=(const Simulation& original)
 		pSurfElevHrdemDsm = original.pSurfElevHrdemDsm;
 		pSurfElevGeotiff = original.pSurfElevGeotiff;
 		pSurfElevMrdemDsm = original.pSurfElevMrdemDsm;
-		pPairSurfAndTerrSources = original.pPairSurfAndTerrSources;
 		pResultType = original.pResultType;
 		pCoverageFills = original.pCoverageFills;
 		pRxAreaResults = original.pRxAreaResults;
@@ -424,6 +422,12 @@ CommTerminal* term = pGetTerminalObjPtr(terminal);
 
 void Simulation::SetAntennaPatternApproximationMethod(Terminal terminal, PatternApproximationMethod method)
 {
+static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::H_PATTERN_ONLY   == (int)Crc::Covlib::PatternApproximationMethod::H_PATTERN_ONLY, "");
+static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::V_PATTERN_ONLY   == (int)Crc::Covlib::PatternApproximationMethod::V_PATTERN_ONLY, "");
+static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::SUMMING          == (int)Crc::Covlib::PatternApproximationMethod::SUMMING, "");
+static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::WEIGHTED_SUMMING == (int)Crc::Covlib::PatternApproximationMethod::WEIGHTED_SUMMING, "");
+static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::HYBRID           == (int)Crc::Covlib::PatternApproximationMethod::HYBRID, "");
+
 CommTerminal* term;
 
 	if( method < H_PATTERN_ONLY || method > HYBRID )
@@ -450,35 +454,12 @@ const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 double Simulation::GetAntennaGain(Terminal terminal, double azimuth_degrees, double elevAngle_degrees, 
                                   double receiverLatitude_degrees/*=0*/, double receiverLongitude_degrees/*=0*/) const
 {
-static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::H_PATTERN_ONLY   == (int)Crc::Covlib::PatternApproximationMethod::H_PATTERN_ONLY, "");
-static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::V_PATTERN_ONLY   == (int)Crc::Covlib::PatternApproximationMethod::V_PATTERN_ONLY, "");
-static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::SUMMING          == (int)Crc::Covlib::PatternApproximationMethod::SUMMING, "");
-static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::WEIGHTED_SUMMING == (int)Crc::Covlib::PatternApproximationMethod::WEIGHTED_SUMMING, "");
-static_assert((int)AntennaPattern::INTERPOLATION_ALGORITHM::HYBRID           == (int)Crc::Covlib::PatternApproximationMethod::HYBRID, "");
-
-const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 double gain_dBi = 0;
 
-	if( term != NULL )
-	{
-		if( term->bearingRef == OTHER_TERMINAL )
-		{
-		const GeographicLib::Geodesic& geod = GeographicLib::Geodesic::WGS84();
-		double toOtherTerminalAzmDeg, tempAzm;
-
-			if( terminal == RECEIVER )
-				geod.Inverse(receiverLatitude_degrees, receiverLongitude_degrees, pTx.lat, pTx.lon, toOtherTerminalAzmDeg, tempAzm);
-			else // terminal == TRANSMITTER
-				geod.Inverse(pTx.lat, pTx.lon, receiverLatitude_degrees, receiverLongitude_degrees, toOtherTerminalAzmDeg, tempAzm);
-			azimuth_degrees -= toOtherTerminalAzmDeg + term->bearingDeg;
-		}
-		else // TRUE_NORTH
-			azimuth_degrees -= term->bearingDeg;
-
-		gain_dBi = term->antPattern.Gain(azimuth_degrees, elevAngle_degrees, (AntennaPattern::INTERPOLATION_ALGORITHM)term->patternApproxMethod, true);
-		gain_dBi += term->maxGain_dBi;
-		return gain_dBi;
-	}
+	if( terminal == TRANSMITTER )
+		gain_dBi = pGenerator.GetTransmitterAntennaGain(*this, azimuth_degrees, elevAngle_degrees, receiverLatitude_degrees, receiverLongitude_degrees);
+	else if( terminal == RECEIVER )
+		gain_dBi = pGenerator.GetReceiverAntennaGain(*this, azimuth_degrees, elevAngle_degrees, receiverLatitude_degrees, receiverLongitude_degrees);
 
 	return gain_dBi;
 }
@@ -1171,14 +1152,9 @@ double Simulation::GetTerrainElevDataSamplingResolution() const
 double Simulation::GetTerrainElevation(double latitude_degrees, double longitude_degrees, double noDataValue/*=0*/)
 {
 bool success;
-float surfaceElevation_meters;
 float terrainElevation_meters = noDataValue;
 
-	if( pPairSurfAndTerrSources == true )
-		success = pTopoManager.GetPairedTerrainAndSurfaceElev(latitude_degrees, longitude_degrees, &terrainElevation_meters, &surfaceElevation_meters);
-	else
-		success = pTopoManager.GetTerrainElevation(latitude_degrees, longitude_degrees, &terrainElevation_meters);
-
+	success = pTopoManager.GetTerrainElevation(latitude_degrees, longitude_degrees, &terrainElevation_meters);
 	if( success )
 		return terrainElevation_meters;
 	else
@@ -1424,13 +1400,13 @@ const char* Simulation::GetSurfaceElevDataSourceDirectory(SurfaceElevDataSource 
 
 void Simulation::SetSurfaceAndTerrainDataSourcePairing(bool usePairing)
 {
-	pPairSurfAndTerrSources = usePairing;
+	pTopoManager.UsePairedTerrainAndSurfaceElevSources(usePairing);
 	pUpdateTerrainManagerSourcePtrs();
 }
 
 bool Simulation::GetSurfaceAndTerrainDataSourcePairing() const
 {
-	return pPairSurfAndTerrSources;
+	return pTopoManager.UsePairedTerrainAndSurfaceElevSources();
 }
 
 void Simulation::SetSurfaceElevDataSourceSamplingMethod(SurfaceElevDataSource surfaceElevSource, SamplingMethod samplingMethod)
@@ -1480,13 +1456,8 @@ double Simulation::GetSurfaceElevation(double latitude_degrees, double longitude
 {
 bool success;
 float surfaceElevation_meters = noDataValue;
-float terrainElevation_meters;
 
-	if( pPairSurfAndTerrSources == true )
-		success = pTopoManager.GetPairedTerrainAndSurfaceElev(latitude_degrees, longitude_degrees, &terrainElevation_meters, &surfaceElevation_meters);
-	else
-		success = pTopoManager.GetSurfaceElevation(latitude_degrees, longitude_degrees, &surfaceElevation_meters);
-
+	success = pTopoManager.GetSurfaceElevation(latitude_degrees, longitude_degrees, &surfaceElevation_meters);
 	if( success )
 		return surfaceElevation_meters;
 	else
@@ -1650,6 +1621,15 @@ double Simulation::GenerateReceptionPointResult(double latitude_degrees, double 
 	return pGenerator.RunPointCalculation(*this, latitude_degrees, longitude_degrees);
 }
 
+ReceptionPointDetailedResult Simulation::GenerateReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees)
+{
+ReceptionPointDetailedResult detailedResult = {0,0,0,0,0,0,0,0,0,0,0};
+
+	pGenerator.RunPointCalculation(*this, latitude_degrees, longitude_degrees, 0, nullptr, nullptr, nullptr, nullptr, &detailedResult);
+
+	return detailedResult;
+}
+
 double Simulation::GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numSamples,
                                                        const double* terrainElevProfile,
                                                        const int* landCoverClassMappedValueProfile/*=NULL*/,
@@ -1743,11 +1723,10 @@ bool Simulation::ExportReceptionAreaTerrainElevationToBilFile(const char* pathna
 		return false;
 
 GeoDataGrid<float> grid((unsigned int)numHorizontalPoints, (unsigned int)numVerticalPoints);
-float terrainElev, surfaceElev;
+float terrainElev;
 Position pos;
 double minLat, minLon, maxLat, maxLon;
 float noDataValue;
-bool success;
 
 	if( setNoDataToZero == true )
 	{
@@ -1767,12 +1746,7 @@ bool success;
 		for(unsigned int j=0 ; j<grid.SizeY() ; j++)
 		{
 			pos = grid.GetPos(i, j);
-			if( pPairSurfAndTerrSources )
-				success = pTopoManager.GetPairedTerrainAndSurfaceElev(pos.m_lat, pos.m_lon, &terrainElev, &surfaceElev);
-			else
-				success = pTopoManager.GetTerrainElevation(pos.m_lat, pos.m_lon, &terrainElev);
-			
-			if( success )
+			if( pTopoManager.GetTerrainElevation(pos.m_lat, pos.m_lon, &terrainElev) == true )
 				grid.SetData(i, j, terrainElev);
 			else
 				grid.SetData(i, j, noDataValue);
@@ -1824,11 +1798,10 @@ bool Simulation::ExportReceptionAreaSurfaceElevationToBilFile(const char* pathna
 		return false;
 
 GeoDataGrid<float> grid((unsigned int)numHorizontalPoints, (unsigned int)numVerticalPoints);
-float terrainElev, surfaceElev;
+float surfaceElev;
 Position pos;
 double minLat, minLon, maxLat, maxLon;
 float noDataValue;
-bool success;
 
 	if( setNoDataToZero == true )
 	{
@@ -1848,12 +1821,7 @@ bool success;
 		for(unsigned int j=0 ; j<grid.SizeY() ; j++)
 		{
 			pos = grid.GetPos(i, j);
-			if( pPairSurfAndTerrSources )
-				success = pTopoManager.GetPairedTerrainAndSurfaceElev(pos.m_lat, pos.m_lon, &terrainElev, &surfaceElev);
-			else
-				success = pTopoManager.GetSurfaceElevation(pos.m_lat, pos.m_lon, &surfaceElev);
-			
-			if( success )
+			if( pTopoManager.GetSurfaceElevation(pos.m_lat, pos.m_lon, &surfaceElev) == true )
 				grid.SetData(i, j, surfaceElev);
 			else
 				grid.SetData(i, j, noDataValue);
@@ -1927,7 +1895,7 @@ LandCoverSource *landCoverSource1, *landCoverSource2;
 	if( surfaceElevSource2 != NULL ) pTopoManager.AddSurfaceElevSource(surfaceElevSource2);
 	if( surfaceElevSource3 != NULL ) pTopoManager.AddSurfaceElevSource(surfaceElevSource3);
 
-	if( pPairSurfAndTerrSources )
+	if( pTopoManager.UsePairedTerrainAndSurfaceElevSources() )
 	{
 		if( terrainElevSource1 != NULL && surfaceElevSource1 != NULL )
 			pTopoManager.AddPairedTerrainAndSurfaceElevSources(terrainElevSource1, surfaceElevSource1);

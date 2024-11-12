@@ -141,6 +141,7 @@ crc-covlib's _helper_ functionalities include:
   - [ITU-R P.838-3](https://www.itu.int/rec/R-REC-P.838/en) (Specific attenuation model for rain for use in prediction methods)
   - [ITU-R P.839-4](https://www.itu.int/rec/R-REC-P.839/en) (Rain height model for prediction methods)
   - [ITU-R P.840-9](https://www.itu.int/rec/R-REC-P.840/en) (Attenuation due to clouds and fog)
+  - [ITU-R P.1411-12](https://www.itu.int/rec/R-REC-P.1411/en) (Propagation data and prediction methods for the planning of short-range outdoor radiocommunication systems and radio local area networks in the frequency range 300 MHz to 100 GHz)
   - [ITU-R P.1511-3](https://www.itu.int/rec/R-REC-P.1511/en) (Topography for Earth-space propagation modelling)
   - [ITU-R P.2001-5](https://www.itu.int/rec/R-REC-P.2001/en) (A general purpose wide-range terrestrial propagation model in the frequency range 30 MHz to 50 GHz)
   - [ITU-R P.2108-1](https://www.itu.int/rec/R-REC-P.2108/en) (Prediction of clutter loss)

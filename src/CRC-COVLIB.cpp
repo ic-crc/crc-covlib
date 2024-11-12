@@ -1019,6 +1019,11 @@ namespace Crc
 			return sim->GenerateReceptionPointResult(latitude_degrees, longitude_degrees);
 		}
 
+		CRCCOVLIB_API ReceptionPointDetailedResult APIENTRY GenerateReceptionPointDetailedResult(ISimulation* sim, double latitude_degrees, double longitude_degrees)
+		{
+			return sim->GenerateReceptionPointDetailedResult(latitude_degrees, longitude_degrees);
+		}
+
 		CRCCOVLIB_API double APIENTRY GenerateProfileReceptionPointResult(ISimulation* sim, double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile, const double* surfaceElevProfile, const ITURadioClimaticZone* ituRadioClimaticZoneProfile)
 		{
 			return sim->GenerateProfileReceptionPointResult(latitude_degrees, longitude_degrees, numSamples, terrainElevProfile, landCoverClassMappedValueProfile, surfaceElevProfile, ituRadioClimaticZoneProfile);

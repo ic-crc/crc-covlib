@@ -25,11 +25,13 @@ public:
 	void SetRadioClimaticZonesFile(Crc::Covlib::PropagationModel propagModel, const char* pathname);
 	const char* GetRadioClimaticZonesFile(Crc::Covlib::PropagationModel propagModel) const;
 
+	void UsePairedTerrainAndSurfaceElevSources(bool usePairedSources);
+	bool UsePairedTerrainAndSurfaceElevSources() const;
+
 	bool GetTerrainElevation(double lat, double lon, float* terrainElevation);
 	bool GetLandCover(double lat, double lon, int* landCover);
 	bool GetLandCoverMappedValue(double lat, double lon, Crc::Covlib::PropagationModel propagModel, int* modelValue);
 	bool GetSurfaceElevation(double lat, double lon, float* surfaceElevation);
-	bool GetPairedTerrainAndSurfaceElev(double lat, double lon, float* terrainElevation, float* surfaceElevation);
 
 	enum GeodesicAlgo
 	{
@@ -44,7 +46,6 @@ public:
 	int GetMappedLandCoverProfile(std::vector<std::pair<double,double>>& latLonProfile, Crc::Covlib::PropagationModel propagModel, int defaultValue, std::vector<int>* mappedLandCoverProfile);
 	int GetRadioClimaticZoneProfile(std::vector<std::pair<double,double>>& latLonProfile, Crc::Covlib::PropagationModel propagModel, std::vector<Crc::Covlib::ITURadioClimaticZone>* radioClimaticZoneProfile);
 	int GetSurfaceElevProfile(std::vector<std::pair<double,double>>& latLonProfile, std::vector<double>* surfaceElevProfile);
-	int GetPairedTerrainAndSurfaceElevProfiles(std::vector<std::pair<double,double>>& latLonProfile, std::vector<double>* terrainElevProfile, std::vector<double>* surfaceElevProfile);
 
 	void ReleaseResources(bool clearCaches); // clear caches for topographic data and close file handles
 
@@ -53,6 +54,9 @@ public:
 	static double GetStraightLineDistKm(double startLat, double startLon, double startHeight_m, double endLat, double endLon, double endHeight_m, GeodesicAlgo geodesicAlgo);
 
 private:
+	bool pGetUnpairedTerrainElevation(double lat, double lon, float* terrainElevation);
+	bool pGetUnpairedSurfaceElevation(double lat, double lon, float* surfaceElevation);
+	bool pGetPairedTerrainAndSurfaceElev(double lat, double lon, float* terrainElevation, float* surfaceElevation);
 	bool pGetRadioClimaticZone(GeoTIFFReader& source, double lat, double lon, Crc::Covlib::ITURadioClimaticZone* zone);
 	int pGetRadioClimaticZoneProfile(GeoTIFFReader& source, std::vector<std::pair<double,double>>& latLonProfile, std::vector<Crc::Covlib::ITURadioClimaticZone>* radioClimaticZoneProfile);
 
@@ -61,4 +65,5 @@ private:
 	std::vector<SurfaceElevSource*> pSurfaceElevSources;
 	std::vector<std::pair<TerrainElevSource*, SurfaceElevSource*>> pPairedTerrSurfElevSources;
 	std::map<Crc::Covlib::PropagationModel, GeoTIFFReader> pRadioClimaticZonesGeotiffs;
+	bool pUsePairedSources;
 };

@@ -34,10 +34,10 @@ class ClutterType(enum.Enum):
 def GetDefaultRepresentativeHeight(clut: ClutterType) -> float
 ```
 ITU-R P.2108-1, Annex 1, Section 3.1\
-Gets the default representative clutter height, as defined in Table 3 of the recommendation.
+Gets the default representative clutter height, as defined in the recommendation's Table 3.
 
 Args:
-- __clut__ (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter type from Table 3 in the recommendation.
+- __clut__ (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter types from the recommendation's Table 3.
 
 Returns:
 - (float): Representative clutter height (m).
@@ -49,8 +49,8 @@ Returns:
 ### HeightGainModelClutterLoss
 #### crc_covlib.helper.itur_p2108.HeightGainModelClutterLoss
 ```python
-def HeightGainModelClutterLoss(f_GHz: float, h_m: float, clut: ClutterType, R_m: float=-1.0,
-                               ws_m: float=27.0) -> float
+def HeightGainModelClutterLoss(f_GHz: float, h_m: float, clut: ClutterType,
+                               R_m: float|None=None, ws_m: float=27.0) -> float
 ```
 ITU-R P.2108-1, Annex 1, Section 3.1\
 "An additional loss, A<sub>h</sub>, is calculated which can be added to the basic transmission loss of a path calculated above the clutter, therefore basic transmission loss should be calculated to/from the height of the representative clutter height used. This model can be applied to both transmitting and receiving ends of the path."
@@ -58,8 +58,8 @@ ITU-R P.2108-1, Annex 1, Section 3.1\
 Args:
 - __f_GHz__ (float): Frequency (GHz), with 0.03 <= f_GHz <= 3.
 - __h_m__ (float): Antenna height (m), with 0 <= h_m.
-- __clut__ (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter type from Table 3 in the recommendation.
-- __R_m__ (float): Representative clutter height (m). If R_m is smaller than or equal to 0, the default representative clutter height from Table 3 in the recommendation is used.
+- __clut__ (crc_covlib.helper.itur_p2108.ClutterType): One of the clutter types from the recommendation's Table 3.
+- __R_m__ (float|None): Representative clutter height (m), with 0 < R_m. When R_m is set to None, the default representative clutter height for the specified clutter type is used.
 - __ws_m__ (float): Street width (m).
     
 Returns:

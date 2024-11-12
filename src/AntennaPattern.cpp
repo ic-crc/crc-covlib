@@ -11,7 +11,7 @@ AntennaPattern::AntennaPattern(void)
 	pElectricalTiltDeg = 0;
 	pMechanicalTiltDeg = 0;
 	pMechanicalTiltAzimuthDeg = 0;
-	pLinearGainInterpolation = true;
+	pLinearGainInterpolation = false;
 }
 
 AntennaPattern::~AntennaPattern(void)
@@ -373,6 +373,14 @@ VPatternEntry ventry;
 	}
 
 	printf("\n");
+}
+
+bool AntennaPattern::IsPatternDefined() const
+{
+	if( pHorizPattern.size() == 0 && pVertPatternSortedAzms.size() == 0 )
+		return false;
+	else
+		return true;
 }
 
 // elevAngle_deg: -90 (towards sky) to +90 (towards ground)

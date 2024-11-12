@@ -20,7 +20,7 @@ def IsLOS(latt: float, lont: float, ht_mamsl: float, latr: float, lonr: float, h
           dProfile_km: ArrayLike, hProfile_mamsl: ArrayLike) -> bool
 ```
 ITU-R P.2001-5, Annex, Section 3.7\
-Determines whether a path is line-of-sight or non-line-of-sight.
+Determines whether a path is line-of-sight or non-line-of-sight under median refractivity conditions.
 
 Args:
 - __latt__ (float): Latitude of transmitter (degrees), with -90 <= lat <= 90.
@@ -44,13 +44,11 @@ Returns:
 ```python
 def ElevationAngles(latt: float, lont: float, ht_mamsl: float,
                     latr: float, lonr: float, hr_mamsl: float,
-                    dProfile_km: ArrayLike, hProfile_mamsl: ArrayLike
-                    ) -> tuple[float, float]
+                    dProfile_km: ArrayLike, hProfile_mamsl: ArrayLike,
+                    useP1812Variation: bool=True) -> tuple[float, float]
 ```
 ITU-R P.2001-5, Annex, Section 3.7\
 Calculates the transmitter and receiver elevation angles (degrees) under median refractivity conditions.
-
-Note: the algorithm does not appear to be adequate for very short paths (i.e. smaller than about 10 meters).
 
 Args:
 - __latt__ (float): Latitude of transmitter (degrees), with -90 <= lat <= 90.
@@ -61,6 +59,7 @@ Args:
 - __hr_mamsl__ (float): Receiver height (meters above mean sea level).
 - __dProfile_km__ (numpy.typing.ArrayLike): Great-cirlcle distance from transmitter (km) profile.
 - __hProfile_mamsl__ (numpy.typing.ArrayLike): Terrain height profile (meters above mean sea level) from the transmitter to the receiver. hProfile and dProfile must have the same number of values.
+- __useP1812Variation__ (bool): The formula provided in ITU-R P.2001 to calculate elevation angles does not appear to be suitable for short distances. When set to True, the formula from ITU-R P.1812-7 is used instead.
     
 Returns:
 - (float): Transmitter elevation angle (degrees). 0°=horizon, +90°=zenith, -90°=nadir.

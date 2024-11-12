@@ -37,6 +37,7 @@ __all__ = ['__version__',
            'PowerType',
            'ITURadioClimaticZone',
            'ITUDigitalMap',
+           'ReceptionPointDetailedResult',
            'Simulation']
 
 
@@ -310,6 +311,19 @@ class ITUDigitalMap(enum.Enum):
     ITU_MAP_T_ANNUAL  = 3
     ITU_MAP_SURFWV_50 = 4
 
+
+class ReceptionPointDetailedResult(ctypes.Structure):
+    _fields_ = [("result", ctypes.c_double),
+                ("pathLoss_dB", ctypes.c_double),
+                ("pathLength_km", ctypes.c_double),
+                ("transmitterHeightAMSL_m", ctypes.c_double),
+                ("receiverHeightAMSL_m", ctypes.c_double),
+                ("transmitterAntennaGain_dBi", ctypes.c_double),
+                ("receiverAntennaGain_dBi", ctypes.c_double),
+                ("azimuthFromTransmitter_degrees", ctypes.c_double),
+                ("azimuthFromReceiver_degrees", ctypes.c_double),
+                ("elevAngleFromTransmitter_degrees", ctypes.c_double),
+                ("elevAngleFromReceiver_degrees", ctypes.c_double)]
 
 
 class Simulation(object):
@@ -959,6 +973,9 @@ class Simulation(object):
 
     def GenerateReceptionPointResult(self, latitude_degrees: float, longitude_degrees: float) -> None:
         return self._lib.GenerateReceptionPointResult(self._sim_ptr, latitude_degrees, longitude_degrees)
+    
+    def GenerateReceptionPointDetailedResult(self, latitude_degrees: float, longitude_degrees: float) -> ReceptionPointDetailedResult:
+        return self._lib.GenerateReceptionPointDetailedResult(self._sim_ptr, latitude_degrees, longitude_degrees)
 
     # virtual double GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numElevSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL) = 0;
     def GenerateProfileReceptionPointResult(self, latitude_degrees: float, longitude_degrees: float, numSamples: int, terrainElevProfile: List[float], landCoverClassMappedValueProfile: List[int]=None, surfaceElevProfile: List[float]=None, ituRadioClimaticZoneProfile: List[int]=None) -> float:
@@ -1669,6 +1686,9 @@ def _set_args_and_return_ctypes(lib):
 
         lib.GenerateReceptionPointResult.argtypes = [ctypes.c_void_p, ctypes.c_double, ctypes.c_double]
         lib.GenerateReceptionPointResult.restype = ctypes.c_double
+
+        lib.GenerateReceptionPointDetailedResult.argtypes = [ctypes.c_void_p, ctypes.c_double, ctypes.c_double]
+        lib.GenerateReceptionPointDetailedResult.restype = ReceptionPointDetailedResult
 
         lib.GenerateProfileReceptionPointResult.argtypes = [ctypes.c_void_p, ctypes.c_double, ctypes.c_double, ctypes.c_int, ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_int), ctypes.POINTER(ctypes.c_double), ctypes.POINTER(ctypes.c_int)]
         lib.GenerateProfileReceptionPointResult.restype = ctypes.c_double

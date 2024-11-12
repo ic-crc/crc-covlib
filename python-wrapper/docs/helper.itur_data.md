@@ -107,7 +107,7 @@ Download and install the ITU annual statistics files that are used by the itur_p
 ```python
 def DownloadITURP840SingleMonthData(month: int) -> None
 ```
-Download and install the ITU monthly statistics files (for the specified month only) that are used by the itur_p840.py module. Files are installed in 'crc_covlib/helper/data/itu_proprietary/p840/monthly/'. This requires **1.46 GB** of disk space.
+Download and install the ITU monthly statistics files (for the specified month only) that are used by the itur_p840.py module. Files are installed in 'crc_covlib/helper/data/itu_proprietary/p840/monthly/'.
 
 Args:
 - __month__ (int): Month, from 1 (January) to 12 (December).
@@ -121,7 +121,7 @@ Args:
 ```python
 def DownloadITURP840MonthtlyData() -> None
 ```
-Download and install the ITU monthly statistics files that are used by the itur_p840.py module. Files are installed in 'crc_covlib/helper/data/itu_proprietary/p840/monthly/'.
+Download and install the ITU monthly statistics files that are used by the itur_p840.py module. Files are installed in 'crc_covlib/helper/data/itu_proprietary/p840/monthly/'. This requires **1.46 GB** of disk space.
 
 [Back to top](#itur_data-helper-module) | [Back to main index](./readme.md#helper-sub-package-api-documentation)
 

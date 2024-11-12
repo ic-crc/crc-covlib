@@ -142,6 +142,7 @@ Les fonctionnalités du sous-paquet _helper_ incluent:
   - [UIT-R P.838-3](https://www.itu.int/rec/R-REC-P.838/fr) (Modèle d'affaiblissement linéique dû à la pluie destiné aux méthodes de prévision)
   - [UIT-R P.839-4](https://www.itu.int/rec/R-REC-P.839/fr) (Modèle d'altitude de pluie pour les méthodes de prévision)
   - [UIT-R P.840-9](https://www.itu.int/rec/R-REC-P.840/fr) (Affaiblissement dû aux nuages et au brouillard)
+  - [UIT-R P.1411-12](https://www.itu.int/rec/R-REC-P.1411/fr) (Données de propagation et méthodes de prévision pour la planification de systèmes de radiocommunication, à courte portée, destinés à fonctionner à l'extérieur de bâtiments et de réseaux locaux hertziens dans la gamme de fréquences comprises entre 300 MHz et 100 GHz)
   - [UIT-R P.1511-3](https://www.itu.int/rec/R-REC-P.1511/fr) (Topographie pour la modélisation de la propagation Terre-espace)
   - [UIT-R P.2001-5](https://www.itu.int/rec/R-REC-P.2001/fr) (Modèle général de large portée pour la propagation sur des trajets de Terre dans la gamme des fréquences comprises entre 30 MHz et 50 GHz)
   - [UIT-R P.2108-1](https://www.itu.int/rec/R-REC-P.2108/fr) (Prévision de l'affaiblissement dû à des groupes d'obstacles)

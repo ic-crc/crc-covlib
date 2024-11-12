@@ -59,6 +59,8 @@ public:
 	};
 
 	double Gain(double azimuth_deg, double elevAngle_deg, INTERPOLATION_ALGORITHM algorithm=WEIGHTED_SUMMING, bool applyTilt=true) const;
+	
+	bool IsPatternDefined() const;
 
 	void Print() const;
 

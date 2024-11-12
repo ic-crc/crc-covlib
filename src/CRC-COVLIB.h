@@ -272,6 +272,21 @@ namespace Crc
 			ITU_MAP_SURFWV_50 = 4
 		};
 
+		struct ReceptionPointDetailedResult
+		{
+			double result;
+			double pathLoss_dB;
+			double pathLength_km;
+			double transmitterHeightAMSL_m;
+			double receiverHeightAMSL_m;
+			double transmitterAntennaGain_dBi;
+			double receiverAntennaGain_dBi;
+			double azimuthFromTransmitter_degrees;
+			double azimuthFromReceiver_degrees;
+			double elevAngleFromTransmitter_degrees;
+			double elevAngleFromReceiver_degrees;
+		};
+
 		// COM-Like abstract interface. 
 		// This interface doesn't require __declspec(dllexport/dllimport) specifier. 
 		// Method calls are dispatched via virtual table. 
@@ -504,6 +519,7 @@ namespace Crc
 
 			// Generating and accessing results
 			virtual double GenerateReceptionPointResult(double latitude_degrees, double longitude_degrees) = 0;
+			virtual ReceptionPointDetailedResult GenerateReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees) = 0;
 			virtual double GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL) = 0;
 			virtual void GenerateReceptionAreaResults() = 0;
 			virtual int GetGenerateStatus() const = 0;
@@ -752,7 +768,8 @@ namespace Crc
 		extern "C" CRCCOVLIB_API int __stdcall GetCoverageDisplayFillColor(ISimulation* sim, int index);
 
 		// Generating and accessing results
-		extern "C" CRCCOVLIB_API double __stdcall GenerateReceptionPointResult(ISimulation* sim, double latitude_degrees, double longitude_degrees) ;
+		extern "C" CRCCOVLIB_API double __stdcall GenerateReceptionPointResult(ISimulation* sim, double latitude_degrees, double longitude_degrees);
+		extern "C" CRCCOVLIB_API ReceptionPointDetailedResult __stdcall GenerateReceptionPointDetailedResult(ISimulation* sim, double latitude_degrees, double longitude_degrees);
 		extern "C" CRCCOVLIB_API double __stdcall GenerateProfileReceptionPointResult(ISimulation* sim, double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL);
 		extern "C" CRCCOVLIB_API void __stdcall GenerateReceptionAreaResults(ISimulation* sim);
 		extern "C" CRCCOVLIB_API int __stdcall GetGenerateStatus(ISimulation* sim);

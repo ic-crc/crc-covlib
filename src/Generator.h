@@ -16,8 +16,12 @@ public:
 	                           const double* customTerrainElevProfile=nullptr,
 	                           const int* customLandCoverMappedValueProfile=nullptr,
 	                           const double* customSurfaceElevProfile=nullptr,
-	                           const Crc::Covlib::ITURadioClimaticZone* customItuRadioClimaticZoneProfile=nullptr);
+	                           const Crc::Covlib::ITURadioClimaticZone* customItuRadioClimaticZoneProfile=nullptr,
+							   Crc::Covlib::ReceptionPointDetailedResult* detailedResult=nullptr);
 	bool ExportProfilesToCsvFile(Simulation& sim, const char* pathname, double lat, double lon);
+
+	double GetTransmitterAntennaGain(const Simulation& sim, double azmDeg, double elevAngleDeg, double rxLat, double rxLon) const;
+	double GetReceiverAntennaGain(const Simulation& sim, double azmDeg, double elevAngleDeg, double rxLat, double rxLon) const;
 
 private:
 	struct MissesStats
@@ -57,14 +61,18 @@ private:
 	MissesStats pFillProfiles(Simulation& sim, double rxLat, double rxLon, PropagModel* propagModel, CustomData customData);
 
 	double pAdditionalPathLosses(Simulation& sim, std::vector<double>* optionalOutputPathLossProfile);
-	double pToSelectedResultType(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile, double pathLoss_dB);
-	double pToFieldStrength(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile, double pathLoss_dB);
-	double pToTransmissionLoss(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile, double pathLoss_dB);
-	double pToReceivedPower(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile, double pathLoss_dB);
-	void pGetAntennaGains(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile,
-	                      double* txGain_dBi, double* rxGain_dBi);
-	void pGetElevationAngles(double txLat, double txLon, double rxLat, double rxLon, double txHeightAGL, double rxHeightAGL, unsigned int sizeProfiles,
-	                         double* distKmProfile, double* terrainElevProfile, double* txElevAngleDeg, double* rxElevAngleDeg);
+	double pToSelectedResultType(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile, double pathLoss_dB, Crc::Covlib::ReceptionPointDetailedResult* detailedResult=nullptr);
+	double pToFieldStrength(Simulation& sim, double pathLoss_dB, double txAntennaGain_dBi);
+	double pToTransmissionLoss(Simulation& sim, double pathLoss_dB, double txAntGain_dBi, double rxAntGain_dBi);
+	double pToReceivedPower(Simulation& sim, double pathLoss_dB, double txAntGain_dBi, double rxAntGain_dBi);
+	double pGetTransmitterToReceiverAzimuth(const Simulation& sim, double rxLat, double rxLon) const;
+	double pGetReceiverToTransmitterAzimuth(const Simulation& sim, double rxLat, double rxLon) const;
+	double pGetAzimuth(double fromLat, double fromLon, double toLat, double toLon) const;
+	double pGetTransmitterToReceiverElevAngle(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile);
+	double pGetReceiverToTransmitterElevAngle(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile);
+	double pElevationAngleRad(double hamsl_from, double hamsl_to, double distKm, double aeKm);
+	double pGetTransmitterAntennaGain(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile);
+	double pGetReceiverAntennaGain(Simulation& sim, double rxLat, double rxLon, unsigned int sizeProfiles, double* distKmProfile, double* terrainElevProfile);
 	int pGetStatus(MissesStats stats);
 	const char* pGetResultUnitString(Crc::Covlib::ResultType resultType);
 	const char* pGetResultNameString(Crc::Covlib::ResultType resultType);
