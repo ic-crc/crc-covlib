@@ -345,7 +345,7 @@ def SiteSpecificOverRoofTopsUrban(f_GHz: float, d_m: float, h1_m: float, h2_m: f
                                   l_m: float, b_m: float, w2_m: float, phi_deg: float,
                                   env: EnvironmentD) -> float
 ```
-ITU-R P.1411-12, Annex 1, Section 4.2.2.1\
+ITU-R P.1411-12, Annex 1, Section 4.2.2.1 & FIGURE 2\
 Site-specific model that uses a multi-screen diffraction model to estimate the basic transmission loss (dB) in an urban environment. "The multi-screen diffraction model ...is valid if the roof-tops are all about the same height". It assumes "the roof-top heights differ only by an amount less than the first Fresnel-zone radius over [the path length]". The model includes "free-space basic transmission loss, ...the diffraction loss from roof-top to street ...and the reduction due to multiple screen diffraction past rows of buildings".
 
 Args:
@@ -354,8 +354,8 @@ Args:
 - __h1_m__ (float): Station 1 antenna height (m), with 4 <= h1_m <= 55.
 - __h2_m__ (float): Station 2 antenna height (m), with 1 <= h2_m <= 3.
 - __hr_m__ (float): Average height of buildings (m), with h2_m < hr_m. 
-- __l_m__ (float): Length of the path covered by buildings (m), with 0 <= l_m. See the recommendations's FIGURE 2.
-- __b_m__ (float): Average building separation (m), with 0 < b_m. See the recommendations's FIGURE 2.
+- __l_m__ (float): Length of the path covered by buildings (m), with 0 <= l_m. When l_m is set to zero, only the free-space basic transmission loss component is computed and returned (using f_GHz and d_m while other parameters are ignored).
+- __b_m__ (float): Average building separation (m), with 0 < b_m.
 - __w2_m__ (float): Street width (m) at station 2's location, with 0 < w2_m.
 - __phi_deg__ (float): Street orientation with respect to the direct path (deg), with 0 <= phi_deg <= 90 (i.e. for a street that is perpendicular to the direct path, phi_deg is 90 deg).
 - __env__ (crc_covlib.helper.itur_p1411.EnvironmentD): MEDIUM_SIZED_CITY_OR_SUBURAN_CENTRE or METROPOLITAN_CENTRE. Only used when f_GHz <= 2.
@@ -450,7 +450,7 @@ Args:
 - __n_bldgkm2__ (float): Building density (buildings/km<sup>2</sup>).
 - __thetaList_deg__ (list[float]): List of theta_i, where theta_i is the road angle of i-th street corner (degrees), with 0 <= theta_i <= 90.
 - __x1List_m__ (list[float]): List of x1_i, where x1_i is the road distance from transmitter to i-th street corner (m).
-- __x2List_m__ (list[float]): List of x2_i, where x2_i is the road distance from i-th street corner to receiver (m). _NOTE: FIGURE 11 shows x2_i as being the distance between the i-th and (i+1)-th corners, not going up to the receiver as implied in the parameter's description. It is therefore not fully clear how this parameter should be truly provided._
+- __x2List_m__ (list[float]): List of x2_i, where x2_i is the road distance from i-th street corner to receiver (m).
 
 Return:
 - __L__ (float): Basic transmission loss (dB).

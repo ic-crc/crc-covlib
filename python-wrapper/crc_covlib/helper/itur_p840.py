@@ -18,7 +18,7 @@ from . import itur_p1057
 import numpy.typing as npt
 from typing import Union
 from math import log10, exp, sin, radians
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['CloudLiquidWaterAttenuationCoefficient',
@@ -30,7 +30,7 @@ __all__ = ['CloudLiquidWaterAttenuationCoefficient',
            'IntegratedCloudLiquidWaterContentStdDev']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def CloudLiquidWaterAttenuationCoefficient(f_GHz, T_K) -> float:
     """
     ITU-R P.840-9, Annex 1, Section 2
@@ -58,7 +58,7 @@ def CloudLiquidWaterAttenuationCoefficient(f_GHz, T_K) -> float:
     return Kl
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _KL(f_GHz) -> float:
     """
     Gets the cloud liquid mass absorption coefficient in dB/(kg/m2) or dB/mm.
@@ -82,7 +82,7 @@ def _KL(f_GHz) -> float:
     return KL
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def InstantaneousCloudAttenuation(f_GHz: float, theta_deg: float, L_kgm2: float) -> float:
     """
     ITU-R P.840-9, Annex 1, Section 3.1
@@ -232,7 +232,7 @@ def _GetGrid(month: Union[int, None], filename: str) -> npt.ArrayLike:
             pathname = 'data/itu_proprietary/p840/annual/{}.TXT'.format(filename)
         else:
             pathname = 'data/itu_proprietary/p840/monthly/{:02d}/{}.TXT'.format(month, filename)
-        _digital_maps[(month, filename)] = itur_p1144._LoadITUDigitalMapFile(pathname)
+        _digital_maps[(month, filename)] = itur_p1144.LoadITUDigitalMapFile(pathname)
     return _digital_maps[(month, filename)]
 
 

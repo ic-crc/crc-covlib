@@ -2,7 +2,7 @@
 """
 
 from math import log10, exp, radians, cos
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['RainAttenuation',
@@ -13,7 +13,7 @@ __all__ = ['RainAttenuation',
            'FIGURE_4']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def RainAttenuation(f_GHz: float, rainRate_mmhr: float, pathElevAngle_deg: float,
                     polTiltAngle_deg: float) -> float:
     """
@@ -35,7 +35,7 @@ def RainAttenuation(f_GHz: float, rainRate_mmhr: float, pathElevAngle_deg: float
     return gamma_R
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def Coefficients(f_GHz: float, pathElevAngle_deg: float, polTiltAngle_deg: float) -> tuple[float, float]:
     """
     ITU-R P.838-3.
@@ -64,7 +64,7 @@ def Coefficients(f_GHz: float, pathElevAngle_deg: float, polTiltAngle_deg: float
     return (k, alpha)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _kH(f_GHz: float) -> float:
     mk = -0.18961
     ck = 0.71147
@@ -74,7 +74,7 @@ def _kH(f_GHz: float) -> float:
     return _k(f_GHz, a, b, c, mk, ck)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _kV(f_GHz: float) -> float:
     mk = -0.16398
     ck = 0.63297
@@ -84,7 +84,7 @@ def _kV(f_GHz: float) -> float:
     return _k(f_GHz, a, b, c, mk, ck)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _alphaH(f_GHz: float) -> float:
     ma = 0.67849
     ca = -1.95537
@@ -94,7 +94,7 @@ def _alphaH(f_GHz: float) -> float:
     return _alpha(f_GHz, a, b, c, ma, ca)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _alphaV(f_GHz: float) -> float:
     ma = -0.053739
     ca = 0.83433
@@ -104,7 +104,7 @@ def _alphaV(f_GHz: float) -> float:
     return _alpha(f_GHz, a, b, c, ma, ca)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _k(f_GHz: float, a: list, b: list, c: list, mk: float, ck: float) -> float:
     log10_f = log10(f_GHz)
     sum = 0
@@ -116,7 +116,7 @@ def _k(f_GHz: float, a: list, b: list, c: list, mk: float, ck: float) -> float:
     return k
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _alpha(f_GHz: float, a: list, b: list, c: list, ma: float, ca: float) -> float:
     log10_f = log10(f_GHz)
     sum = 0

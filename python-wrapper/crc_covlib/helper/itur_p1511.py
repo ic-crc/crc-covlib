@@ -4,13 +4,13 @@
 
 
 from . import itur_p1144
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['TopographicHeightAMSL']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def TopographicHeightAMSL(lat: float, lon: float) -> float:
     """
     ITU-R P.1511-3, Annex 1, Section 1.1
@@ -35,4 +35,4 @@ def TopographicHeightAMSL(lat: float, lon: float) -> float:
 
 
 # Data originally from ITU file TOPO.dat within 'R-REC-P.1511-3-202408-I!!ZIP-E.zip'
-_TOPO = itur_p1144._LoadITUDigitalMapFile('data/itu_proprietary/p1511/TOPO.dat')
+_TOPO = itur_p1144.LoadITUDigitalMapFile('data/itu_proprietary/p1511/TOPO.dat')

@@ -2,13 +2,13 @@
 """
 
 from . import itur_p1144
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['MedianAnnualNwet']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def MedianAnnualNwet(lat: float, lon: float) -> float:
     """
     ITU-R P.453-14
@@ -35,4 +35,4 @@ def MedianAnnualNwet(lat: float, lon: float) -> float:
 
 
 # Data originally from ITU file NWET_Annual_50.TXT within 'R-REC-P.453-14-201908-I!!ZIP-E.zip'
-_NWET50 = itur_p1144._LoadITUDigitalMapFile('data/itu_proprietary/p453/NWET_Annual_50.TXT')
+_NWET50 = itur_p1144.LoadITUDigitalMapFile('data/itu_proprietary/p453/NWET_Annual_50.TXT')

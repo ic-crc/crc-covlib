@@ -3,7 +3,7 @@ the MIT license.
 
     MIT License
 
-    Copyright (c) 2024 His Majesty the King in Right of Canada, as represented
+    Copyright (c) 2025 His Majesty the King in Right of Canada, as represented
     by the Minister of Industry
 
     Permission is hereby granted, free of charge, to any person obtaining a

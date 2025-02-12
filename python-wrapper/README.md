@@ -119,34 +119,32 @@ if __name__ == '__main__':
 
 ## crc_covlib package documentation
 
-Core crc-covlib functionalities (C++ implementation) are accessible in python through the _simulation_ module (`crc_covlib.simulation`). For more details, please see the [API reference document](../docs/CRC-COVLIB%20API%20Reference.pdf). Even though the document is written for C++, the `crc_covlib.simulation` module practically uses the same class, method and argument names.
+Core crc-covlib functionalities (C++ implementation) are accessible in python through the _simulation_ module (`crc_covlib.simulation`) as shown in the code snippet above. For more details, please see the [API reference document](../docs/CRC-COVLIB%20API%20Reference.pdf). Even though the document is written for C++, the `crc_covlib.simulation` module uses the same class, method and argument names.
 
-Some additional python-only functionalities on top of those provided by crc-covlib's core implementation in C++ are available through the _helper_ sub-package (`crc_covlib.helper`).
+Some additional python-only functionalities on top of those provided by crc-covlib's core implementation in C++ are available through the _helper_ sub-package (`crc_covlib.helper`). See the [helper sub-package API documentation](./docs/readme.md) page for details.
 
 crc-covlib's _helper_ functionalities include:
-* Reading antenna pattern files.
-* Displaying antenna patterns (polar, cartesian, 3D), using [_matplotlib_](https://matplotlib.org/).
-* Generating beamforming antenna patterns in accordance with the [ITU-R M.2101-0](https://www.itu.int/rec/R-REC-M.2101/en) recommendation (Section 5).
-* Reading a wide variety of georeferenced raster file types to obtain topographic data for crc-covlib simulations, using [_Rasterio_](https://rasterio.readthedocs.io/en/latest/index.html) and [_NumPy_](https://numpy.org/).
-* Providing partial implementations for different ITU recommendations with fast code execution using [_Numba_](https://numba.pydata.org/) \
-(_Note: usage of Numba may be disabled by setting the `config.DISABLE_JIT` variable to True in the \_\_init\_\_.py file of the crc_covlib/helper/ directory_).
-  - [ITU-R P.453-14](https://www.itu.int/rec/R-REC-P.453/en) (The radio refractive index: its formula and refractivity data)
-  - [ITU-R P.528-5](https://www.itu.int/rec/R-REC-P.528/en) (A propagation prediction method for aeronautical mobile and radionavigation services using the VHF, UHF and SHF bands	 )
-  - [ITU-R P.530-18](https://www.itu.int/rec/R-REC-P.530/en) (Propagation data and prediction methods required for the design of terrestrial line-of-sight systems)
-  - [ITU-R P.618-14](https://www.itu.int/rec/R-REC-P.618/en) (Propagation data and prediction methods required for the design of Earth-space telecommunication systems)
-  - [ITU-R P.619-5](https://www.itu.int/rec/R-REC-P.619/en) (Propagation data required for the evaluation of interference between stations in space and those on the surface of the Earth)
-  - [ITU-R P.676-13](https://www.itu.int/rec/R-REC-P.676/en) (Attenuation by atmospheric gases and related effects)
-  - [ITU-R P.835-6](https://www.itu.int/rec/R-REC-P.835/en) (Reference standard atmospheres)
-  - [ITU-R P.837-7](https://www.itu.int/rec/R-REC-P.837/en) (Characteristics of precipitation for propagation modelling)
-  - [ITU-R P.838-3](https://www.itu.int/rec/R-REC-P.838/en) (Specific attenuation model for rain for use in prediction methods)
-  - [ITU-R P.839-4](https://www.itu.int/rec/R-REC-P.839/en) (Rain height model for prediction methods)
-  - [ITU-R P.840-9](https://www.itu.int/rec/R-REC-P.840/en) (Attenuation due to clouds and fog)
-  - [ITU-R P.1411-12](https://www.itu.int/rec/R-REC-P.1411/en) (Propagation data and prediction methods for the planning of short-range outdoor radiocommunication systems and radio local area networks in the frequency range 300 MHz to 100 GHz)
-  - [ITU-R P.1511-3](https://www.itu.int/rec/R-REC-P.1511/en) (Topography for Earth-space propagation modelling)
-  - [ITU-R P.2001-5](https://www.itu.int/rec/R-REC-P.2001/en) (A general purpose wide-range terrestrial propagation model in the frequency range 30 MHz to 50 GHz)
-  - [ITU-R P.2108-1](https://www.itu.int/rec/R-REC-P.2108/en) (Prediction of clutter loss)
-  - [ITU-R P.2109-2](https://www.itu.int/rec/R-REC-P.2109/en) (Prediction of building entry loss)
-  - [ITU-R P.2145-0](https://www.itu.int/rec/R-REC-P.2145/en) (Digital maps related to the calculation of gaseous attenuation and related effects)
+* Reading antenna pattern files for use in simulations. Displaying antenna patterns (polar, cartesian, 3D), using [_matplotlib_](https://matplotlib.org/). Generating beamforming antenna patterns in accordance with the [ITU-R M.2101-0](https://www.itu.int/rec/R-REC-M.2101/en) recommendation (Section 5).
+* Reading a wide variety of georeferenced raster file types to obtain topographic data for simulations, using [_Rasterio_](https://rasterio.readthedocs.io/en/latest/index.html).
+* Downloading OpenStreetMap data and computing routes for scenarios where the propagation path is understood to occur mainly through street canyons. Obtaining building footprint and height data from OpenStreetMap and shapefiles, using [_OSMnx_](https://osmnx.readthedocs.io/en/stable/), [_Shapely_](https://shapely.readthedocs.io/en/stable/), [_PyShp_](https://pypi.org/project/pyshp/), [_pyproj_](https://pyproj4.github.io/pyproj/stable/).
+* Providing partial implementations for different ITU recommendations.
+  - [ITU-R P.453-14](https://www.itu.int/rec/R-REC-P.453/en) (The radio refractive index: its formula and refractivity data). [API ref.](./docs/helper.itur_p453.md)
+  - [ITU-R P.528-5](https://www.itu.int/rec/R-REC-P.528/en) (A propagation prediction method for aeronautical mobile and radionavigation services using the VHF, UHF and SHF bands). [API ref.](./docs/helper.itur_p528.md)
+  - [ITU-R P.530-18](https://www.itu.int/rec/R-REC-P.530/en) (Propagation data and prediction methods required for the design of terrestrial line-of-sight systems). [API ref.](./docs/helper.itur_p530.md)
+  - [ITU-R P.618-14](https://www.itu.int/rec/R-REC-P.618/en) (Propagation data and prediction methods required for the design of Earth-space telecommunication systems). [API ref.](./docs/helper.itur_p618.md)
+  - [ITU-R P.619-5](https://www.itu.int/rec/R-REC-P.619/en) (Propagation data required for the evaluation of interference between stations in space and those on the surface of the Earth). [API ref.](./docs/helper.itur_p619.md)
+  - [ITU-R P.676-13](https://www.itu.int/rec/R-REC-P.676/en) (Attenuation by atmospheric gases and related effects). [API ref.](./docs/helper.itur_p676.md)
+  - [ITU-R P.835-6](https://www.itu.int/rec/R-REC-P.835/en) (Reference standard atmospheres). [API ref.](./docs/helper.itur_p835.md)
+  - [ITU-R P.837-7](https://www.itu.int/rec/R-REC-P.837/en) (Characteristics of precipitation for propagation modelling). [API ref.](./docs/helper.itur_p837.md)
+  - [ITU-R P.838-3](https://www.itu.int/rec/R-REC-P.838/en) (Specific attenuation model for rain for use in prediction methods). [API ref.](./docs/helper.itur_p838.md)
+  - [ITU-R P.839-4](https://www.itu.int/rec/R-REC-P.839/en) (Rain height model for prediction methods). [API ref.](./docs/helper.itur_p839.md)
+  - [ITU-R P.840-9](https://www.itu.int/rec/R-REC-P.840/en) (Attenuation due to clouds and fog). [API ref.](./docs/helper.itur_p840.md)
+  - [ITU-R P.1411-12](https://www.itu.int/rec/R-REC-P.1411/en) (Propagation data and prediction methods for the planning of short-range outdoor radiocommunication systems and radio local area networks in the frequency range 300 MHz to 100 GHz). [API ref.](./docs/helper.itur_p1411.md)
+  - [ITU-R P.1511-3](https://www.itu.int/rec/R-REC-P.1511/en) (Topography for Earth-space propagation modelling). [API ref.](./docs/helper.itur_p1511.md)
+  - [ITU-R P.2001-5](https://www.itu.int/rec/R-REC-P.2001/en) (A general purpose wide-range terrestrial propagation model in the frequency range 30 MHz to 50 GHz). [API ref.](./docs/helper.itur_p2001.md)
+  - [ITU-R P.2108-1](https://www.itu.int/rec/R-REC-P.2108/en) (Prediction of clutter loss). [API ref.](./docs/helper.itur_p2108.md)
+  - [ITU-R P.2109-2](https://www.itu.int/rec/R-REC-P.2109/en) (Prediction of building entry loss). [API ref.](./docs/helper.itur_p2109.md)
+  - [ITU-R P.2145-0](https://www.itu.int/rec/R-REC-P.2145/en) (Digital maps related to the calculation of gaseous attenuation and related effects). [API ref.](./docs/helper.itur_p2145.md)
 
 ### Package architecture diagram
 
@@ -175,5 +173,3 @@ graph TD;
   helper---topography
   helper---etc
 ```
-
-For more details, see the [helper sub-package API documentation](./docs/readme.md).

@@ -17,10 +17,10 @@ LDFLAGS = -shared
 
 # In Windows, we include third-party libraries into crc-covlib (i.e. they are statically linked).
 # However in Linux, those libraries would need to be recompiled with the -fPIC flag for the
-# linker to allow this (and for us to even consider doing this), so they are dynamically linked instead.
+# linker to allow this (and to even consider doing this), they are dynamically linked instead.
 ifeq ($(OS), Windows_NT)
 	LDFLAGS += -static
-	LDLIBS = -lGeographic -ltiff -ljpeg -lz -ljbig -llzma -ldeflate -lwebp -lzstd -lLerc -lsharpyuv
+	LDLIBS = -lGeographicLib -ltiff -ljpeg -lz -ljbig -llzma -ldeflate -lwebp -lzstd -lLerc -lsharpyuv
 #   May be required for <filesystem> (see https://en.cppreference.com/w/cpp/filesystem)
 	LDLIBS += -lstdc++fs 
 else
@@ -93,11 +93,11 @@ clean:
 
 ifeq ($(OS), Windows_NT)
 copyfiles:
-	cp -f $(DYN_LIB_PATHNAME) ./python-wrapper/crc_covlib/bin_64bit/$(DYN_LIB_FILENAME)
-	cp -f $(DYN_LIB_PATHNAME) ./dist/$(DYN_LIB_FILENAME)
-	cp -f $(IMPORT_LIB_PATHNAME) ./dist/$(IMPORT_LIB_FILENAME)
-	cp -f $(SRC_DIR)/CRC-COVLIB.h ./dist/CRC-COVLIB.h
+	cp -f $(DYN_LIB_PATHNAME) ./python-wrapper/crc_covlib/bin_64bit/
+	cp -f $(DYN_LIB_PATHNAME) ./dist/
+	cp -f $(IMPORT_LIB_PATHNAME) ./dist/
+	cp -f $(SRC_DIR)/CRC-COVLIB.h ./dist/
 else
 copyfiles:
-	cp -f $(DYN_LIB_PATHNAME) ./python-wrapper/crc_covlib/bin_64bit/$(DYN_LIB_FILENAME)
+	cp -f $(DYN_LIB_PATHNAME) ./python-wrapper/crc_covlib/bin_64bit/
 endif

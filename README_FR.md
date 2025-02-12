@@ -111,8 +111,7 @@ Sous Linux, la suite d'outils GNU peut être utilisée pour compiler et génére
 ```bash
 # Ubuntu et dérivés
 sudo apt install libtiff-dev
-sudo apt install libgeographic-dev
-sudo apt install libgeographiclib-dev # utiliser celui-ci si le paquet précédent n'est pas disponible
+sudo apt install libgeographiclib-dev # note: si libgeographiclib-dev n'est pas disponible, essayez plutôt libgeographic-dev
 
 # CentOS, Amazon Linux 2
 sudo yum install libtiff-devel

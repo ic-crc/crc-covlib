@@ -8,7 +8,7 @@ from . import itur_p676
 from . import itur_p837
 from . import itur_p838
 from . import itur_p1144
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['GeoclimaticFactorK',
@@ -28,7 +28,7 @@ __all__ = ['GeoclimaticFactorK',
            'FIGURE_4']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def GeoclimaticFactorK(lat: float, lon: float) -> float:
     """
     ITU-R P.530-18, Annex 1, Section 1.1
@@ -52,7 +52,7 @@ def GeoclimaticFactorK(lat: float, lon: float) -> float:
     return pow(10, log10_K)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def DN75(lat: float, lon: float) -> float:
     """
     ITU-R P.530-18, Annex 1, Section 1.1
@@ -79,7 +79,7 @@ def DN75(lat: float, lon: float) -> float:
     return itur_p1144.SquareGridBilinearInterpolation(_DN75, numRows, rowSize, r, c)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def AtmosphericAttenuation(d_km: float, f_GHz: float, P_hPa: float=1013.25,
                            T_K: float=288.15, rho_gm3: float=7.5) -> float:
     """
@@ -150,7 +150,7 @@ class TimePeriod(enum.Enum):
     AVG_YEAR        = 2
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SingleFrequencyFadingDistribution(A_dB: float, d_km: float, f_GHz: float, he_masl: float,
                                       hr_masl: float, ht_masl: float, lat: float, lon: float,
                                       timePeriod: TimePeriod) -> float:
@@ -207,7 +207,7 @@ def SingleFrequencyFadingDistribution(A_dB: float, d_km: float, f_GHz: float, he
         return p
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def FadingDistribution(A_dB: float, d_km: float, f_GHz: float, he_masl: float, hr_masl: float,
                        ht_masl: float, lat: float, lon: float, timePeriod: TimePeriod) -> float:
     """
@@ -244,7 +244,7 @@ def FadingDistribution(A_dB: float, d_km: float, f_GHz: float, he_masl: float, h
     return _FadeDepthDistribution(A_dB, p0, d_km, he_masl, hr_masl, lat, timePeriod)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _FadeDepthDistribution(A_dB: float, p0: float, d_km: float, he_masl: float, hr_masl: float,
                            lat: float, timePeriod: TimePeriod) -> float:
     """
@@ -266,7 +266,7 @@ def _FadeDepthDistribution(A_dB: float, p0: float, d_km: float, he_masl: float, 
     return p
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def EnhancementDistribution(E_dB: float, d_km: float, f_GHz: float, he_masl: float, hr_masl: float,
                             ht_masl: float, lat: float, lon: float, timePeriod: TimePeriod) -> float:
     """
@@ -299,7 +299,7 @@ def EnhancementDistribution(E_dB: float, d_km: float, f_GHz: float, he_masl: flo
     return _EnhancementDistribution(E_dB, p0, d_km, he_masl, hr_masl, lat, timePeriod)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _EnhancementDistribution(E_dB: float, p0: float, d_km: float, he_masl: float, hr_masl: float,
                              lat: float, timePeriod: TimePeriod) -> float:
     """
@@ -357,7 +357,7 @@ def InverseDistribution(distribFunc: Callable[..., float], p: float, *distribFun
         return _InverseDistribution(distribFunc, p, distribFuncArgs, False)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _InverseDistribution(distribFunc, p: float, *distribFuncArgs, notExceeded: bool) -> float:
     """
     See InverseDistribution() for details.
@@ -378,7 +378,7 @@ def _InverseDistribution(distribFunc, p: float, *distribFuncArgs, notExceeded: b
     return mid_dB
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _DeltaG(d_km: float, he_masl: float, hr_masl: float, lat: float) -> float:
     """
     ITU-R P.530-18, Annex 1, Sectoin 2.3.4 (Step 2)
@@ -416,7 +416,7 @@ class PathType(enum.Enum):
     HILLY_LAND      = 3
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def AvgWorstMonthToShorterWorstPeriod(pw: float, T_hours: float, pathType: PathType) -> float:
     """
     ITU-R P.530-18, Annex 1, Sections 2.3.5
@@ -441,7 +441,7 @@ def AvgWorstMonthToShorterWorstPeriod(pw: float, T_hours: float, pathType: PathT
     return psw
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def RainAttenuationLongTermStatistics(p: float, d_km: float, f_GHz: float,
                                       pathElevAngle_deg: float, polTiltAngle_deg: float,
                                       lat: float, lon: float) -> float:
@@ -495,8 +495,8 @@ def RainAttenuationLongTermStatistics(p: float, d_km: float, f_GHz: float,
 
 
 # Data originally from ITU file R-REC-P.530-18-202109-I!!ZIP-E.zip
-_DN75 = itur_p1144._LoadITUDigitalMapFile('data/itu_proprietary/p530/dN75.csv', ',')
-_LOGK = itur_p1144._LoadITUDigitalMapFile('data/itu_proprietary/p530/LogK.csv', ',')
+_DN75 = itur_p1144.LoadITUDigitalMapFile('data/itu_proprietary/p530/dN75.csv', ',')
+_LOGK = itur_p1144.LoadITUDigitalMapFile('data/itu_proprietary/p530/LogK.csv', ',')
 
 
 def FIGURE_3() -> None:

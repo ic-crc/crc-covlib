@@ -1,6 +1,6 @@
 import sys, os
 script_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(script_dir, '../../'))
+sys.path.insert(0, os.path.join(script_dir, '../../../'))
 from crc_covlib import simulation as covlib
 
 
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     #       than when using true terrain elevation (ground level) data.
     SRTM = covlib.TerrainElevDataSource.TERR_ELEV_SRTM
     sim.SetPrimaryTerrainElevDataSource(SRTM)
-    sim.SetTerrainElevDataSourceDirectory(SRTM, os.path.join(script_dir, '../../../data/surface-elev-samples/SRTMGL1'))
+    sim.SetTerrainElevDataSourceDirectory(SRTM, os.path.join(script_dir, '../../../../data/surface-elev-samples/SRTMGL1'))
 	# One terrain elevation value every 50m in the terrain profiles that will be provided to Longley-Rice
     sim.SetTerrainElevDataSamplingResolution(50)
 

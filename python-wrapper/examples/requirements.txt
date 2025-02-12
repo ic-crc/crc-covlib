@@ -1,6 +1,12 @@
+geopandas
 matplotlib
+networkx
 numba
 numpy
+osmnx
 pandas
+pyproj
+pyshp
 rasterio
 ray
+shapely

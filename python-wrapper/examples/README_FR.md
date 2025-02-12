@@ -25,6 +25,9 @@ Exemple simple montrant comment instancier la classe Simulation et appeler ses m
 ### iturm2101
 Exemple montrant comment générer le patron d'antenne pour une antenne à formation de faisceaux (section 5 de la recommandation UIT-R M.2101-0) en utilisant le sous-paquet _helper_ de crc-covlib.
 
+### iturp1411
+Ensemble d'exemples utilisant les modèles de propagation d'UIT-R P.1411 ainsi que des données de réseaux routiers et de bâtiments d'OpenStreetMap.
+
 ### iturp1812-landcover
 Exemple utilisant le modèle de propagation UIT-R P.1812 pour la génération d'une couverture radio. Utilise à la fois des données d'élévation de terrain (HRDEM DTM) et de couverture au sol (ESA WorldCover).
 
@@ -43,6 +46,9 @@ Détermine si les antennes d'émission et de réception sont en ligne de visibil
 ### local-ray
 Comparaison du temps requis pour effectuer des simulations de couverture séquentiellement et en parallèle en utilisant [Ray](https://www.ray.io/) localement.
 
+### numba-jit-compiling
+Certaines fonctionnalités du sous-paquet _helper_ peuvent être compilées en code machine optimizé par l'intermédiaire de  [Numba](https://numba.pydata.org/). La compilation juste-à-temps de Numba est désactivée par défaut dans crc-covlib, cet exemple montre comment l'activer.
+
 ### overview
 Utilisation des différentes méthodes d'un objet _Simulation_ à titre démonstratif.
 
@@ -52,17 +58,13 @@ Exemples démontrant l'export de résultats de simulation et de profils de terra
 ### secondary-terrain-elev-source
 Exemple démontrant l'utilisation d'une source de données secondaire pour l'obtention de l'élévation du terrain lors du calcul de couvertures. Lorsque les données d'élévation en provenance de la source primaire sont manquantes, la source de données secondaire est alors automatiquement utilisée comme mécanisme de secours.
 
-### terrain-elev-cdem
-Exemple produisant une couverture haute résolution et une couverture basse résolution à l'aide du modèle de propagation Longley-Rice et de données d'élévation de terrain CDEM («Canadian Digital Elevation Model»).
-
-### terrain-elev-custom
-Exemple prduisant une couverture Longley-Rice utilisant le format de données de terrain sur mesure («custom data») de crc-covlib.
-
-### terrain-elev-hrdem
-Exemple produisant une couverture Longley-Rice utilisant des données d'élévation de terrain haute résolution (1 mètre) de Ressources naturelles Canada.
-
-### terrain-elev-srtm
-Exemple produisant une couverture Longley-Rice utilisant des données en format SRTM («Shuttle Radar Topography Mission») pour l'élévation du terrain.
+### terrain-elev-sources
+Ensemble d'exemples simples produisant des couvertures Longley-Rice et utilisant différentes sources de données d'élévation de terrain:
+- Modèle numérique d'élévation du Canada (MNÉC), ou «Canadian Digital Elevation Model» (CDEM) en anglais.
+- Format de données de terrain sur mesure («custom data») de crc-covlib.
+- Modèle numérique d'élévation de haute résolution (MNEHR), ou «High Resolution Digital Elevation Model» (HRDEM) en anglais.
+- Données en format SRTM («Shuttle Radar Topography Mission»).
+- Autres données sous forme de fichiers GeoTIFF.
 
 ### topography-exports
 Vérifie que crc-covlib lit correctement les données d'élévation de terrain, de couverture au sol et d'hauteur de surface en exportant les données lues en format matriciel (fichiers *.bil).

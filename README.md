@@ -32,7 +32,7 @@ crc-covlib includes the following functionalities:
 <img src="coverage_example.png" alt="drawing" width="700"/>
 </p>
 <p align = "center">
-Fig.1 - Coutours produced by crc-covlib, displayed using <a href="https://qgis.org/en/site/">QGIS</a> over an OpenStreetMap layer
+Fig.1 - Contours produced by crc-covlib, displayed using <a href="https://qgis.org/en/site/">QGIS</a> over an OpenStreetMap layer
 </p>
 
 
@@ -105,8 +105,7 @@ On Linux the usual GNU Toolchain can be used for the build process. Before build
 ```bash
 # On Ubuntu and derivatives
 sudo apt install libtiff-dev
-sudo apt install libgeographic-dev
-sudo apt install libgeographiclib-dev # alternately if previous one is not available
+sudo apt install libgeographiclib-dev # note: if libgeographiclib-dev is not available, try with libgeographic-dev instead
 
 # On CentOS, Amazon Linux 2
 sudo yum install libtiff-devel

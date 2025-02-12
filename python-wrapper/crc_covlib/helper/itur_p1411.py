@@ -6,7 +6,7 @@ from math import log10, sqrt, log as ln, pi, atan, tanh, tan, sin, radians, exp,
 from numpy import random
 from .itur_p1057 import Finv
 from .itur_p676 import TerrestrialPathGaseousAttenuation
-from numba import jit, objmode
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['EnvironmentA', # enum
@@ -71,7 +71,6 @@ class WarningFlag(enum.IntEnum):
     DIST_OUT_OF_RANGE = 0x02
 
 
-@jit(nopython=True)
 def SiteGeneralWithinStreetCanyons(f_GHz: float, d_m: float, env: EnvironmentA, path: PathType,
                                    addGaussianRandomVar: bool) -> tuple[float, int]:
     """
@@ -102,6 +101,7 @@ def SiteGeneralWithinStreetCanyons(f_GHz: float, d_m: float, env: EnvironmentA, 
         addGaussianRandomVar (bool): When set to True, a gaussian random variable is added to the
             median basic transmission loss. Use this option for Monte Carlo simulations for
             example.
+
     Returns:
         Lb (float): Basic transmission loss (dB). When addGaussianRandomVar is set to False, Lb is
             the median basic transmission loss.
@@ -148,7 +148,6 @@ def SiteGeneralWithinStreetCanyons(f_GHz: float, d_m: float, env: EnvironmentA, 
     return (Lb, warnings)
 
 
-@jit(nopython=True)
 def SiteGeneralOverRoofTops(f_GHz: float, d_m: float, env: EnvironmentA, path: PathType,
                             addGaussianRandomVar: bool) -> tuple[float, int]:
     """
@@ -177,6 +176,7 @@ def SiteGeneralOverRoofTops(f_GHz: float, d_m: float, env: EnvironmentA, path: P
         addGaussianRandomVar (bool): When set to True, a gaussian random variable is added to the
             median basic transmission loss. Use this option for Monte Carlo simulations for
             example.
+
     Returns:
         Lb (float): Basic transmission loss (dB). When addGaussianRandomVar is set to False, Lb is
             the median basic transmission loss.
@@ -210,15 +210,13 @@ def SiteGeneralOverRoofTops(f_GHz: float, d_m: float, env: EnvironmentA, path: P
     return (Lb, warnings)
 
 
-@jit
 def _GaussianRandom(mean: float, stdDev: float):
-    with objmode(y="float64"):
-        rng = random.default_rng()
-        y = mean + (rng.standard_normal()*stdDev)
+    rng = random.default_rng()
+    y = mean + (rng.standard_normal()*stdDev)
     return y
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteGeneralNearStreetLevel(f_GHz: float, d_m: float, p: float, env: EnvironmentB,
                                w_m: float=20.0) -> tuple[float, int]:
     """
@@ -271,7 +269,7 @@ def SiteGeneralNearStreetLevel(f_GHz: float, d_m: float, p: float, env: Environm
     return (L, warnings)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _L_LoS(f_MHz: float, d_m: float, p: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.3.1
@@ -298,7 +296,7 @@ def _L_LoS(f_MHz: float, d_m: float, p: float) -> float:
     return L_LoS
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _L_NLoS(f_MHz: float, d_m: float, p: float, env: EnvironmentB) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.3.1
@@ -331,7 +329,7 @@ def _L_NLoS(f_MHz: float, d_m: float, p: float, env: EnvironmentB) -> float:
     return L_NLoS
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificWithinStreetCanyonsUHFLoS(f_GHz: float, d_m: float, h1_m: float, h2_m: float
                                           ) -> tuple[float, float, float]:
     """
@@ -369,7 +367,7 @@ def SiteSpecificWithinStreetCanyonsUHFLoS(f_GHz: float, d_m: float, h1_m: float,
     return (L_LoS_m, L_LoS_l, L_LoS_u)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificWithinStreetCanyonsSHFLoS(f_GHz: float, d_m: float, h1_m: float, h2_m: float,
                                           hs_m: float) -> tuple[float, float, float]:
     """
@@ -423,7 +421,7 @@ def SiteSpecificWithinStreetCanyonsSHFLoS(f_GHz: float, d_m: float, h1_m: float,
     return (L_LoS_m, L_LoS_l, L_LoS_u)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificWithinStreetCanyonsEHFLoS(f_GHz: float, d_m: float, n: float, P_hPa: float=1013.25,
                                           T_K: float=288.15, rho_gm3: float=7.5) -> float:
     """
@@ -457,7 +455,7 @@ def SiteSpecificWithinStreetCanyonsEHFLoS(f_GHz: float, d_m: float, n: float, P_
     return L_LoS
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificWithinStreetCanyonsUHFNonLoS(f_GHz: float, x1_m: float, x2_m: float, w1_m: float,
                                              w2_m: float, alpha_rad: float) -> float:
     """
@@ -493,7 +491,7 @@ def SiteSpecificWithinStreetCanyonsUHFNonLoS(f_GHz: float, x1_m: float, x2_m: fl
     return L_NLoS2
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificWithinStreetCanyonsSHFNonLoS(f_GHz: float, x1_m: float, x2_m: float, w1_m: float,
                                              h1_m: float, h2_m: float, hs_m: float, n: float,
                                              env: EnvironmentC,
@@ -580,12 +578,12 @@ def SiteSpecificWithinStreetCanyonsSHFNonLoS(f_GHz: float, x1_m: float, x2_m: fl
     return L_NLoS2
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificOverRoofTopsUrban(f_GHz: float, d_m: float, h1_m: float, h2_m: float, hr_m: float,
                                   l_m: float, b_m: float, w2_m: float, phi_deg: float,
                                   env: EnvironmentD) -> float:
     """
-    ITU-R P.1411-12, Annex 1, Section 4.2.2.1
+    ITU-R P.1411-12, Annex 1, Section 4.2.2.1 & FIGURE 2
     Site-specific model that uses a multi-screen diffraction model to estimate the basic
     transmission loss (dB) in an urban environment. "The multi-screen diffraction model ...is valid
     if the roof-tops are all about the same height". It assumes "the roof-top heights differ only
@@ -600,10 +598,10 @@ def SiteSpecificOverRoofTopsUrban(f_GHz: float, d_m: float, h1_m: float, h2_m: f
         h1_m (float): Station 1 antenna height (m), with 4 <= h1_m <= 55.
         h2_m (float): Station 2 antenna height (m), with 1 <= h2_m <= 3.
         hr_m (float): Average height of buildings (m), with h2_m < hr_m. 
-        l_m (float): Length of the path covered by buildings (m), with 0 <= l_m. See the
-            recommendations's FIGURE 2.
-        b_m (float): Average building separation (m), with 0 < b_m. See the recommendations's
-            FIGURE 2.
+        l_m (float): Length of the path covered by buildings (m), with 0 <= l_m. When l_m is set to
+            zero, only the free-space basic transmission loss component is computed and returned
+            (using f_GHz and d_m while other parameters are ignored).
+        b_m (float): Average building separation (m), with 0 < b_m.
         w2_m (float): Street width (m) at station 2's location, with 0 < w2_m.
         phi_deg (float): Street orientation with respect to the direct path (deg),
             with 0 <= phi_deg <= 90 (i.e. for a street that is perpendicular to the direct path,
@@ -618,6 +616,9 @@ def SiteSpecificOverRoofTopsUrban(f_GHz: float, d_m: float, h1_m: float, h2_m: f
     c = 2.998E8 # in m/s
     wavelength = 1.0E-6*c/f_MHz # in meters
     L_bf = 32.4 + 20.0*log10(d_m/1000.0) + 20.0*log10(f_MHz)
+
+    if l_m <= 0:
+        return L_bf
 
     if phi_deg < 35:
         L_ori = -10.0 + 0.354*phi_deg
@@ -658,7 +659,7 @@ def SiteSpecificOverRoofTopsUrban(f_GHz: float, d_m: float, h1_m: float, h2_m: f
     return L_NLoS1
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _L1msd(f_MHz: float, d_m: float, h1_m: float, hr_m: float, b_m: float, env: EnvironmentD
           ) -> float:
     """
@@ -712,7 +713,7 @@ def _L1msd(f_MHz: float, d_m: float, h1_m: float, hr_m: float, b_m: float, env: 
     return L1_msd
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _L2msd(f_MHz: float, d_m: float, h1_m: float, hr_m: float, b_m: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.2.2.1
@@ -753,7 +754,7 @@ def _L2msd(f_MHz: float, d_m: float, h1_m: float, hr_m: float, b_m: float) -> fl
     return L2_msd
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificOverRoofTopsSuburban(f_GHz: float, d_m: float, h1_m: float, h2_m: float,
                                      hr_m: float, w2_m: float, phi_deg: float) -> float:
     """
@@ -793,7 +794,7 @@ def SiteSpecificOverRoofTopsSuburban(f_GHz: float, d_m: float, h1_m: float, h2_m
     return L_NLoS1
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _L0n(f_GHz: float, d: float, h1: float, h2: float, hr: float, w: float, phi_rad: float
         ) -> float:
     """
@@ -825,7 +826,7 @@ def _L0n(f_GHz: float, d: float, h1: float, h2: float, hr: float, w: float, phi_
     return L0n
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _dk(k: int, h1: float, h2: float, hr: float, w: float, phi_rad: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.2.2.2, eq.(50)
@@ -835,7 +836,7 @@ def _dk(k: int, h1: float, h2: float, hr: float, w: float, phi_rad: float) -> fl
     return sqrt(a*a+b*b)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _Ldk(k: int, h1: float, h2: float, hr: float, w: float, phi_rad: float, wavelength: float
         ) -> float:
     """
@@ -846,7 +847,7 @@ def _Ldk(k: int, h1: float, h2: float, hr: float, w: float, phi_rad: float, wave
     return 20.0*log10(a/b)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _dRD(f_GHz: float, h1: float, h2: float, hr: float, w: float, phi_rad: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.2.2.2, eq.(52)
@@ -858,7 +859,7 @@ def _dRD(f_GHz: float, h1: float, h2: float, hr: float, w: float, phi_rad: float
     return (0.25*d3 + 0.25*d4 - 0.16*d1 - 0.35*d2)*log10(f_GHz) + 0.25*d1 + 0.56*d2 + 0.10*d3 + 0.10*d4
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _LdRD(f_GHz: float, h1: float, h2: float, hr: float, w: float, phi_rad: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.2.2.2,  eq.(53)
@@ -883,7 +884,7 @@ def _LdRD(f_GHz: float, h1: float, h2: float, hr: float, w: float, phi_rad: floa
     return LdRD
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _dkp(k: int, h1: float, h2: float, hr: float, w: float, phi_rad: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.2.2.2, eq.(54)
@@ -893,7 +894,7 @@ def _dkp(k: int, h1: float, h2: float, hr: float, w: float, phi_rad: float) -> f
     return sqrt(a*a+b*b)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _Ak(k: int, h1: float, h2: float, hr: float, w: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.2.2.2, eq.(55)
@@ -901,7 +902,7 @@ def _Ak(k: int, h1: float, h2: float, hr: float, w: float) -> float:
     return w*(h1-h2)*(2.0*k+1.0)/(2.0*(hr-h2))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _Bk(k: int, h1: float, h2: float, hr: float, w: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.2.2.2, eq.(56)
@@ -909,7 +910,7 @@ def _Bk(k: int, h1: float, h2: float, hr: float, w: float) -> float:
     return w*(h1-h2)*(2.0*k+1.0)/(2.0*(hr-h2)) - k*w
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _phik(k: int, h1: float, h2: float, hr: float, w: float, phi_rad: float) -> float:
     """
     ITU-R P.1411-12, Annex 1, Section 4.2.2.2, eq.(57)
@@ -919,7 +920,7 @@ def _phik(k: int, h1: float, h2: float, hr: float, w: float, phi_rad: float) -> 
     return atan((Ak/Bk)*tan(phi_rad))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificNearStreetLevelUrban(f_GHz: float, x1_m: float, x2_m: float, x3_m: float,
                                      h1_m: float, h2_m: float, hs_m: float) -> float:
     """
@@ -963,7 +964,7 @@ def SiteSpecificNearStreetLevelUrban(f_GHz: float, x1_m: float, x2_m: float, x3_
     return L
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SiteSpecNearStreetLevelUrbanLoS(f_GHz: float, d_m: float, h1_m: float, h2_m: float,
                                      hs_m: float) -> float:
     """
@@ -992,7 +993,7 @@ def _SiteSpecNearStreetLevelUrbanLoS(f_GHz: float, d_m: float, h1_m: float, h2_m
     return L_LoS
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SiteSpecNearStreetLevelUrban1TurnNLoS(f_GHz: float, x1_m: float, x2_m: float, h1_m: float,
                                            h2_m: float, hs_m: float) -> float:
     """
@@ -1037,7 +1038,7 @@ def _SiteSpecNearStreetLevelUrban1TurnNLoS(f_GHz: float, x1_m: float, x2_m: floa
     return L_1Turn
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SiteSpecNearStreetLevelUrban2TurnNLoS(f_GHz: float, x1_m: float, x2_m: float, x3_m: float,
                                            h1_m: float, h2_m: float, hs_m: float) -> float:
     """
@@ -1087,7 +1088,7 @@ def _SiteSpecNearStreetLevelUrban2TurnNLoS(f_GHz: float, x1_m: float, x2_m: floa
     return L_2Turn_n
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SiteSpecificNearStreetLevelResidential(f_GHz: float, d_m: float, hTx_m: float, hRx_m: float,
                                            hbTx_m: float, hbRx_m: float, a_m: float, b_m: float,
                                            c_m: float, m_m: float, n_bldgkm2: float,
@@ -1119,11 +1120,7 @@ def SiteSpecificNearStreetLevelResidential(f_GHz: float, d_m: float, hTx_m: floa
         x1List_m (list[float]): List of x1_i, where x1_i is the road distance from transmitter to
             i-th street corner (m).
         x2List_m (list[float]): List of x2_i, where x2_i is the road distance from i-th street
-            corner to receiver (m). NOTE: FIGURE 11 shows x2_i as being the distance between the
-            i-th and (i+1)-th corners, not going up to the receiver as implied in the parameter's
-            description. It is therefore not fully clear how this parameter should be truly
-            provided.
-    
+            corner to receiver (m). 
     Return:
         L (float): Basic transmission loss (dB).
         Lr (float): Path loss along road (dB).

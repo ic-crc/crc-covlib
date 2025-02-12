@@ -10,7 +10,7 @@ import math
 from typing import Union
 from ..simulation import Simulation, TerrainElevDataSource, LandCoverDataSource, SurfaceElevDataSource
 from . import itur_p2001
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['CustomDataInfo',
@@ -429,7 +429,7 @@ def _IntersectingBounds(pathname: str, bounds: LatLonBox) -> Union[LatLonBox,Non
 
 # Profile functions
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def GetDistanceProfile(lat0: float, lon0: float, lat1: float, lon1: float, res_m: float,
                        minNumPoints: int=3, maxNumPoints: Union[int,None]=None
                        ) -> npt.NDArray[np.float64]:
@@ -465,7 +465,7 @@ def GetDistanceProfile(lat0: float, lon0: float, lat1: float, lon1: float, res_m
     return dist_km_profile
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def GetLatLonProfile(lat0: float, lon0: float, lat1: float, lon1: float, res_m: float,
                      minNumPoints: int=3, maxNumPoints: Union[int,None]=None) -> npt.NDArray[np.float64]:
     """

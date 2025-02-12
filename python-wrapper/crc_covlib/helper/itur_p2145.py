@@ -582,7 +582,7 @@ def _DirectScalingFunc(Xp, sch, alt, alti):
 
 def _GetDigitalMap(pathname: str) -> npt.ArrayLike:
     if pathname not in _digital_maps:
-        _digital_maps[pathname] = itur_p1144._LoadITUDigitalMapFile(pathname)
+        _digital_maps[pathname] = itur_p1144.LoadITUDigitalMapFile(pathname)
     map = _digital_maps[pathname]
     return map
 

@@ -22,9 +22,9 @@ else
 endif
 
 ifeq ($(OS), Windows_NT)
-$(error No Windows static library currently available for crc-covlib, please use the DLL instead.)
+$(error No static version of crc-covlib is currently available on Windows, please use the DLL instead.)
 #	EXEC_EXT = exe
-#	COVLIB_FILENAME = crc-covlib.lib
+#	COVLIB_FILENAME =
 #	LDLIBS = 
 else
 	EXEC_EXT = out
@@ -34,10 +34,10 @@ else
 #   linked statically or dynamically.
 
 #	For dynamic linking (unless -static is used):
-#	LDLIBS = -lGeographic -ltiff -lstdc++fs
+#	LDLIBS = -lGeographicLib -ltiff
 
 #	For static linking (some development files packages may need to be installed first, like libwebp-dev, libzstd-dev):
-	LDLIBS = -l:libGeographic.a -l:libtiff.a -l:libz.a -l:libjpeg.a -l:libjbig.a -l:liblzma.a -l:libwebp.a -l:libzstd.a -l:libdeflate.a
+	LDLIBS = -l:libGeographicLib.a -l:libtiff.a -l:libz.a -l:libjpeg.a -l:libjbig.a -l:liblzma.a -l:libwebp.a -l:libzstd.a -l:libdeflate.a -l:libLerc.a -l:libsharpyuv.a
 endif
 
 
@@ -47,7 +47,7 @@ rebuild: covlib_rebuild example_build
 
 example_build:
 	g++ -c $(CXXFLAGS) -o $(APP_NAME).o $(APP_NAME).cpp
-	g++ $(LDFLAGS) -o $(APP_NAME).$(EXEC_EXT) $(APP_NAME).o -L$(COVLIB_DIR) -l:$(COVLIB_FILENAME) $(LDLIBS)
+	g++ -o $(APP_NAME).$(EXEC_EXT) $(APP_NAME).o -L$(COVLIB_DIR) $(LDFLAGS) -l:$(COVLIB_FILENAME) $(LDLIBS)
 
 covlib_build:
 	$(MAKE) -C ../../ build CONFIG=$(CONFIG)

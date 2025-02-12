@@ -26,6 +26,9 @@ Simplest example showing how to instantiate the Simulation class and call one of
 ### iturm2101
 Example showing how to generate and save a beamforming antenna pattern (ITU-R M.2101-0 recommendation, section 5) using crc-covlib's helper sub-package.
 
+### iturp1411
+Various examples using propagation models from ITU-R P.1411 along with street and building data from OpenStreetMap.
+
 ### iturp1812-landcover
 Example using the ITU-R P.1812 propagation model to generate a coverage. It uses both terrain elevation (HRDEM DTM) and land cover (ESA WorldCover) data.
 
@@ -44,6 +47,9 @@ Evaluate whether propagation paths are line-of-sight or non-line-of-sight using 
 ### local-ray
 Elapsed time comparison between running a few coverage simulations sequentially and in parallel using [Ray](https://www.ray.io/) on the local machine.
 
+### numba-jit-compiling
+Some functionalities from the helper sub-package may be translated into optimized machine code using [Numba](https://numba.pydata.org/). Numba's just in time (JIT) compiling is disabled by default in crc-covlib but this example shows how to enable it.
+
 ### overview
 Example using most of the Simulation object's methods. Shows how each method can be called (input parameters, returned values).
 
@@ -53,17 +59,13 @@ Examples exporting calculated results and terrain profiles to a .csv file and pl
 ### secondary-terrain-elev-source
 Example demonstrating the use of a secondary terrain elevation data source when generating a coverage. When terrain elevation data is missing from the primary source, the secondary source is automatically used as a backup mechanism.
 
-### terrain-elev-cdem
-Example generating both a high resolution and low resolution Longley-Rice coverage using CDEM (Canadian Digital Elevation Model) data.
-
-### terrain-elev-custom
-Example generating a Longley-Rice coverage using crc-covlib's custom format for terrain elevation data.
-
-### terrain-elev-hrdem
-Example generating a Longley-Rice coverage using high resolution terrain elevation data (1 meter) from Natural Resources Canada.
-
-### terrain-elev-srtm
-Example generating a Longley-Rice coverage using NASA's Shuttle Radar Topography Mission (SRTM) data as terrain elevation data source.
+### terrain-elev-sources
+Set of simple examples generating Longley-Rice coverages using various terrain elevation data sources:
+- Canadian Digital Elevation Model (CDEM).
+- crc-covlib's custom format.
+- High Resolution Digital Elevation Model (HRDEM) from Natural Resources Canada.
+- NASA's Shuttle Radar Topography Mission (SRTM) data.
+- Other data in GeoTIFF file format.
 
 ### topography-exports
 Verify that crc-covlib is reading terrain elevation, land cover and surface elevation correctly by exporting read data to raster files (.bil format).

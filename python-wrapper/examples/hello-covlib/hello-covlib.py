@@ -1,7 +1,10 @@
-# The folowing two lines are to specify the location of the crc_covlib module,
-# they are not required when the module is in the same folder as the python script using it.
-import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../'))
+# The following lines are to specify the location of the crc_covlib package,
+# they are not required when the crc_covlib package is in the same folder as
+# the python script using it.
+import sys
+import os
+script_dir = os.path.dirname(os.path.abspath(__file__)) # get the full path to the directory containing this script (hello-covlib.py)
+sys.path.insert(0, os.path.join(script_dir, '../../'))  # crc_covlib folder is located 2 folders up relatively to this script
 
 from crc_covlib import simulation as covlib
 

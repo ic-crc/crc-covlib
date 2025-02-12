@@ -5,7 +5,7 @@ from math import log10
 from . import itur_p1057
 import enum
 import numpy as np
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['BuildingType',
@@ -19,7 +19,7 @@ class BuildingType(enum.Enum):
     THERMALLY_EFFICIENT = 2
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def BuildingEntryLoss(f_GHz: float, prob_percent: float, bldgType: BuildingType,
                       elevAngle_deg: float) -> float:
     """

@@ -4,7 +4,7 @@
 from math import sin, cos, radians, sqrt, log10, log, atan2, exp, degrees
 from typing import Union
 from numpy import nan
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 from . import itur_p453
 from . import itur_p676
 from . import itur_p837
@@ -24,7 +24,7 @@ __all__ = ['RainAttenuation',
            'HydrometeorCrossPolDiscrimination']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def RainAttenuation(f_GHz: float, theta_deg: float, p: float, lat: float, lon: float,
                     polTilt_deg: float, hs_km: Union[float, None]=None) -> float:
     """
@@ -49,7 +49,7 @@ def RainAttenuation(f_GHz: float, theta_deg: float, p: float, lat: float, lon: f
     return _RainAttenuation(R001, f_GHz, theta_deg, p, lat, lon, polTilt_deg, hs_km)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _RainAttenuation(R001: float, f_GHz: float, theta_deg: float, p: float,
                      lat: float, lon: float, polTilt_deg: float,
                      hs_km: Union[float, None]=None) -> float:
@@ -138,7 +138,7 @@ def _RainAttenuation(R001: float, f_GHz: float, theta_deg: float, p: float,
     return Ap
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def ScintillationFading(f_GHz: float, theta0_deg: float, p: float, lat: float, lon: float,
                         D: float, eff: float=0.5) -> float:
     """
@@ -313,7 +313,7 @@ def SkyNoiseTemperature(AT_dB: float, Tmr_K: float=275) -> float:
     return Tsky
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def HydrometeorCrossPolDiscrimination(f_GHz: float, theta_deg: float, p: float,
                                       polTilt_deg: float, AR_dB: float) -> float:
     """

@@ -4,7 +4,7 @@
 from math import sin, cos, radians, acos, atan2, fabs, asin, degrees, atan
 import numpy.typing as npt
 from . import itur_p1144
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['IsLOS',
@@ -14,7 +14,7 @@ __all__ = ['IsLOS',
            'IntermediatePathPoint']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _Nd1km50(lat: float, lon: float) -> float:
     """
     ITU-R P.2001-5, Annex, Section 3.4.1
@@ -43,7 +43,7 @@ def _Nd1km50(lat: float, lon: float) -> float:
     return -delta_N
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _ElevAngle(h_from_mamsl, h_to_mamsl, dist_km, ae_km) -> float:
     """
     Returns the elevation angle (mrad) relative to the horizontal, does not appear to be suitable
@@ -52,7 +52,7 @@ def _ElevAngle(h_from_mamsl, h_to_mamsl, dist_km, ae_km) -> float:
     return ((h_to_mamsl-h_from_mamsl)/dist_km)-(500*dist_km/ae_km) # eq. (16) without max
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _ElevAngleFromP1812(h_from_mamsl, h_to_mamsl, dist_km, ae_km) -> float:
     """
     Returns the elevation angle (mrad) relative to the horizontal, using equation from
@@ -61,7 +61,7 @@ def _ElevAngleFromP1812(h_from_mamsl, h_to_mamsl, dist_km, ae_km) -> float:
     return 1000.0*atan(((h_to_mamsl-h_from_mamsl)/(1000.0*dist_km))-(dist_km/(2.0*ae_km)))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def IsLOS(latt: float, lont: float, ht_mamsl: float, latr: float, lonr: float, hr_mamsl: float,
           dProfile_km: npt.ArrayLike, hProfile_mamsl: npt.ArrayLike) -> bool:
     """
@@ -101,7 +101,7 @@ def IsLOS(latt: float, lont: float, ht_mamsl: float, latr: float, lonr: float, h
     return theta_tim < theta_tr
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def ElevationAngles(latt: float, lont: float, ht_mamsl: float,
                     latr: float, lonr: float, hr_mamsl: float,
                     dProfile_km: npt.ArrayLike, hProfile_mamsl: npt.ArrayLike,
@@ -164,7 +164,7 @@ def ElevationAngles(latt: float, lont: float, ht_mamsl: float,
     return (theta_t_deg, theta_r_deg)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def PathLength(lat0: float, lon0: float, lat1: float, lon1: float) -> float:
     """
     ITU-R P.2001-5, Attachment H (H.2)
@@ -188,7 +188,7 @@ def PathLength(lat0: float, lon0: float, lat1: float, lon1: float) -> float:
     return path_length_km
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def Bearing(lat0: float, lon0: float, lat1: float, lon1: float) -> float:
     """
     ITU-R P.2001-5, Attachment H (H.2)
@@ -230,7 +230,7 @@ def Bearing(lat0: float, lon0: float, lat1: float, lon1: float) -> float:
     return bearing_deg
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def IntermediatePathPoint(lat0: float, lon0: float, lat1: float, lon1: float,
                           dist_km: float) -> tuple[float, float]:
     """
@@ -292,4 +292,4 @@ def IntermediatePathPoint(lat0: float, lon0: float, lat1: float, lon1: float,
 
 
 # Data originally from ITU file DN_Median.txt within 'R-REC-P.2001-5-202308-I!!ZIP-E.zip'
-_DN50 = itur_p1144._LoadITUDigitalMapFile('data/itu_proprietary/p2001/DN_Median.txt')
+_DN50 = itur_p1144.LoadITUDigitalMapFile('data/itu_proprietary/p2001/DN_Median.txt')

@@ -7,7 +7,7 @@ import enum
 from . import itur_p676
 from .itur_p835 import ReferenceAtmosphere, MAGRA
 from . import itur_p835
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['CalculationStatus',
@@ -49,7 +49,7 @@ def FreeSpaceBasicTransmissionLoss(f_GHz: float, d_km: float) -> float:
     return Lbfs
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def BeamSpreadingLoss(theta0_deg: float, h_km: float) -> float:
     """
     ITU-R P.619-5, Annex 1, Section 2.4.2
@@ -77,7 +77,7 @@ def BeamSpreadingLoss(theta0_deg: float, h_km: float) -> float:
     return Abs
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def StraightLineEarthSpacePath(He_km: float, lat_e: float, lon_e: float, 
                                Hs_km: float, lat_s: float, lon_s: float, 
                                ) -> tuple[float, float, float]:
@@ -165,7 +165,7 @@ def StraightLineEarthSpacePath(He_km: float, lat_e: float, lon_e: float,
     return (Dts, theta0_deg, psi_deg)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def FreeSpaceToApparentElevationAngle(He_km: float, theta0_deg: float) -> float:
     """
     ITU-R P.619-5, Attachment B to Annex 1
@@ -191,7 +191,7 @@ def FreeSpaceToApparentElevationAngle(He_km: float, theta0_deg: float) -> float:
     return theta_deg
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def ApparentToFreeSpaceElevationAngle(He_km: float, theta_deg: float) -> float:
     """
     ITU-R P.619-5, Attachment B to Annex 1
@@ -217,7 +217,7 @@ def ApparentToFreeSpaceElevationAngle(He_km: float, theta_deg: float) -> float:
     return theta0_deg
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SpaceToEarthGaseousAttenuation(f_GHz: float, He_km: float, Hs_km: float,
                                    phi_e_deg: Union[float, None], phi_s_deg: float,
                                    delta_phi_e_deg: Union[float, None],
@@ -312,7 +312,7 @@ def SpaceToEarthGaseousAttenuation(f_GHz: float, He_km: float, Hs_km: float,
     return (Ag, CalculationStatus.COMPLETED)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def EarthToSpaceGaseousAttenuation(f_GHz: float, He_km: float, Hs_km: float,
                                    phi_e_deg: float, phi_s_deg: Union[float, None],
                                    delta_phi_s_deg: Union[float, None],
@@ -447,7 +447,7 @@ def EarthToSpaceGaseousAttenuation(f_GHz: float, He_km: float, Hs_km: float,
             return (0, status2)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def TroposphericScintillationAttenuation(f_GHz: float, p: float, theta0_deg: float,
                                          Nwet: float, D: float, Ga: Union[float, None]=None,
                                          ) -> float:

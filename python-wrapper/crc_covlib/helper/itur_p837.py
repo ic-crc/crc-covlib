@@ -2,13 +2,13 @@
 """
 
 from . import itur_p1144
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['RainfallRate001']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def RainfallRate001(lat: float, lon: float) -> float:
     """
     ITU-R P.837-7
@@ -34,4 +34,4 @@ def RainfallRate001(lat: float, lon: float) -> float:
 
 
 # Data originally from ITU file R001.TXT within 'R-REC-P.837-7-201706-I!!ZIP-E.zip'
-_R001 = itur_p1144._LoadITUDigitalMapFile('data/itu_proprietary/p837/R001.TXT')
+_R001 = itur_p1144.LoadITUDigitalMapFile('data/itu_proprietary/p837/R001.TXT')

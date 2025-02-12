@@ -2,14 +2,14 @@
 """
 
 from . import itur_p1144
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['MeanAnnualZeroCelsiusIsothermHeight',
            'MeanAnnualRainHeight']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def MeanAnnualZeroCelsiusIsothermHeight(lat: float, lon: float) -> float:
     """
     ITU-R P.839-4
@@ -35,7 +35,7 @@ def MeanAnnualZeroCelsiusIsothermHeight(lat: float, lon: float) -> float:
     return itur_p1144.SquareGridBilinearInterpolation(_H0, numRows, rowSize, r, c)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def MeanAnnualRainHeight(lat: float, lon: float) -> float:
     """
     ITU-R P.839-4
@@ -52,4 +52,4 @@ def MeanAnnualRainHeight(lat: float, lon: float) -> float:
 
 
 # Data originally from ITU file h0.txt within 'R-REC-P.839-4-201309-I!!ZIP-E.zip'
-_H0 = itur_p1144._LoadITUDigitalMapFile('data/itu_proprietary/p839/h0.txt')
+_H0 = itur_p1144.LoadITUDigitalMapFile('data/itu_proprietary/p839/h0.txt')

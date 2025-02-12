@@ -265,7 +265,7 @@ Returns:
 ### GetRasterProfile
 #### crc_covlib.helper.topography.GetRasterProfile
 ```python
-def GetRasterProfile(pathnames: str|list[str], latLonProfile: npt.ArrayLike,
+def GetRasterProfile(pathnames: str|list[str], latLonProfile: ArrayLike,
                      noDataValue: float=0, band:int=1) -> tuple[list[float], bool]
 ```
 Gets a profile of pixel values from the specified georeferenced raster file(s). This function may be used to either get a terrain elevation, a surface elevation or a land cover profile depending on the actual content of the raster file(s). Pixel values are obtained using a nearest neighbor algorithm.

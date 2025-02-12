@@ -38,6 +38,7 @@ python-wrapper/examples/**/*.bil
 python-wrapper/examples/**/*.hdr
 python-wrapper/examples/**/*.prj
 python-wrapper/examples/**/*.csv
+python-wrapper/examples/**/*.geojson
 tests/**/*.txt
 tests/**/*.mif
 tests/**/*.mid
@@ -59,6 +60,9 @@ tests/**/*.aux.xml
 # Python byte codes
 __pycache__/
 *.pyc
+
+# Cache from using OSMnx
+cache/
 
 # Packaging related files
 crc_covlib.egg-info/

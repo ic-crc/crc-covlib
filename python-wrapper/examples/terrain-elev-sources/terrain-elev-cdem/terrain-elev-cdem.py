@@ -1,6 +1,6 @@
 import sys, os
 script_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(script_dir, '../../'))
+sys.path.insert(0, os.path.join(script_dir, '../../../'))
 from crc_covlib import simulation as covlib
 
 
@@ -27,7 +27,8 @@ if __name__ == '__main__':
     # Set terrain elevation data parameters
     CDEM = covlib.TerrainElevDataSource.TERR_ELEV_NRCAN_CDEM
     sim.SetPrimaryTerrainElevDataSource(CDEM)
-    sim.SetTerrainElevDataSourceDirectory(CDEM, os.path.join(script_dir, '../../../data/terrain-elev-samples/NRCAN_CDEM'))
+    dir = os.path.join(script_dir, '../../../../data/terrain-elev-samples/NRCAN_CDEM')
+    sim.SetTerrainElevDataSourceDirectory(CDEM, dir, useIndexFile=False)
     # One terrain elevation value every 25m in the terrain profiles that will be provided to Longley-Rice
     sim.SetTerrainElevDataSamplingResolution(25)
 

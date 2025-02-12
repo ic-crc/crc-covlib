@@ -5,7 +5,7 @@ from math import log10, sqrt, pi, log, tan, degrees, atan
 from typing import Union
 import enum
 from . import itur_p1057
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['ClutterType', # enum
@@ -25,7 +25,7 @@ class ClutterType(enum.Enum):
     DENSE_URBAN        = 5
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def GetDefaultRepresentativeHeight(clut: ClutterType) -> float:
     """
     ITU-R P.2108-1, Annex 1, Section 3.1
@@ -46,7 +46,7 @@ def GetDefaultRepresentativeHeight(clut: ClutterType) -> float:
         return 10.0
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def HeightGainModelClutterLoss(f_GHz: float, h_m: float, clut: ClutterType,
                                R_m: Union[float, None]=None, ws_m: float=27.0) -> float:
     """
@@ -90,7 +90,7 @@ def HeightGainModelClutterLoss(f_GHz: float, h_m: float, clut: ClutterType,
     return Ah
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _TerrestrialPathClutterLoss(f_GHz: float, d_km: float, loc_percent: float) -> float:
     """
     See TerrestrialPathClutterLoss().
@@ -106,7 +106,7 @@ def _TerrestrialPathClutterLoss(f_GHz: float, d_km: float, loc_percent: float) -
     return Lctt
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def TerrestrialPathClutterLoss(f_GHz: float, d_km: float, loc_percent: float) -> float:
     """
     ITU-R P.2108-1, Annex 1, Section 3.2
@@ -126,7 +126,7 @@ def TerrestrialPathClutterLoss(f_GHz: float, d_km: float, loc_percent: float) ->
     return min(Lctt, Lctt2km)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def EarthSpaceClutterLoss(f_GHz: float, elevAngle_deg: float, loc_percent: float) -> float:
     """
     ITU-R P.2108-1, Annex 1, Section 3.3

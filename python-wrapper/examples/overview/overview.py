@@ -9,10 +9,10 @@ def printStatus(status):
     if status == GEN.STATUS_OK:
         print('STATUS_OK')
     else:
-        if (status & GEN.STATUS_SOME_ELEV_DATA_MISSING) != 0:
-            print('STATUS_SOME_ELEV_DATA_MISSING')
-        if (status & GEN.STATUS_NO_ELEV_DATA) != 0:
-            print('STATUS_NO_ELEV_DATA')
+        if (status & GEN.STATUS_SOME_TERRAIN_ELEV_DATA_MISSING) != 0:
+            print('STATUS_SOME_TERRAIN_ELEV_DATA_MISSING')
+        if (status & GEN.STATUS_NO_TERRAIN_ELEV_DATA) != 0:
+            print('STATUS_NO_TERRAIN_ELEV_DATA')
         if (status & GEN.STATUS_SOME_LAND_COVER_DATA_MISSING) != 0:
             print('STATUS_SOME_LAND_COVER_DATA_MISSING')
         if (status & GEN.STATUS_NO_LAND_COVER_DATA) != 0:
@@ -21,10 +21,10 @@ def printStatus(status):
             print('STATUS_NO_ITU_RCZ_DATA')
         if (status & GEN.STATUS_SOME_ITU_RCZ_DATA_MISSING) != 0:
             print('STATUS_SOME_ITU_RCZ_DATA_MISSING')
-        if (status & GEN.STATUS_NO_SURFACE_HEIGHT_DATA) != 0:
-            print('STATUS_NO_SURFACE_HEIGHT_DATA')            
-        if (status & GEN.STATUS_SOME_SURFACE_HEIGHT_DATA_MISSING) != 0:
-            print('STATUS_SOME_SURFACE_HEIGHT_DATA_MISSING')
+        if (status & GEN.STATUS_NO_SURFACE_ELEV_DATA) != 0:
+            print('STATUS_NO_SURFACE_ELEV_DATA')            
+        if (status & GEN.STATUS_SOME_SURFACE_ELEV_DATA_MISSING) != 0:
+            print('STATUS_SOME_SURFACE_ELEV_DATA_MISSING')
 
 
 if __name__ == '__main__':

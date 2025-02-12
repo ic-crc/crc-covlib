@@ -3,7 +3,7 @@
 
 import enum
 from math import exp, sqrt
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['ReferenceAtmosphere',
@@ -30,7 +30,7 @@ class ReferenceAtmosphere(enum.Enum):
 MAGRA = ReferenceAtmosphere.MEAN_ANNUAL_GLOBAL
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def Temperature(h_km: float, refAtm: ReferenceAtmosphere=MAGRA) -> float:
     """
     ITU-R P.835-6, Annex 1
@@ -65,7 +65,7 @@ def Temperature(h_km: float, refAtm: ReferenceAtmosphere=MAGRA) -> float:
     return T
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def Pressure(h_km: float, refAtm: ReferenceAtmosphere=MAGRA) -> float:
     """
     ITU-R P.835-6, Annex 1
@@ -100,7 +100,7 @@ def Pressure(h_km: float, refAtm: ReferenceAtmosphere=MAGRA) -> float:
     return P
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def WaterVapourDensity(h_km: float, refAtm: ReferenceAtmosphere=MAGRA,
                        rho0_gm3: float=7.5, h0_km: float=2) -> float:
     """
@@ -149,7 +149,7 @@ def WaterVapourDensity(h_km: float, refAtm: ReferenceAtmosphere=MAGRA,
     return rho
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def DryPressure(h_km: float, refAtm: ReferenceAtmosphere=MAGRA) -> float:
     """
     ITU-R P.835-6, Annex 1
@@ -171,7 +171,7 @@ def DryPressure(h_km: float, refAtm: ReferenceAtmosphere=MAGRA) -> float:
     return Pdry
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def WaterVapourPressure(h_km: float, refAtm: ReferenceAtmosphere=MAGRA,
                         rho0_gm3: float=7.5, h0_km: float=2) -> float:
     """
@@ -196,12 +196,12 @@ def WaterVapourPressure(h_km: float, refAtm: ReferenceAtmosphere=MAGRA,
     return e
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _ToGeopotentialHeight(geometricHeight_km: float) -> float:
 	return (6356.766*geometricHeight_km)/(6356.766+geometricHeight_km)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _MagraPressure(h: float) -> float:
     if h < 86:
         hp = _ToGeopotentialHeight(h)
@@ -223,7 +223,7 @@ def _MagraPressure(h: float) -> float:
         return exp(95.571899-(4.011801*h)+(6.424731E-2*h*h)-(4.789660E-4*h*h*h)+(1.340543E-6*h*h*h*h))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _MagraTemperature(h: float) -> float:
     if h < 86:
         hp = _ToGeopotentialHeight(h)
@@ -249,12 +249,12 @@ def _MagraTemperature(h: float) -> float:
             return 263.1905-76.3232*sqrt(1-(x*x))
         
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _MagraWaterVapourDensity(h: float, rho0: float=7.5, h0: float=2) -> float:
     return rho0*exp(-h/h0)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _LowLatTemperature(h: float) -> float:
     if h < 17:
         return 300.4222-(6.3533*h)+(0.005886*h*h)
@@ -268,17 +268,22 @@ def _LowLatTemperature(h: float) -> float:
         return 184
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE) # Note: Numba caching to file does not support recursivity
 def _LowLatPressure(h: float) -> float:
     if h <= 10:
         return 1012.0306-(109.0338*h)+(3.6316*h*h)
     elif h <= 72:
-        return _LowLatPressure(10)*exp(-0.147*(h-10))
+        #return _LowLatPressure(10)*exp(-0.147*(h-10))
+        press_10 = 1012.0306-(109.0338*10)+(3.6316*10*10)
+        return press_10*exp(-0.147*(h-10))
     else:
-        return _LowLatPressure(72)*exp(-0.165*(h-72))
+        #return _LowLatPressure(72)*exp(-0.165*(h-72))
+        press_10 = 1012.0306-(109.0338*10)+(3.6316*10*10)
+        press_72 = press_10*exp(-0.147*(72-10))
+        return press_72*exp(-0.165*(h-72))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _LowLatWaterVapourDensity(h: float) -> float:
     if h <= 15:
         return 19.6542*exp(-(0.2313*h)-(0.1122*h*h)+(0.01351*h*h*h)-0.0005923*h*h*h*h)
@@ -286,7 +291,7 @@ def _LowLatWaterVapourDensity(h: float) -> float:
         return 0
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SummerMidLatTemperature(h: float) -> float:
     if h < 13:
         return 294.9838-(5.2159*h)-(0.07109*h*h)
@@ -302,17 +307,22 @@ def _SummerMidLatTemperature(h: float) -> float:
         return 175
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE) # Note: Numba caching to file does not support recursivity
 def _SummerMidLatPressure(h: float) -> float:
     if h <= 10:
         return 1012.8186-(111.5569*h)+(3.8646*h*h)
     elif h <= 72:
-        return _SummerMidLatPressure(10)*exp(-0.147*(h-10))
+        #return _SummerMidLatPressure(10)*exp(-0.147*(h-10))
+        press_10 = 1012.8186-(111.5569*10)+(3.8646*10*10)
+        return press_10*exp(-0.147*(h-10))
     else:
-        return _SummerMidLatPressure(72)*exp(-0.165*(h-72))
+        #return _SummerMidLatPressure(72)*exp(-0.165*(h-72))
+        press_10 = 1012.8186-(111.5569*10)+(3.8646*10*10)
+        press_72 = press_10*exp(-0.147*(72-10))
+        return press_72*exp(-0.165*(h-72))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SummerMidLatWaterVapourDensity(h: float) -> float:
     if h <= 15:
         return 14.3542*exp(-(0.4174*h)-(0.02290*h*h)+(0.001007*h*h*h))
@@ -320,7 +330,7 @@ def _SummerMidLatWaterVapourDensity(h: float) -> float:
         return 0
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _WinterMidLatTemperature(h: float) -> float:
     if h < 10:
         return 272.7241-(3.6217*h)-(0.1759*h*h)
@@ -336,17 +346,22 @@ def _WinterMidLatTemperature(h: float) -> float:
         return 210
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE) # Note: Numba caching to file does not support recursivity
 def _WinterMidLatPressure(h: float) -> float:
     if h <= 10:
         return 1018.8627-(124.2954*h)+(4.8307*h*h)
     elif h <= 72:
-        return _WinterMidLatPressure(10)*exp(-0.147*(h-10))
+        #return _WinterMidLatPressure(10)*exp(-0.147*(h-10))
+        press_10 = 1018.8627-(124.2954*10)+(4.8307*10*10)
+        return press_10*exp(-0.147*(h-10))
     else:
-        return _WinterMidLatPressure(72)*exp(-0.155*(h-72))
+        #return _WinterMidLatPressure(72)*exp(-0.155*(h-72))
+        press_10 = 1018.8627-(124.2954*10)+(4.8307*10*10)
+        press_72 = press_10*exp(-0.147*(72-10))
+        return press_72*exp(-0.155*(h-72))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _WinterMidLatWaterVapourDensity(h: float) -> float:
     if h <= 10:
         return 3.4742*exp(-(0.2697*h)-(0.03604*h*h)+(0.0004489*h*h*h))
@@ -354,7 +369,7 @@ def _WinterMidLatWaterVapourDensity(h: float) -> float:
         return 0
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SummerHighLatTemperature(h: float) -> float:
     if h < 10:
         return 286.8374-(4.7805*h)-(0.1402*h*h)
@@ -370,17 +385,22 @@ def _SummerHighLatTemperature(h: float) -> float:
         return 171
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE) # Note: Numba caching to file does not support recursivity
 def _SummerHighLatPressure(h: float) -> float:
     if h <= 10:
         return 1008.0278-(113.2494*h)+(3.9408*h*h)
     elif h <= 72:
-        return _SummerHighLatPressure(10)*exp(-0.140*(h-10))
+        #return _SummerHighLatPressure(10)*exp(-0.140*(h-10))
+        press_10 = 1008.0278-(113.2494*10)+(3.9408*10*10)
+        return press_10*exp(-0.140*(h-10))
     else:
-        return _SummerHighLatPressure(72)*exp(-0.165*(h-72))
+        #return _SummerHighLatPressure(72)*exp(-0.165*(h-72))
+        press_10 = 1008.0278-(113.2494*10)+(3.9408*10*10)
+        press_72 = press_10*exp(-0.140*(72-10))
+        return press_72*exp(-0.165*(h-72))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SummerHighLatWaterVapourDensity(h: float) -> float:
     if h <= 15:
         return 8.988*exp(-(0.3614*h)-(0.005402*h*h)-(0.001955*h*h*h))
@@ -388,7 +408,7 @@ def _SummerHighLatWaterVapourDensity(h: float) -> float:
         return 0
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _WinterHighLatTemperature(h: float) -> float:
     if h < 8.5:
         return 257.4345+(2.3474*h)-(1.5479*h*h)+(0.08473*h*h*h)
@@ -402,17 +422,22 @@ def _WinterHighLatTemperature(h: float) -> float:
         return 260-((h-54)*1.667)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE) # Note: Numba caching to file does not support recursivity
 def _WinterHighLatPressure(h: float) -> float:
     if h <= 10:
         return 1010.8828-(122.2411*h)+(4.554*h*h)
     elif h <= 72:
-        return _WinterHighLatPressure(10)*exp(-0.147*(h-10))
+        #return _WinterHighLatPressure(10)*exp(-0.147*(h-10))
+        press_10 = 1010.8828-(122.2411*10)+(4.554*10*10)
+        return press_10*exp(-0.147*(h-10))
     else:
-        return _WinterHighLatPressure(72)*exp(-0.150*(h-72))
+        #return _WinterHighLatPressure(72)*exp(-0.150*(h-72))
+        press_10 = 1010.8828-(122.2411*10)+(4.554*10*10)
+        press_72 = press_10*exp(-0.147*(72-10))
+        return press_72*exp(-0.150*(h-72))
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _WinterHighLatWaterVapourDensity(h: float) -> float:
     if h <= 10:
         return 1.2319*exp((0.07481*h)-(0.0981*h*h)+(0.00281*h*h*h))

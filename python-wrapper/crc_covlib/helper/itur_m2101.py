@@ -3,14 +3,14 @@
 
 from math import pi, cos, sin, radians, sqrt, log10
 import cmath
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['IMTAntennaElementGain',
            'IMTCompositeAntennaGain']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _A_EH(phi: float, phi_3dB: float, Am: float) -> float:
     """
     Horizontal radiation pattern gain (dB) of a single antenna element.
@@ -28,7 +28,7 @@ def _A_EH(phi: float, phi_3dB: float, Am: float) -> float:
     return aeh
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _A_EV(theta: float, theta_3dB: float, SLAv: float) -> float:
     """
     Vertical radiation pattern gain (dB) of a single antenna element.
@@ -46,7 +46,7 @@ def _A_EV(theta: float, theta_3dB: float, SLAv: float) -> float:
     return aev
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def IMTAntennaElementGain(phi: float, theta: float, phi_3dB: float, theta_3dB: float, 
                           Am: float, SLAv: float, GEmax: float) -> float:
     """
@@ -69,7 +69,7 @@ def IMTAntennaElementGain(phi: float, theta: float, phi_3dB: float, theta_3dB: f
     return gemax
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def IMTCompositeAntennaGain(phi: float, theta: float, phi_3dB: float, theta_3dB: float, 
                             Am: float, SLAv: float, GEmax: float, NH: int, NV: int,
                             dH_over_wl: float, dV_over_wl: float,

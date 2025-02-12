@@ -1,6 +1,6 @@
 import sys, os
 script_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(script_dir, '../../'))
+sys.path.insert(0, os.path.join(script_dir, '../../../'))
 from crc_covlib import simulation as covlib
 
 
@@ -27,7 +27,8 @@ if __name__ == '__main__':
     # Set terrain elevation data parameters
     HRDEM = covlib.TerrainElevDataSource.TERR_ELEV_NRCAN_HRDEM_DTM
     sim.SetPrimaryTerrainElevDataSource(HRDEM)
-    sim.SetTerrainElevDataSourceDirectory(HRDEM, os.path.join(script_dir, '../../../data/terrain-elev-samples/NRCAN_HRDEM_DTM'))
+    dir = os.path.join(script_dir, '../../../../data/terrain-elev-samples/NRCAN_HRDEM_DTM')
+    sim.SetTerrainElevDataSourceDirectory(HRDEM, dir, useIndexFile=False)
     sim.SetTerrainElevDataSourceSamplingMethod(HRDEM, covlib.SamplingMethod.BILINEAR_INTERPOLATION) # alternately, could use NEAREST_NEIGHBOR
     # One terrain elevation value every 10m in the terrain profiles that will be provided to Longley-Rice
     sim.SetTerrainElevDataSamplingResolution(10)

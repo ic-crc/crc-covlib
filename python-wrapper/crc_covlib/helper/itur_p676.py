@@ -11,7 +11,7 @@ import math
 from typing import Union
 import numpy as np
 import numpy.typing as npt
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 from .itur_p835 import ReferenceAtmosphere, MAGRA
 from . import itur_p835
 from . import itur_p2145
@@ -44,7 +44,7 @@ __all__ = ['GaseousAttenuation',
            'FIGURE_9']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def GaseousAttenuation(f_GHz: float, P_hPa: float=1013.25, T_K: float=288.15,
                        rho_gm3: float=7.5) -> float:
     """
@@ -65,7 +65,7 @@ def GaseousAttenuation(f_GHz: float, P_hPa: float=1013.25, T_K: float=288.15,
     return yo+yw # eq. (1)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def DryAirGaseousAttenuation(f_GHz: float, P_hPa: float=1013.25, T_K: float=288.15,
                              rho_gm3: float=7.5) -> float:
     """
@@ -86,7 +86,7 @@ def DryAirGaseousAttenuation(f_GHz: float, P_hPa: float=1013.25, T_K: float=288.
     return yo
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def WaterVapourGaseousAttenuation(f_GHz: float, P_hPa: float=1013.25, T_K: float=288.15,
                                   rho_gm3: float=7.5) -> float:
     """
@@ -106,7 +106,7 @@ def WaterVapourGaseousAttenuation(f_GHz: float, P_hPa: float=1013.25, T_K: float
     return yw
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _NppOxygen(f: float, P: float, TK: float, rho: float) -> float:
     """
     ITU-R P.676-13, Annex 1, Section 1 - N''Oxygen
@@ -146,7 +146,7 @@ def _NppOxygen(f: float, P: float, TK: float, rho: float) -> float:
     return NppO
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _NppWaterVapour(f: float, P: float, TK: float, rho: float) -> float:
     """
     ITU-R P.676-13, Annex 1, Section 1 - N''Water Vapour
@@ -177,7 +177,7 @@ def _NppWaterVapour(f: float, P: float, TK: float, rho: float) -> float:
     return NppWV
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def TerrestrialPathGaseousAttenuation(pathLength_km: float, f_GHz: float, P_hPa: float=1013.25,
                                       T_K: float=288.15, rho_gm3: float=7.5) -> float:
     """
@@ -200,7 +200,7 @@ def TerrestrialPathGaseousAttenuation(pathLength_km: float, f_GHz: float, P_hPa:
     return A
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def RefractiveIndex(h_km: float, refAtm: ReferenceAtmosphere=MAGRA, 
                     rho0_gm3: float=7.5) -> float:
     """
@@ -237,7 +237,7 @@ def RefractiveIndex(h_km: float, refAtm: ReferenceAtmosphere=MAGRA,
     return n
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _LayerIndices(h_lower: float, h_upper: float) -> tuple[float, float]:
     """ITU-R P.676-13, Section 2.2.1 of Annex 1"""
     h_lower = max(0, h_lower)
@@ -247,7 +247,7 @@ def _LayerIndices(h_lower: float, h_upper: float) -> tuple[float, float]:
     return (i_lower, i_upper)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _LayerThickness(i: int, i_lower: int, i_upper: int, h_lower: float, h_upper: float) -> float:
     """ITU-R P.676-13, Section 2.2.1 of Annex 1"""
     if h_lower == 0 and h_upper > 100:
@@ -258,7 +258,7 @@ def _LayerThickness(i: int, i_lower: int, i_upper: int, h_lower: float, h_upper:
     return delta_i_km
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _LayerBottomHeight(i: int, i_lower: int, i_upper: int, h_lower: float, h_upper: float) -> float:
     """ITU-R P.676-13, Section 2.2.1 of Annex 1"""
     if h_lower == 0 and h_upper > 100:
@@ -269,7 +269,7 @@ def _LayerBottomHeight(i: int, i_lower: int, i_upper: int, h_lower: float, h_upp
     return h_i_km
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SlantPathGaseousAttenuation(f_GHz: float, h1_km: float, h2_km: float, phi1_deg: float,
                                 refAtm: ReferenceAtmosphere=MAGRA,
                                 rho0_gm3: float=7.5) -> tuple[float, float, float]:
@@ -301,7 +301,7 @@ def SlantPathGaseousAttenuation(f_GHz: float, h1_km: float, h2_km: float, phi1_d
         return _NegSlantPathGaseousAtt(f_GHz, h1_km, h2_km, phi1_deg, refAtm, rho0_gm3)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _NonNegSlantPathGaseousAtt(f_GHz: float, h1_km: float, h2_km: float, phi1_deg: float,
                                refAtm: ReferenceAtmosphere=MAGRA,
                                rho0_gm3: float=7.5) -> tuple[float, float, float]:
@@ -375,7 +375,7 @@ def _NonNegSlantPathGaseousAtt(f_GHz: float, h1_km: float, h2_km: float, phi1_de
     return (Agas, bending, deltaL)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _NegSlantPathGaseousAtt(f_GHz: float, h1_km: float, h2_km: float, phi1_deg: float,
                             refAtm: ReferenceAtmosphere=MAGRA,
                             rho0_gm3: float=7.5) -> tuple[float, float, float]:
@@ -423,7 +423,7 @@ def _NegSlantPathGaseousAtt(f_GHz: float, h1_km: float, h2_km: float, phi1_deg: 
     return (Agas1+Agas2, bending1+bending2, deltaL1+deltaL2)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def EarthToSpaceReciprocalApparentElevAngle(He_km: float, Hs_km: float, phi_e_deg: float,
                                             refAtm: ReferenceAtmosphere=MAGRA,
                                             rho0_gm3: float=7.5) -> float:
@@ -460,7 +460,7 @@ def EarthToSpaceReciprocalApparentElevAngle(He_km: float, Hs_km: float, phi_e_de
     return phi_s_deg
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SpaceToEarthReciprocalApparentElevAngle(He_km: float, Hs_km: float, phi_s_deg: float,
                                             refAtm: ReferenceAtmosphere=MAGRA,
                                             rho0_gm3: float=7.5) -> float:
@@ -497,7 +497,7 @@ def SpaceToEarthReciprocalApparentElevAngle(He_km: float, Hs_km: float, phi_s_de
     return phi_e_deg
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def InterceptsEarth(He_km: float, Hs_km: float, phi_s_deg: float,
                     refAtm: ReferenceAtmosphere=MAGRA,
                     rho0_gm3: float=7.5) -> bool:
@@ -530,7 +530,7 @@ def InterceptsEarth(He_km: float, Hs_km: float, phi_s_deg: float,
         return True
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def PhaseDispersion(f_GHz: float, P_hPa: float=1013.25, T_K: float=288.15,
                     rho_gm3: float=7.5) -> float:
     """
@@ -553,7 +553,7 @@ def PhaseDispersion(f_GHz: float, P_hPa: float=1013.25, T_K: float=288.15,
     return phi
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _NpOxygen(f: float, P: float, TK: float, rho: float) -> float:
     """
     ITU-R P.676-13, Annex 1, Section 1 - N'Oxygen
@@ -591,7 +591,7 @@ def _NpOxygen(f: float, P: float, TK: float, rho: float) -> float:
     return NpO
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _NpWaterVapour(f: float, P: float, TK: float, rho: float) -> float:
     """
     ITU-R P.676-13, Annex 1, Section 3 - N'Water Vapour
@@ -622,13 +622,13 @@ def _NpWaterVapour(f: float, P: float, TK: float, rho: float) -> float:
     return NpWV
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _TB(f_GHz: float, Tj: float) -> float:
     TB = 0.048*f_GHz/(exp(0.048*f_GHz/Tj)-1) # eq. (26)
     return TB
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def DownwellingMicrowaveBrightnessTemperature(f_GHz: float, phi1_deg: float,
                                               h1_km: float=0, hk_km=100.1,
                                               refAtm: ReferenceAtmosphere=MAGRA,
@@ -699,7 +699,7 @@ def DownwellingMicrowaveBrightnessTemperature(f_GHz: float, phi1_deg: float,
     return TB_dw
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def UpwellingMicrowaveBrightnessTemperature(f_GHz: float, phi1_deg: float,
                                             h1_km: float=0, hk_km=100.1,
                                             refAtm: ReferenceAtmosphere=MAGRA,
@@ -779,7 +779,7 @@ def UpwellingMicrowaveBrightnessTemperature(f_GHz: float, phi1_deg: float,
     return TB_uw
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SlantPathInstantOxygenGaseousAttenuation(f_GHz: float, theta_deg: float, Ps_hPa: float,
                                              Ts_K: float, rhoWs_gm3: float) -> float:
     """
@@ -808,7 +808,7 @@ def SlantPathInstantOxygenGaseousAttenuation(f_GHz: float, theta_deg: float, Ps_
     return Ao
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SlantPathStatOxygenGaseousAttenuation(f_GHz: float, theta_deg: float,
                                            mPs_hPa: float, mTs_K: float, mRhoWs_gm3: float,
                                            Psp_hPa: float, Tsp_K: float, rhoWsp_gm3: float) -> float:
@@ -876,7 +876,7 @@ def SlantPathStatOxygenGaseousAttenuation(f_GHz: float, theta_deg: float, p: flo
     return Ao
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SlantPathInstantWaterVapourGaseousAttenuation1(f_GHz: float, theta_deg: float, Ps_hPa: float,
                                                    Ts_K: float, rhoWs_gm3: float) -> float:
     """
@@ -908,7 +908,7 @@ def SlantPathInstantWaterVapourGaseousAttenuation1(f_GHz: float, theta_deg: floa
     return Aw
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SlantPathInstantWaterVapourGaseousAttenuation2(f_GHz: float, theta_deg: float, Ps_hPa: float,
                                                    Ts_K: float, rhoWs_gm3: float, Vs_kgm2: float
                                                    ) -> float:
@@ -938,7 +938,7 @@ def SlantPathInstantWaterVapourGaseousAttenuation2(f_GHz: float, theta_deg: floa
     return Aw
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _SlantPathStatWaterVapourGaseousAttenuation(f_GHz: float, theta_deg: float,
                                                 mPs_hPa: float, mTs_K: float, mRhoWs_gm3: float,
                                                 Vsp_kgm2: float) -> float:
@@ -1026,7 +1026,7 @@ def SlantPathStatGaseousAttenuation(f_GHz: float, theta_deg: float, p: float,
     return Ao+Aw
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _WeibullApproxAttenuation(f_GHz: float, theta_deg: float, p: float,
                               mPs_hPa: float, mTs_K: float, mRhoWs_gm3: float,
                               lambdaVS: float, kVS: float) -> float:
@@ -1085,7 +1085,7 @@ def WeibullApproxAttenuation(f_GHz: float, theta_deg: float, p: float,
     return Aw
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _Part1Coeffs(f_GHz: float) -> tuple[float, float, float, float]:
     minFreq = 1
     freqInterval = 0.5
@@ -1104,7 +1104,7 @@ def _Part1Coeffs(f_GHz: float) -> tuple[float, float, float, float]:
     return (a, b, c, d)
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _Part2Coeffs(f_GHz: float) -> tuple[float, float, float, float]:
     minFreq = 1
     freqInterval = 0.5

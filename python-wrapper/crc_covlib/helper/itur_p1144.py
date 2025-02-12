@@ -5,14 +5,18 @@ import os
 from typing import Union
 import numpy as np
 import numpy.typing as npt
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['SquareGridBilinearInterpolation',
-           'BicubicInterpolation']
+           'BicubicInterpolation',
+           'CompressITUDigitalMapFile',
+           'CompressAllITUDigitalMapFiles',
+           'LoadCompressedITUDigitalMapFile',
+           'LoadITUDigitalMapFile']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def SquareGridBilinearInterpolation(grid: npt.ArrayLike, numRows: int, rowSize: int,
                                     r: float, c: float) -> float:
     """
@@ -43,7 +47,7 @@ def SquareGridBilinearInterpolation(grid: npt.ArrayLike, numRows: int, rowSize: 
     return irc
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def BicubicInterpolation(grid: npt.ArrayLike, numRows: int, rowSize: int,
                          r: float, c: float) -> float:
     """
@@ -76,7 +80,7 @@ def BicubicInterpolation(grid: npt.ArrayLike, numRows: int, rowSize: int,
     return I
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _K(d: float) -> float:
     a = -0.5
     abs_d = abs(d)
@@ -91,7 +95,7 @@ def _K(d: float) -> float:
 _scriptDir = os.path.dirname(os.path.abspath(__file__))
 
 
-def _CompressITUDigitalMapFile(filename: str, deleteOriginal: bool=False) -> None:
+def CompressITUDigitalMapFile(filename: str, deleteOriginal: bool=False) -> None:
     """
     filename may be the full path (i.e. absolute path) or it may be relative to this file's
     directory.
@@ -107,7 +111,7 @@ def _CompressITUDigitalMapFile(filename: str, deleteOriginal: bool=False) -> Non
         os.remove(pathname)
 
 
-def _CompressAllITUDigitalMapFiles(directory: str, fileExt: str='.txt', deleteOriginal: bool=False) -> None:
+def CompressAllITUDigitalMapFiles(directory: str, fileExt: str='.txt', deleteOriginal: bool=False) -> None:
     """
     directory may be a full path (i.e. absolute path) or it may be relative to this file's
     directory. Goes through all sub-directories.
@@ -120,10 +124,10 @@ def _CompressAllITUDigitalMapFiles(directory: str, fileExt: str='.txt', deleteOr
         for filename in filenames:
             if filename.endswith(fileExt.lower()) or filename.endswith(fileExt.upper()):
                 pathname = os.path.join(dirpath, filename)
-                _CompressITUDigitalMapFile(pathname, deleteOriginal)
+                CompressITUDigitalMapFile(pathname, deleteOriginal)
 
 
-def _LoadCompressedITUDigitalMapFile(filename: str) -> npt.ArrayLike:
+def LoadCompressedITUDigitalMapFile(filename: str) -> npt.ArrayLike:
     """
     filename is assumed to be relative to this file's directory
     """
@@ -131,7 +135,7 @@ def _LoadCompressedITUDigitalMapFile(filename: str) -> npt.ArrayLike:
     return np.load(pathname)['arr_0']
 
 
-def _LoadITUDigitalMapFile(filename: str, delimiter: Union[str, None]=None) -> npt.ArrayLike:
+def LoadITUDigitalMapFile(filename: str, delimiter: Union[str, None]=None) -> npt.ArrayLike:
     """
     filename is assumed to be relative to this file's directory
     """

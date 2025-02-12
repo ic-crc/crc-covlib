@@ -1,6 +1,6 @@
 import sys, os
 script_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, os.path.join(script_dir, '../../'))
+sys.path.insert(0, os.path.join(script_dir, '../../../'))
 from crc_covlib import simulation as covlib
 from array import array
 
@@ -15,7 +15,7 @@ if __name__ == '__main__':
     sizeX = 5448
     sizeY = 2733
     terrainElevData = array('f')
-    with open(os.path.join(script_dir, '../../../data/terrain-elev-samples/custom/cdem_ottawa_075asecs.float'), 'rb') as file:
+    with open(os.path.join(script_dir, '../../../../data/terrain-elev-samples/custom/cdem_ottawa_075asecs.float'), 'rb') as file:
         terrainElevData.fromfile(file, sizeX*sizeY)
 
     # Set transmitter parameters

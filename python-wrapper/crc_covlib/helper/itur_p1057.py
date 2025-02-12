@@ -2,14 +2,14 @@
 """
 
 from math import sqrt, log
-from numba import jit
+from . import jit, COVLIB_NUMBA_CACHE
 
 
 __all__ = ['Qinv',
            'Finv']
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def Qinv(p: float) -> float:
     """
     ITU-R P.1057-7, Annex 1, Section 3
@@ -64,7 +64,7 @@ def Qinv(p: float) -> float:
         return Uinv
 
 
-@jit(nopython=True)
+@jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def Finv(p: float) -> float:
     """
     ITU-R P.1057-7, Annex 1, Section 3
