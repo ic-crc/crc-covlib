@@ -179,9 +179,15 @@ def GetBuildingsFromOpenStreetMap(bounds: LatLonBox,
         # bbox in (north, south, east, west) format
         bbox = (bounds.maxLat, bounds.minLat, bounds.maxLon, bounds.minLon)
 
-    gdf = osmnx.features.features_from_bbox(bbox=bbox, tags={'building': True}) # returns geopandas.GeoDataFrame
+    try:
+        gdf = osmnx.features.features_from_bbox(bbox=bbox, tags={'building': True}) # returns geopandas.GeoDataFrame
+    except:
+        return bldg_list
     footprints = gdf['geometry'].values.tolist()
-    num_levels = gdf['building:levels'].values.tolist() # string or nan
+    try:
+        num_levels = gdf['building:levels'].values.tolist() # string or nan
+    except:
+        num_levels = [float('nan')]*len(footprints)
     indexes = gdf.index.values.tolist()
     _, osmids = list(zip(*indexes))
 
@@ -200,7 +206,7 @@ def GetBuildingsFromOpenStreetMap(bounds: LatLonBox,
         if isnan(floor_count):
             bldg.height_m = defaultHeight_m
         else:
-            bldg.height_m = float(floor_count)*avgFloorHeight_m
+            bldg.height_m = floor_count*avgFloorHeight_m
         bldg.osmid = osmid
         if toCRS is not None:
             bldg.footprintCRS = toCRS
