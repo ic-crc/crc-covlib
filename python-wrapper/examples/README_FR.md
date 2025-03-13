@@ -22,6 +22,9 @@ Comparaison de résultats entre deux différentes simulations. L'aire de récept
 ### hello-covlib
 Exemple simple montrant comment instancier la classe Simulation et appeler ses méthodes.
 
+### datacube
+Exemple de téléchargement de données d'élévation de terrain et de hauteur de surface en provenance de la plateforme de Cube de données du Centre canadien de cartographie et d'observation de la Terre. Les fichiers de données téléchargés sont ensuite utilisés en entrée au modèle de propagation UIT-R P.1812.
+
 ### iturm2101
 Exemple montrant comment générer le patron d'antenne pour une antenne à formation de faisceaux (section 5 de la recommandation UIT-R M.2101-0) en utilisant le sous-paquet _helper_ de crc-covlib.
 

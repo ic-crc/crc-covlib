@@ -565,11 +565,11 @@ bool success = false;
 	{
 		file << std::fixed << std::showpoint << std::setprecision(2);
 		for(int azm=0 ; azm<360 ; azm++)
-			file << Gain(azm, 0, H_PATTERN_ONLY, applyTilt) << std::endl;
+			file << Gain(azm, 0, H_PATTERN_ONLY, applyTilt) << '\n';
 		for(int elv=-90 ; elv<90 ; elv++)
-			file << Gain(0, elv, V_PATTERN_ONLY, applyTilt) << std::endl;
+			file << Gain(0, elv, V_PATTERN_ONLY, applyTilt) << '\n';
 		for(int elv=90 ; elv>-90 ; elv--)
-			file << Gain(180, elv, V_PATTERN_ONLY, applyTilt) << std::endl;
+			file << Gain(180, elv, V_PATTERN_ONLY, applyTilt) << '\n';
 		success = true;
 	}
 	file.close();
@@ -634,23 +634,23 @@ double gain_dB;
 	{
 		file << "3D;";
 		for(std::size_t i=0 ; i<azms.size()-1 ; i++)
-			file << azms[i] << ";";
-		file << azms.back() << std::endl;
+			file << azms[i] << ';';
+		file << azms.back() << '\n';
 
 		file << std::fixed << std::showpoint << std::setprecision(2);
 
 		for(std::size_t i=0 ; i<elvs.size() ; i++)
 		{
 			elv = elvs[i];
-			file << elv << ";";
+			file << elv << ';';
 			for(std::size_t j=0 ; j<azms.size()-1 ; j++)
 			{
 				azm = azms[j];
 				gain_dB = Gain(azm, elv-90, algorithm, applyTilt);
-				file << gain_dB << ";";
+				file << gain_dB << ';';
 			}
 			gain_dB = Gain(azms.back(), elv-90, algorithm, applyTilt);
-			file << gain_dB << std::endl;
+			file << gain_dB << '\n';
 		}
 		success = true;
 	}

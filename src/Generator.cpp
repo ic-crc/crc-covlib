@@ -132,34 +132,34 @@ std::ofstream csvFile;
 		if( unmappedlandCoverProfile.size() > 0 )
 			csvFile << ",land cover class";
 		if( pMappedLandCoverProfile.size() > 0 )
-			csvFile << "," << propagModelName << " clutter category";
+			csvFile << ',' << propagModelName << " clutter category";
 		if( reprClutterHeightProfile.size() > 0 )
-			csvFile << "," << propagModelName << " representative clutter height (m)";
+			csvFile << ',' << propagModelName << " representative clutter height (m)";
 		if( pSurfaceElevProfile.size() > 0 )
 			csvFile << ",surface elevation (m)";
 		if( pRadioClimaticZoneProfile.size() > 0 )
-			csvFile << "," << propagModelName << " radio climatic zone";
-		csvFile << std::endl;
+			csvFile << ',' << propagModelName << " radio climatic zone";
+		csvFile << '\n';
 
 		// write data rows
 		csvFile << std::fixed << std::showpoint;
 		for(unsigned int i=0 ; i<resultProfile.size() ; i++)
 		{
-			csvFile << std::setprecision(7) << pLatLonProfile[i].first << "," << pLatLonProfile[i].second << ","
-			        << std::setprecision(5) << pDistKmProfile[i] << ",";
+			csvFile << std::setprecision(7) << pLatLonProfile[i].first << ',' << pLatLonProfile[i].second << ','
+			        << std::setprecision(5) << pDistKmProfile[i] << ',';
 			csvFile << std::setprecision(5) << resultProfile[i];
-			csvFile << "," << std::setprecision(5) << pTerrainElevProfile[i];
+			csvFile << ',' << std::setprecision(5) << pTerrainElevProfile[i];
 			if( unmappedlandCoverProfile.size() > 0 )
-				csvFile << "," << unmappedlandCoverProfile[i];
+				csvFile << ',' << unmappedlandCoverProfile[i];
 			if( pMappedLandCoverProfile.size() > 0 )
-				csvFile << "," << pMappedLandCoverProfile[i];
+				csvFile << ',' << pMappedLandCoverProfile[i];
 			if( reprClutterHeightProfile.size() > 0 )
-				csvFile << "," << std::setprecision(1) << reprClutterHeightProfile[i];
+				csvFile << ',' << std::setprecision(1) << reprClutterHeightProfile[i];
 			if( pSurfaceElevProfile.size() > 0 )
-				csvFile << "," << std::setprecision(5) << pSurfaceElevProfile[i];
+				csvFile << ',' << std::setprecision(5) << pSurfaceElevProfile[i];
 			if( pRadioClimaticZoneProfile.size() > 0 )
-				csvFile << "," << (int) pRadioClimaticZoneProfile[i];
-			csvFile << std::endl;
+				csvFile << ',' << (int) pRadioClimaticZoneProfile[i];
+			csvFile << '\n';
 		}
 
 		success = true;

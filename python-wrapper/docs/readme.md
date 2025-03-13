@@ -1,6 +1,36 @@
 # helper sub-package API documentation
 
-- [antennas module](./helper.antennas.md)
+List of available modules from crc_covlib.helper: \
+[antennas](#antennas-module) \
+[buildings](#buildings-module) \
+[datacube_canada](#datacube_canada-module) \
+[streets](#streets-module) \
+[topography](#topography-module)
+
+List of ITU (International Telecommunication Union) related modules from crc_covlib.helper: \
+[itur_m2101](#itur_m2101-module) \
+[itur_p453](#itur_p453-module) \
+[itur_p528](#itur_p528-module) \
+[itur_p530](#itur_p530-module) \
+[itur_p618](#itur_p618-module) \
+[itur_p619](#itur_p619-module) \
+[itur_p676](#itur_p676-module) \
+[itur_p835](#itur_p835-module) \
+[itur_p837](#itur_p837-module) \
+[itur_p838](#itur_p838-module) \
+[itur_p839](#itur_p839-module) \
+[itur_p840](#itur_p840-module) \
+[itur_p1411](#itur_p1411-module) \
+[itur_p1511](#itur_p1511-module) \
+[itur_p2001](#itur_p2001-module) \
+[itur_p2108](#itur_p2108-module) \
+[itur_p2109](#itur_p2109-module) \
+[itur_p2145](#itur_p2145-module) \
+[itur_data](#itur_data-module)
+
+***
+
+- #### [antennas module](./helper.antennas.md)
   - [LoadRadioMobileV3File](./helper.antennas.md#loadradiomobilev3file)
   - [LoadMsiPlanetFile](./helper.antennas.md#loadmsiplanetfile)
   - [LoadEdxFile](./helper.antennas.md#loadedxfile)
@@ -13,7 +43,7 @@
   - [PlotCartesian](./helper.antennas.md#plotcartesian)
   - [Plot3D](./helper.antennas.md#plot3d)
 
-- [buildings module](./helper.buildings.md)
+- #### [buildings module](./helper.buildings.md)
   - [LatLonBox (Class)](./helper.buildings.md#latlonbox)
   - [Building (Class)](./helper.buildings.md#building)
   - [GetBuildingsFromShapefile](./helper.buildings.md#getbuildingsfromshapefile)
@@ -23,7 +53,19 @@
   - [GetP1411UrbanMetrics](./helper.buildings.md#getp1411urbanmetrics)
   - [GetP1411ResidentialMetrics](./helper.buildings.md#getp1411residentialmetrics)
 
-- [streets module](./helper.streets.md)
+- #### [datacube_canada module](./helper.datacube_canada.md)
+  - [LatLonBox (Class)](./helper.datacube_canada.md#latlonbox) 
+  - [DownloadCdem](./helper.datacube_canada.md#downloadcdem)
+  - [DownloadCdsm](./helper.datacube_canada.md#downloadcdsm)
+  - [DownloadMrdemDtm](./helper.datacube_canada.md#downloadmrdemdtm)
+  - [DownloadMrdemDsm](./helper.datacube_canada.md#downloadmrdemdsm)
+  - [DownloadHrdemDtm1m](./helper.datacube_canada.md#downloadhrdemdtm1m)
+  - [DownloadHrdemDsm1m](./helper.datacube_canada.md#downloadhrdemdsm1m)
+  - [DownloadHrdemDtm2m](./helper.datacube_canada.md#downloadhrdemdtm2m)
+  - [DownloadHrdemDsm2m](./helper.datacube_canada.md#downloadhrdemdsm2m)
+  - [DownloadLandcover2020](./helper.datacube_canada.md#downloadlandcover2020)
+
+- #### [streets module](./helper.streets.md)
   - [StreetGraph (Class)](./helper.streets.md#streetgraph)
   - [StreetCanyonsRadioPath (Class)](./helper.streets.md#streetcanyonsradiopath)
   - [GetStreetGraphFromBox](./helper.streets.md#getstreetgraphfrombox)
@@ -37,7 +79,7 @@
   - [SortRadioPathsByStreetCornerCount](./helper.streets.md#sortradiopathsbystreetcornercount)
   - [ReceiverStreetOrientation](./helper.streets.md#receiverstreetorientation)
 
-- [topography module](./helper.topography.md)
+- #### [topography module](./helper.topography.md)
   - [CustomDataInfo (Class)](./helper.topography.md#customdatainfo)
   - [LatLonBox (Class)](./helper.topography.md#latlonbox)
   - [LoadFileAsCustomTerrainElevData](./helper.topography.md#loadfileascustomterrainelevdata)
@@ -51,14 +93,14 @@
   - [GetMappedLandCoverProfile](./helper.topography.md#getmappedlandcoverprofile)
   - [GetRasterProfile](./helper.topography.md#getrasterprofile)
 
-- [itur_m2101 module](./helper.itur_m2101.md)
+- #### [itur_m2101 module](./helper.itur_m2101.md)
   - [IMTAntennaElementGain](./helper.itur_m2101.md#imtantennaelementgain)
   - [IMTCompositeAntennaGain](./helper.itur_m2101.md#imtcompositeantennagain)
 
-- [itur_p453 module](./helper.itur_p453.md)
+- #### [itur_p453 module](./helper.itur_p453.md)
   - [MedianAnnualNwet](./helper.itur_p453.md#medianannualnwet)
 
-- [itur_p528 module](./helper.itur_p528.md)
+- #### [itur_p528 module](./helper.itur_p528.md)
   - [Polarization (Enum)](./helper.itur_p528.md#polarization)
   - [PropagationMode (Enum)](./helper.itur_p528.md#propagationmode)
   - [ReturnCode (Enum)](./helper.itur_p528.md#returncode)
@@ -68,7 +110,7 @@
   - [BasicTransmissionLoss](./helper.itur_p528.md#basictransmissionloss)
   - [BasicTransmissionLossEx](./helper.itur_p528.md#basictransmissionlossex)
 
-- [itur_p530 module](./helper.itur_p530.md)
+- #### [itur_p530 module](./helper.itur_p530.md)
   - [GeoclimaticFactorK](./helper.itur_p530.md#geoclimaticfactork)
   - [DN75](./helper.itur_p530.md#dn75)
   - [AtmosphericAttenuation](./helper.itur_p530.md#atmosphericattenuation)
@@ -83,7 +125,7 @@
   - [AvgWorstMonthToShorterWorstPeriod](./helper.itur_p530.md#avgworstmonthtoshorterworstperiod)
   - [RainAttenuationLongTermStatistics](./helper.itur_p530.md#rainattenuationlongtermstatistics)
 
-- [itur_p618 module](./helper.itur_p618.md)
+- #### [itur_p618 module](./helper.itur_p618.md)
   - [RainAttenuation](./helper.itur_p618.md#rainattenuation)
   - [ScintillationFading](./helper.itur_p618.md#scintillationfading)
   - [GaseousAttenuation](./helper.itur_p618.md#gaseousattenuation)
@@ -93,7 +135,7 @@
   - [SkyNoiseTemperature](./helper.itur_p618.md#skynoisetemperature)
   - [HydrometeorCrossPolDiscrimination](./helper.itur_p618.md#hydrometeorcrosspoldiscrimination)
 
-- [itur_p619 module](./helper.itur_p619.md)
+- #### [itur_p619 module](./helper.itur_p619.md)
   - [CalculationStatus (Enum)](./helper.itur_p619.md#calculationstatus)
   - [FreeSpaceBasicTransmissionLoss](./helper.itur_p619.md#freespacebasictransmissionloss)
   - [SpaceToEarthGaseousAttenuation](./helper.itur_p619.md#spacetoearthgaseousattenuation)
@@ -105,7 +147,7 @@
   - [ApparentToFreeSpaceElevationAngle](./helper.itur_p619.md#apparenttofreespaceelevationangle)
   - [RayHeights](./helper.itur_p619.md#rayheights)
 
-- [itur_p676 module](./helper.itur_p676.md)
+- #### [itur_p676 module](./helper.itur_p676.md)
   - [GaseousAttenuation](./helper.itur_p676.md#gaseousattenuation)
   - [DryAirGaseousAttenuation](./helper.itur_p676.md#dryairgaseousattenuation)
   - [WaterVapourGaseousAttenuation](./helper.itur_p676.md#watervapourgaseousattenuation)
@@ -126,7 +168,7 @@
   - [SlantPathStatGaseousAttenuation](./helper.itur_p676.md#slantpathstatgaseousattenuation)
   - [WeibullApproxAttenuation](./helper.itur_p676.md#weibullapproxattenuation)
 
-- [itur_p835 module](./helper.itur_p835.md)
+- #### [itur_p835 module](./helper.itur_p835.md)
   - [ReferenceAtmosphere (Enum)](./helper.itur_p835.md#referenceatmosphere)
   - [Temperature](./helper.itur_p835.md#temperature)
   - [Pressure](./helper.itur_p835.md#pressure)
@@ -134,18 +176,18 @@
   - [DryPressure](./helper.itur_p835.md#drypressure)
   - [WaterVapourPressure](./helper.itur_p835.md#watervapourpressure)
 
-- [itur_p837 module](./helper.itur_p837.md)
+- #### [itur_p837 module](./helper.itur_p837.md)
   - [RainfallRate001](./helper.itur_p837.md#rainfallrate001)
 
-- [itur_p838 module](./helper.itur_p838.md)
+- #### [itur_p838 module](./helper.itur_p838.md)
   - [RainAttenuation](./helper.itur_p838.md#rainattenuation)
   - [Coefficients](./helper.itur_p838.md#coefficients)
 
-- [itur_p839 module](./helper.itur_p839.md)
+- #### [itur_p839 module](./helper.itur_p839.md)
   - [MeanAnnualZeroCelsiusIsothermHeight](./helper.itur_p839.md#meanannualzerocelsiusisothermheight)
   - [MeanAnnualRainHeight](./helper.itur_p839.md#meanannualrainheight)
 
-- [itur_p840 module](./helper.itur_p840.md)
+- #### [itur_p840 module](./helper.itur_p840.md)
   - [CloudLiquidWaterAttenuationCoefficient](./helper.itur_p840.md#cloudliquidwaterattenuationcoefficient)
   - [InstantaneousCloudAttenuation](./helper.itur_p840.md#instantaneouscloudattenuation)
   - [StatisticalCloudAttenuation](./helper.itur_p840.md#statisticalcloudattenuation)
@@ -154,7 +196,7 @@
   - [IntegratedCloudLiquidWaterContentMean](./helper.itur_p840.md#integratedcloudliquidwatercontentmean)
   - [IntegratedCloudLiquidWaterContentStdDev](./helper.itur_p840.md#integratedcloudliquidwatercontentstddev)
 
-- [itur_p1411 module](./helper.itur_p1411.md)
+- #### [itur_p1411 module](./helper.itur_p1411.md)
   - [EnvironmentA (Enum)](./helper.itur_p1411.md#environmenta)
   - [EnvironmentB (Enum)](./helper.itur_p1411.md#environmentb)
   - [EnvironmentC (Enum)](./helper.itur_p1411.md#environmentc)
@@ -175,28 +217,28 @@
   - [SiteSpecificNearStreetLevelUrban](./helper.itur_p1411.md#sitespecificnearstreetlevelurban)
   - [SiteSpecificNearStreetLevelResidential](./helper.itur_p1411.md#sitespecificnearstreetlevelresidential)
 
-- [itur_p1511 module](./helper.itur_p1511.md)
+- #### [itur_p1511 module](./helper.itur_p1511.md)
   - [TopographicHeightAMSL](./helper.itur_p1511.md#topographicheightamsl)
 
-- [itur_p2001 module](./helper.itur_p2001.md)
+- #### [itur_p2001 module](./helper.itur_p2001.md)
   - [IsLOS](./helper.itur_p2001.md#islos)
   - [ElevationAngles](./helper.itur_p2001.md#elevationangles)
   - [PathLength](./helper.itur_p2001.md#pathlength)
   - [Bearing](./helper.itur_p2001.md#bearing)
   - [IntermediatePathPoint](./helper.itur_p2001.md#intermediatepathpoint)
 
-- [itur_p2108 module](./helper.itur_p2108.md)
+- #### [itur_p2108 module](./helper.itur_p2108.md)
   - [ClutterType (Enum)](./helper.itur_p2108.md#cluttertype)
   - [GetDefaultRepresentativeHeight](./helper.itur_p2108.md#getdefaultrepresentativeheight)
   - [HeightGainModelClutterLoss](./helper.itur_p2108.md#heightgainmodelclutterloss)
   - [TerrestrialPathClutterLoss](./helper.itur_p2108.md#terrestrialpathclutterloss)
   - [EarthSpaceClutterLoss](./helper.itur_p2108.md#earthspaceclutterloss)
 
-- [itur_p2109 module](./helper.itur_p2109.md)
+- #### [itur_p2109 module](./helper.itur_p2109.md)
   - [BuildingType (Enum)](./helper.itur_p2109.md#buildingtype)
   - [BuildingEntryLoss](./helper.itur_p2109.md#buildingentryloss)
 
-- [itur_p2145 module](./helper.itur_p2145.md)
+- #### [itur_p2145 module](./helper.itur_p2145.md)
   - [SurfaceTotalPressure](./helper.itur_p2145.md#surfacetotalpressure)
   - [SurfaceTemperature](./helper.itur_p2145.md#surfacetemperature)
   - [SurfaceWaterVapourDensity](./helper.itur_p2145.md#surfacewatervapourdensity)
@@ -211,7 +253,7 @@
   - [StdDevIntegratedWaterVapourContent](./helper.itur_p2145.md#stddevintegratedwatervapourcontent)
   - [WeibullParameters](./helper.itur_p2145.md#weibullparameters)
 
-- [itur_data module](./helper.itur_data.md)
+- #### [itur_data module](./helper.itur_data.md)
   - [DownloadCoreDigitalMaps](./helper.itur_data.md#downloadcoredigitalmaps)
   - [DownloadITURP453Data](./helper.itur_data.md#downloaditurp453data)
   - [DownloadITURP530Data](./helper.itur_data.md#downloaditurp530data)

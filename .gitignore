@@ -39,6 +39,7 @@ python-wrapper/examples/**/*.hdr
 python-wrapper/examples/**/*.prj
 python-wrapper/examples/**/*.csv
 python-wrapper/examples/**/*.geojson
+python-wrapper/examples/**/*.tif
 tests/**/*.txt
 tests/**/*.mif
 tests/**/*.mid

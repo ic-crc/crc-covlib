@@ -406,7 +406,7 @@ bool success = false;
 	txtFile.open(pathname, std::ios::out | std::ios::trunc);
 	if(txtFile)
 	{
-		txtFile << "latitude,longitude," << dataColName << std::endl;
+		txtFile << "latitude,longitude," << dataColName << '\n';
 		for(unsigned int y=0 ; y<pSizeY ; y++)
 		{
 			for(unsigned int x=0 ; x<pSizeX ; x++)
@@ -415,7 +415,7 @@ bool success = false;
 				txtFile << std::fixed << std::setprecision(6);
 				txtFile << pos.m_lat << "," << pos.m_lon << ",";
 				txtFile << std::fixed << std::setprecision(3);
-				txtFile << GetData(x, y) << std::endl;
+				txtFile << GetData(x, y) << '\n';
 			}
 		}
 		success = true;
@@ -453,26 +453,26 @@ bool success = true;
 	hdrFile.open(hdrPathname, std::ios::out | std::ios::trunc);
 	if(hdrFile)
 	{
-		hdrFile << "byteorder I" <<  std::endl;
-		hdrFile << "nrows " << pSizeY <<  std::endl;
-		hdrFile << "ncols " << pSizeX <<  std::endl;
-		hdrFile << "nbands 1" << std::endl;
-		hdrFile << "nbits " << sizeof(T)*8 << std::endl;
+		hdrFile << "byteorder I" << '\n';
+		hdrFile << "nrows " << pSizeY << '\n';
+		hdrFile << "ncols " << pSizeX << '\n';
+		hdrFile << "nbands 1" << '\n';
+		hdrFile << "nbits " << sizeof(T)*8 << '\n';
         if( std::is_floating_point<T>::value )
-		    hdrFile << "pixeltype float" << std::endl;
+		    hdrFile << "pixeltype float" << '\n';
         else if( std::is_signed<T>::value )
-            hdrFile << "pixeltype signedint" << std::endl;
+            hdrFile << "pixeltype signedint" << '\n';
         else
-            hdrFile << "pixeltype unignedint" << std::endl;
+            hdrFile << "pixeltype unignedint" << '\n';
 		hdrFile << std::fixed << std::setprecision(16);
-		hdrFile << "ulxmap " << pMinLon << std::endl;
-		hdrFile << "ulymap " << pMaxLat << std::endl;
-		hdrFile << "xdim " << (pMaxLon-pMinLon)/(pSizeX-1) << std::endl;
-		hdrFile << "ydim " << (pMaxLat-pMinLat)/(pSizeY-1) << std::endl;
+		hdrFile << "ulxmap " << pMinLon << '\n';
+		hdrFile << "ulymap " << pMaxLat << '\n';
+		hdrFile << "xdim " << (pMaxLon-pMinLon)/(pSizeX-1) << '\n';
+		hdrFile << "ydim " << (pMaxLat-pMinLat)/(pSizeY-1) << '\n';
 		if( pIsNoDataValueDefined == true)
 		{
 			hdrFile << std::defaultfloat;
-			hdrFile << "nodata_value " << pNoDataValue << std::endl;
+			hdrFile << "nodata_value " << pNoDataValue << '\n';
 		}
 	}
 	else

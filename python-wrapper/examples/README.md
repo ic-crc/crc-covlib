@@ -20,6 +20,9 @@ Example showing usage of an antenna pattern file and other antenna parameters.
 ### area-results-comparison
 Example comparing results from two different simulations. The reception area of a third Simulation object is used to store and export the difference between the two simulations.
 
+### datacube
+Example downloading terrain and surface elevation data (MRDEM DTM & DSM) from the Canada Centre for Mapping and Earth Observation Data Cube Platform. The data is then used as input for an ITU-R P.1812 simulation.
+
 ### hello-covlib
 Simplest example showing how to instantiate the Simulation class and call one of its methods.
 

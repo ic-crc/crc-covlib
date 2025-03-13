@@ -21,6 +21,8 @@ public:
 	struct LinearRing
 	{
 		std::vector<Position> m_nodes;
+		int m_polygonId; // rings with the same polygonId within the same PolyPolygon
+		                 // are part of the same polygon (i.e. polygon = 1 outer ring + inner ring(s))
 	};
 
 	struct PolyPolygon

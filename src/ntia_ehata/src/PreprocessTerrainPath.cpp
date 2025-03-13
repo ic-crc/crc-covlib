@@ -1,3 +1,5 @@
+// 2025-02-14 Modifications to original NTIA version:
+//   - Added excplicit cast to unsigned type at lines 126, 178 (avoid warning with clang++)
 #include "../include/ehata.h"
 #include "math.h"
 
@@ -121,7 +123,7 @@ void ComputeTerrainStatistics(double *pfl, InterValues *interValues)
     }
 
     // create a copy of the 10 km path at the mobile, or the whole path (if less than 10 km)
-    double *pfl_segment = new double[i_end - i_start + 1];
+    double *pfl_segment = new double[static_cast<unsigned int>(i_end - i_start + 1)];
     for (int i = i_start; i <= i_end; i++)
         pfl_segment[i - i_start] = pfl[i];
 
@@ -173,7 +175,7 @@ void MobileTerrainSlope(double *pfl, InterValues *interValues)
     double slope;
 
     double x1, x2;
-    double *pfl_segment = new double[int(10000/xi) + 3];
+    double *pfl_segment = new double[static_cast<unsigned int>(int(10000/xi) + 3)];
 
     x1 = 0.0;
     x2 = 5000.0;

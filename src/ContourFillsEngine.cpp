@@ -1,6 +1,7 @@
 #include "ContourFillsEngine.h"
 #include "KmlFileWriter.h"
 #include <map>
+#include <cassert>
 #if __has_include(<filesystem>)
 	#include <filesystem>
 	namespace fs = std::filesystem;
@@ -160,7 +161,17 @@ std::set<Segment, SegmentComparator>::iterator iter;
 		pSegmentSet.erase(iter);
 	}
 	else
+	{
+		if( pGetGroupId(seg.m_tesseraId) == pUNDEFINED_ID )
+		{
+			std::list<int> newGroup;
+			int groupId = pGroups.size(); // groupId is the vector index for pGroups
+			newGroup.push_back(seg.m_tesseraId);
+			pGroups.push_back(newGroup);
+			pSetGroupId(seg.m_tesseraId, groupId);
+		}
 		pSegmentSet.insert(seg);
+	}
 }
 
 // Use this method to specify that tesseraId0 and tesseraId1 belong to the same polygon.
@@ -177,17 +188,7 @@ void ContourFillsEngine::pGroupTesserae(int tesseraId0, int tesseraId1)
 int tess0GroupId = pGetGroupId(tesseraId0);
 int tess1GroupId = pGetGroupId(tesseraId1);
 
-	if( tess0GroupId == pUNDEFINED_ID && tess1GroupId == pUNDEFINED_ID  )
-	{ // tesseraId0 and tesseraId1 were not found in any group, add a new group (i.e. polygon) for them
-		std::list<int> newGroup;
-		int groupId = newGroup.size(); // groupId is the vector index for pGroups
-		newGroup.push_back(tesseraId0);
-		newGroup.push_back(tesseraId1);
-		pGroups.push_back(newGroup);
-		pSetGroupId(tesseraId0, groupId);
-		pSetGroupId(tesseraId1, groupId);
-	}
-	else if( tess0GroupId != pUNDEFINED_ID && tess1GroupId == pUNDEFINED_ID )
+	if( tess0GroupId != pUNDEFINED_ID && tess1GroupId == pUNDEFINED_ID )
 	{
 		pGroups[(size_t)tess0GroupId].push_back(tesseraId1);
 		pSetGroupId(tesseraId1, tess0GroupId);
@@ -197,7 +198,7 @@ int tess1GroupId = pGetGroupId(tesseraId1);
 		pGroups[(size_t)tess1GroupId].push_back(tesseraId0);
 		pSetGroupId(tesseraId0, tess1GroupId);
 	}
-	else
+	else if( tess0GroupId != pUNDEFINED_ID && tess1GroupId != pUNDEFINED_ID )
 	{
 		if( tess0GroupId != tess1GroupId )
 		{ // tesseraId0 and tesseraId1 were found in two different groups, merge the two groups
@@ -219,9 +220,24 @@ int tess1GroupId = pGetGroupId(tesseraId1);
 					pSetGroupId(*iter, tess1GroupId);
 				group1->splice(group1->end(), *group0);
 			}
-			// note: do not delete the smaller group (i.e. the vector item) so the groupIds (indexes) stay valid
+			// note: do not delete the smaller group's vector item so the groupIds (indexes) stay valid
 		}
 		// else, they were found in same group, nothing to do
+	}
+	else // ( tess0GroupId == pUNDEFINED_ID && tess1GroupId == pUNDEFINED_ID  )
+	{ 
+		// Not expected to happed since at least one group should have been defined from pAddSegment().
+		// Might be prudent to handle anyways in case pAddSegment()'s algorithm is modified in the future.
+		assert(false);
+		
+		// tesseraId0 and tesseraId1 were not found in any group, add a new group (i.e. polygon) for them
+		std::list<int> newGroup;
+		int groupId = pGroups.size(); // groupId is the vector index for pGroups
+		newGroup.push_back(tesseraId0);
+		newGroup.push_back(tesseraId1);
+		pGroups.push_back(newGroup);
+		pSetGroupId(tesseraId0, groupId);
+		pSetGroupId(tesseraId1, groupId);
 	}
 }
 
@@ -279,8 +295,9 @@ void ContourFillsEngine::pProcessSegmentsAndGroups(PolyPolygon& polyPolygon)
 		npp.m_nodeId = fromNodeId;
 		npp.m_polygonId = polygonId;
 		std::pair<MMapIterator, MMapIterator> result = segmentMultimap.equal_range(npp);
-		for (MMapIterator it = result.first ; it != result.second ; ++it)
-			return it->second;
+		if( result.first != result.second ) // use first returned segment
+			return result.first->second;
+		assert(false); 
 		return pUNDEFINED_ID;
 	};
 
@@ -357,6 +374,7 @@ void ContourFillsEngine::pProcessSegmentsAndGroups(PolyPolygon& polyPolygon)
 		// require this first/last node duplication)
 		//newRing.m_nodes.erase(newRing.m_nodes.end()-1);
 
+		newRing.m_polygonId = polygonId;
 		polyPolygon.m_rings.push_back(newRing);
 	}
 }
