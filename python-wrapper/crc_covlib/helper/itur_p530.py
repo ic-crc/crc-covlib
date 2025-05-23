@@ -469,7 +469,6 @@ def RainAttenuationLongTermStatistics(p: float, d_km: float, f_GHz: float,
 
     # Step 2
     k, alpha = itur_p838.Coefficients(f_GHz, pathElevAngle_deg, polTiltAngle_deg)
-    alpha = 0.944775555059356
     gamma_R = k*pow(R001, alpha)
 
     # Step 3

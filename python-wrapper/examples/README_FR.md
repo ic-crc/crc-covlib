@@ -19,11 +19,14 @@ Exemple démontrant différents paramètres d'antenne dont l'utilisation d'un fi
 ### area-results-comparison
 Comparaison de résultats entre deux différentes simulations. L'aire de réception d'un troisième objet de type Simulation est utilisée pour la sauvegarde de la différence.
 
-### hello-covlib
-Exemple simple montrant comment instancier la classe Simulation et appeler ses méthodes.
+### crc-mlpl
+Exemple utilisant CRC-MLPL, un modèle de propagation basé sur les technologies d'apprentissage automatique («machine learning») développé au Centre de Recherches sur les Communications Canada à partir de données de mesures prises au Royaume-Uni. Voir https://arxiv.org/abs/2405.10006
 
 ### datacube
 Exemple de téléchargement de données d'élévation de terrain et de hauteur de surface en provenance de la plateforme de Cube de données du Centre canadien de cartographie et d'observation de la Terre. Les fichiers de données téléchargés sont ensuite utilisés en entrée au modèle de propagation UIT-R P.1812.
+
+### hello-covlib
+Exemple simple montrant comment instancier la classe Simulation et appeler ses méthodes.
 
 ### iturm2101
 Exemple montrant comment générer le patron d'antenne pour une antenne à formation de faisceaux (section 5 de la recommandation UIT-R M.2101-0) en utilisant le sous-paquet _helper_ de crc-covlib.

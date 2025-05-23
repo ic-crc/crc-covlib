@@ -176,11 +176,11 @@ def DistancesToStreetCorners(radioPath: StreetCanyonsRadioPath,
 Gets a list of travel distances, in meters, to the next street corner (i.e. the next turn point at a turn angle of at least turnAngleThreshold_deg) or to the receiver, along the specified street canyons radio path.
 
 Examples of return values:
-- [50, 100, 30]:\
+- \[50, 100, 30\]:\
     Travel distance from tx station to first street corner is 50m.\
     Travel distance from first street corner to second street corner is 100m.\
     Travel distance from second street corner to rx station is 30m.
-- [75]:\
+- \[75\]:\
     Travel distance from tx station to rx station is 75m (no street corner).
 
 Args:

@@ -22,6 +22,7 @@
 #include "FreeSpacePropagModel.h"
 #include "ITURP676GaseousAttenuationModel.h"
 #include "EHataPropagModel.h"
+#include "CRCMLPLPropagModel.h"
 
 
 class Simulation : public Crc::Covlib::ISimulation
@@ -310,6 +311,7 @@ private:
 	ITURP452v18PropagModel pIturp452v18Model;
 	FreeSpacePropagModel pFreeSpaceModel;
 	EHataPropagModel pEHataModel;
+	CRCMLPLPropagModel pCrcMlplModel;
 
 	ITURP2108ClutterLossModel pIturp2108Model;
 	ITURP2109BldgEntryLossModel pIturp2109Model;

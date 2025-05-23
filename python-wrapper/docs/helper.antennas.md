@@ -6,6 +6,7 @@ from crc_covlib.helper import antennas
 ```
 
 - [LoadRadioMobileV3File](#loadradiomobilev3file)
+- [LoadNetworkPlannerFile](#loadnetworkplannerfile)
 - [LoadMsiPlanetFile](#loadmsiplanetfile)
 - [LoadEdxFile](#loadedxfile)
 - [LoadNsmaFile](#loadnsmafile)
@@ -26,6 +27,24 @@ def LoadRadioMobileV3File(sim: Simulation, terminal: Terminal, pathname: str,
                           normalize: bool=True) -> None
 ```
 Loads a Radio Mobile antenna pattern file version 3 (usually *.ant) for the specified terminal's antenna.
+    
+Args:
+- __sim__ (crc_covlib.simulation.Simulation): crc-covlib Simulation object.
+- __terminal__ (crc_covlib.simulation.Terminal): Indicates either the transmitter or receiver terminal of the simulation.
+- __pathname__ (str): Absolute or relative path for the antenna pattern file.
+- __normalize__ (bool): Indicates whether to normalize the antenna pattern.
+
+[Back to top](#antennas-helper-module) | [Back to main index](./readme.md#helper-sub-package-api-documentation)
+
+***
+
+### LoadNetworkPlannerFile
+#### crc_covlib.helper.antennas.LoadNetworkPlannerFile
+```python
+def LoadNetworkPlannerFile(sim: Simulation, terminal: Terminal, pathname: str,
+                           normalize: bool=True) -> None
+```
+Loads a Google Network Planner antenna pattern file (usually *.csv) for the specified terminal's antenna.
     
 Args:
 - __sim__ (crc_covlib.simulation.Simulation): crc-covlib Simulation object.

@@ -205,6 +205,9 @@ PathLossFuncOutput result;
 	case EXTENDED_HATA:
 		result = pPathLossEHata(sim, rxLat, rxLon, customData, optionalOutputPathLossProfile);
 		break;
+	case CRC_MLPL:
+		result = pPathLossCrcMlpl(sim, rxLat, rxLon, customData, optionalOutputPathLossProfile);
+		break;
 	default:
 		result = {0, {0,0,0,0,0}};
 		break;
@@ -388,6 +391,36 @@ PathLossFuncOutput result = {0, {0,0,0,0,0}};
 		{
 			result.pathLoss = sim.pEHataModel.CalcPathLoss(sim.pTx.freqMHz, sim.pTx.rcagl, sim.pRx.heightAGL,
 			                                               i+1, pDistKmProfile[1], pTerrainElevProfile.data());
+			optionalOutputPathLossProfile->push_back(result.pathLoss);
+		}
+	}
+
+	return result;
+}
+
+Generator::PathLossFuncOutput Generator::pPathLossCrcMlpl(Simulation& sim, double rxLat, double rxLon, CustomData customData,
+                                                          std::vector<double>* optionalOutputPathLossProfile)
+{
+PathLossFuncOutput result = {0, {0,0,0,0,0}};
+
+	result.stats = pFillProfiles(sim, rxLat, rxLon, (PropagModel*) &(sim.pCrcMlplModel), customData);
+
+	if( optionalOutputPathLossProfile == nullptr )
+	{
+		result.pathLoss = sim.pCrcMlplModel.CalcPathLoss(sim.pTx.freqMHz, sim.pTx.lat, sim.pTx.lon, rxLat, rxLon,
+		                                                 sim.pTx.rcagl, sim.pRx.heightAGL, pLatLonProfile.size(),
+		                                                 pDistKmProfile.data(), pTerrainElevProfile.data(),
+		                                                 pSurfaceElevProfile.data());
+	}
+	else
+	{
+		optionalOutputPathLossProfile->clear();
+		optionalOutputPathLossProfile->reserve(pLatLonProfile.size());
+		for(unsigned int i=0 ; i<pLatLonProfile.size() ; i++)
+		{
+			result.pathLoss = sim.pCrcMlplModel.CalcPathLoss(sim.pTx.freqMHz, sim.pTx.lat, sim.pTx.lon, rxLat, rxLon,
+			                                                 sim.pTx.rcagl, sim.pRx.heightAGL, i+1, pDistKmProfile.data(),
+			                                                 pTerrainElevProfile.data(), pSurfaceElevProfile.data());
 			optionalOutputPathLossProfile->push_back(result.pathLoss);
 		}
 	}
@@ -895,6 +928,8 @@ const char* Generator::pGetPropagModelShortName(Crc::Covlib::PropagationModel pr
 		return "FreeSpace";
 	case EXTENDED_HATA:
 		return "eHata";
+	case CRC_MLPL:
+		return "MLPL";
 	default:
 		return "";
 	}
@@ -916,6 +951,8 @@ PropagModel* Generator::pGetPropagModelPtr(Simulation& sim)
 		return (PropagModel*) &(sim.pFreeSpaceModel);
 	case EXTENDED_HATA:
 		return (PropagModel*) &(sim.pEHataModel);
+	case CRC_MLPL:
+		return (PropagModel*) &(sim.pCrcMlplModel);
 	default:
 		return nullptr;
 	}

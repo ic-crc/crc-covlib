@@ -76,6 +76,7 @@ const Simulation& Simulation::operator=(const Simulation& original)
 		pIturp452v18Model = original.pIturp452v18Model;
 		pFreeSpaceModel = original.pFreeSpaceModel;
 		pEHataModel = original.pEHataModel;
+		pCrcMlplModel = original.pCrcMlplModel;
 		pIturp2108Model = original.pIturp2108Model;
 		pIturp2109Model = original.pIturp2109Model;
 		pIturp676Model = original.pIturp676Model;
@@ -469,7 +470,7 @@ double gain_dBi = 0;
 
 void Simulation::SetPropagationModel(PropagationModel propagationModel)
 {
-	if( propagationModel < LONGLEY_RICE || propagationModel > EXTENDED_HATA )
+	if( propagationModel < LONGLEY_RICE || propagationModel > CRC_MLPL )
 		return;
 	pPropagModelId = propagationModel;
 }

@@ -156,7 +156,7 @@ def SiteGeneralOverRoofTops(f_GHz: float, d_m: float, env: EnvironmentA, path: P
 ITU-R P.1411-12, Annex 1, Section 4.2.1\
 "This site-general model is applicable to situations where one of the stations is located above rooftop and the other station is located below-rooftop, regardless of their antenna heights."
 
-Supported configurations (from from recommendation's TABLE 4):
+Supported configurations (from from recommendation's TABLE 8):
 | f_GHz      | d_m        | env                         | path    |
 |------------|------------|-----------------------------|---------|
 | 2.2-73     | 55-1200    | URBAN_HIGH_RISE,            | LOS     |
@@ -383,7 +383,7 @@ Args:
 - __h2_m__ (float): Station 2 antenna height (m), with hr_m-10 <= h2_m <= hr_m-4.
 - __hr_m__ (float): Average height of buildings (m).
 - __w2_m__ (float): Street width (m) at station 2's location, with 10 <= w2_m <= 25.
-- __phi_deg__ (float): Street orientation with respect to the direct path (deg), with 0 <= phi_deg <= 90 (i.e. for a street that is perpendicular to the direct path, phi_deg is 90 deg).
+- __phi_deg__ (float): Street orientation with respect to the direct path (deg), with 0 < phi_deg <= 90 (i.e. for a street that is perpendicular to the direct path, phi_deg is 90 deg).
 
 Returns:
 - __L<sub>NLoS1</sub>__ (float): Basic transmission loss (dB).

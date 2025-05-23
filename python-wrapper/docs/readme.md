@@ -32,6 +32,7 @@ List of ITU (International Telecommunication Union) related modules from crc_cov
 
 - #### [antennas module](./helper.antennas.md)
   - [LoadRadioMobileV3File](./helper.antennas.md#loadradiomobilev3file)
+  - [LoadNetworkPlannerFile](./helper.antennas.md#loadnetworkplannerfile)
   - [LoadMsiPlanetFile](./helper.antennas.md#loadmsiplanetfile)
   - [LoadEdxFile](./helper.antennas.md#loadedxfile)
   - [LoadNsmaFile](./helper.antennas.md#loadnsmafile)

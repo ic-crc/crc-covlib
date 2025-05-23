@@ -6,6 +6,7 @@ from ..simulation import Simulation, Terminal, PatternApproximationMethod, Beari
 from . import itur_m2101
 
 __all__ = ['LoadRadioMobileV3File',
+           'LoadNetworkPlannerFile',
            'LoadMsiPlanetFile',
            'LoadEdxFile',
            'LoadNsmaFile',
@@ -67,6 +68,54 @@ def LoadRadioMobileV3File(sim: Simulation, terminal: Terminal, pathname: str,
             sim.AddAntennaHorizontalPatternEntry(terminal, azm, float(f.readline().strip()))
         for elv in range(-90, 270):
             _AddMainVerticalCutEntry(sim, terminal, elv, float(f.readline().strip()))
+
+    if normalize:
+        sim.NormalizeAntennaHorizontalPattern(terminal)
+        sim.NormalizeAntennaVerticalPattern(terminal)
+
+
+def LoadNetworkPlannerFile(sim: Simulation, terminal: Terminal, pathname: str, 
+                      normalize: bool=True) -> None:
+    """
+    Loads a Google Network Planner antenna pattern file (usually *.csv) for the specified
+    terminal's antenna.
+    
+    Args:
+        sim (crc_covlib.simulation.Simulation): crc-covlib Simulation object.
+        terminal (crc_covlib.simulation.Terminal): Indicates either the transmitter or
+            receiver terminal of the simulation.
+        pathname (str): Absolute or relative path for the antenna pattern file.
+        normalize (bool): Indicates whether to normalize the antenna pattern.
+    """
+    sim.ClearAntennaPatterns(terminal, True, True)
+
+    with open(pathname, 'r', encoding='UTF-8') as f:
+        line = f.readline()
+        while line:
+            if line.startswith('----SpecMetadata----'):
+                line = f.readline()
+                line = f.readline()
+                tokens = line.split(',')
+                if len(tokens) >= 6:
+                    gain_dBi = float(tokens[5])
+                    sim.SetAntennaMaximumGain(terminal, gain_dBi)
+            elif line.startswith('----PatternData----'):
+                line = f.readline()
+                line = f.readline()
+                while line:
+                    tokens = line.split(',')
+                    if len(tokens) >= 3:
+                        angle_deg = float(tokens[0])
+                        azm_gain_dBi = float(tokens[1])
+                        elev_gain_dBi = float(tokens[2])
+                        azm_deg = angle_deg
+                        if azm_deg < 0:
+                            azm_deg += 360
+                        elev_angle_deg = angle_deg
+                        sim.AddAntennaHorizontalPatternEntry(terminal, azm_deg, azm_gain_dBi)
+                        _AddMainVerticalCutEntry(sim, terminal, elev_angle_deg, elev_gain_dBi)
+                    line = f.readline()
+            line = f.readline()
 
     if normalize:
         sim.NormalizeAntennaHorizontalPattern(terminal)

@@ -224,7 +224,8 @@ namespace Crc
 			ITU_R_P_452_V17 = 2,
 			ITU_R_P_452_V18 = 3,
 			FREE_SPACE      = 4,
-			EXTENDED_HATA   = 5
+			EXTENDED_HATA   = 5,
+			CRC_MLPL        = 6
 		};
 
 		inline constexpr double AUTOMATIC = std::numeric_limits<double>::quiet_NaN();

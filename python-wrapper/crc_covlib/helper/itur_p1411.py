@@ -155,7 +155,7 @@ def SiteGeneralOverRoofTops(f_GHz: float, d_m: float, env: EnvironmentA, path: P
     "This site-general model is applicable to situations where one of the stations is located above
     rooftop and the other station is located below-rooftop, regardless of their antenna heights."
 
-    Supported configurations (from from recommendation's TABLE 4):
+    Supported configurations (from from recommendation's TABLE 8):
     --------------------------------------------------------------
     f_GHz       d_m         env                           path
     --------------------------------------------------------------
@@ -771,7 +771,7 @@ def SiteSpecificOverRoofTopsSuburban(f_GHz: float, d_m: float, h1_m: float, h2_m
         hr_m (float): Average height of buildings (m).
         w2_m (float): Street width (m) at station 2's location, with 10 <= w2_m <= 25.
         phi_deg (float): Street orientation with respect to the direct path (deg),
-            with 0 <= phi_deg <= 90 (i.e. for a street that is perpendicular to the direct path,
+            with 0 < phi_deg <= 90 (i.e. for a street that is perpendicular to the direct path,
             phi_deg is 90 deg).
 
     Returns:

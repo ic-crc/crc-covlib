@@ -270,6 +270,7 @@ class PropagationModel(enum.Enum):
     ITU_R_P_452_V18 = 3
     FREE_SPACE      = 4
     EXTENDED_HATA   = 5
+    CRC_MLPL        = 6
 
 
 AUTOMATIC = float('nan')
@@ -377,10 +378,14 @@ class Simulation(object):
     def GetTransmitterFrequency(self) -> float:
         return self._lib.GetTransmitterFrequency(self._sim_ptr)
     
-    def SetTransmitterPower(self, power_watts: float, powerType: PowerType=PowerType.EIRP) -> None:   
+    def SetTransmitterPower(self, power_watts: float, powerType: PowerType=PowerType.EIRP) -> None:
+        if isinstance(powerType, PowerType) == False:
+            raise TypeError('parameter powerType: PowerType')
         return self._lib.SetTransmitterPower(self._sim_ptr, power_watts, powerType.value)
 
     def GetTransmitterPower(self, powerType: PowerType=PowerType.EIRP) -> float:
+        if isinstance(powerType, PowerType) == False:
+            raise TypeError('parameter powerType: PowerType')
         return self._lib.GetTransmitterPower(self._sim_ptr, powerType.value)
 
     def SetTransmitterLosses(self, losses_dB: float) -> None:
@@ -390,6 +395,8 @@ class Simulation(object):
         return self._lib.GetTransmitterLosses(self._sim_ptr)
 
     def SetTransmitterPolarization(self, polarization: Polarization) -> None:
+        if isinstance(polarization, Polarization) == False:
+            raise TypeError('parameter polarization: Polarization')
         return self._lib.SetTransmitterPolarization(self._sim_ptr, polarization.value)
 
     def GetTransmitterPolarization(self) -> Polarization:
@@ -414,63 +421,105 @@ class Simulation(object):
     # Antenna parameters
 
     def ClearAntennaPatterns(self, terminal: Terminal, clearHorizontalPattern: bool=True, clearVerticalPattern: bool=True) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.ClearAntennaPatterns(self._sim_ptr, terminal.value, clearHorizontalPattern, clearVerticalPattern)
 
     def AddAntennaHorizontalPatternEntry(self, terminal: Terminal, azimuth_degrees: float, gain_dB: float) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.AddAntennaHorizontalPatternEntry(self._sim_ptr, terminal.value, azimuth_degrees, gain_dB)
 
     def AddAntennaVerticalPatternEntry(self, terminal: Terminal, azimuth_degrees: int, elevAngle_degrees: float, gain_dB: float) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.AddAntennaVerticalPatternEntry(self._sim_ptr, terminal.value, azimuth_degrees, elevAngle_degrees, gain_dB)
 
     def SetAntennaElectricalTilt(self, terminal: Terminal, elecricalTilt_degrees: float) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.SetAntennaElectricalTilt(self._sim_ptr, terminal.value, elecricalTilt_degrees)
 
     def GetAntennaElectricalTilt(self, terminal: Terminal) -> float:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.GetAntennaElectricalTilt(self._sim_ptr, terminal.value)
 
     def SetAntennaMechanicalTilt(self, terminal: Terminal, mechanicalTilt_degrees: float, azimuth_degrees: float=0) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.SetAntennaMechanicalTilt(self._sim_ptr, terminal.value, mechanicalTilt_degrees, azimuth_degrees)
 
     def GetAntennaMechanicalTilt(self, terminal: Terminal) -> float:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.GetAntennaMechanicalTilt(self._sim_ptr, terminal.value)
 
     def GetAntennaMechanicalTiltAzimuth(self, terminal: Terminal) -> float:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.GetAntennaMechanicalTiltAzimuth(self._sim_ptr, terminal.value)
 
     def SetAntennaMaximumGain(self, terminal: Terminal, maxGain_dBi: float) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.SetAntennaMaximumGain(self._sim_ptr, terminal.value, maxGain_dBi)
 
     def GetAntennaMaximumGain(self, terminal: Terminal) -> float:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.GetAntennaMaximumGain(self._sim_ptr, terminal.value)
 
     def SetAntennaBearing(self, terminal: Terminal, bearingRef: BearingReference, bearing_degrees: float) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
+        if isinstance(bearingRef, BearingReference) == False:
+            raise TypeError('parameter bearingRef: BearingReference')
         return self._lib.SetAntennaBearing(self._sim_ptr, terminal.value, bearingRef.value, bearing_degrees)
 
     def GetAntennaBearingReference(self, terminal: Terminal) -> BearingReference:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return BearingReference(self._lib.GetAntennaBearingReference(self._sim_ptr, terminal.value))
 
     def GetAntennaBearing(self, terminal: Terminal) -> float:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.GetAntennaBearing(self._sim_ptr, terminal.value)
 
     def NormalizeAntennaHorizontalPattern(self, terminal: Terminal) -> float:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.NormalizeAntennaHorizontalPattern(self._sim_ptr, terminal.value)
 
     def NormalizeAntennaVerticalPattern(self, terminal: Terminal) -> float:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.NormalizeAntennaVerticalPattern(self._sim_ptr, terminal.value)
 
     def SetAntennaPatternApproximationMethod(self, terminal: Terminal, method: PatternApproximationMethod) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
+        if isinstance(method, PatternApproximationMethod) == False:
+            raise TypeError('parameter method: PatternApproximationMethod')
         return self._lib.SetAntennaPatternApproximationMethod(self._sim_ptr, terminal.value, method.value)
 
     def GetAntennaPatternApproximationMethod(self, terminal: Terminal) -> PatternApproximationMethod:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return PatternApproximationMethod(self._lib.GetAntennaPatternApproximationMethod(self._sim_ptr, terminal.value))
 
     def GetAntennaGain(self, terminal: Terminal, azimuth_degrees: float, elevAngle_degrees: float, receiverLatitude_degrees: float=0, receiverLongitude_degrees:float=0) -> float:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return self._lib.GetAntennaGain(self._sim_ptr, terminal.value, azimuth_degrees, elevAngle_degrees, receiverLatitude_degrees, receiverLongitude_degrees)
 
 
     # Propagation model selection
 
     def SetPropagationModel(self, propagationModel: PropagationModel) -> None:
+        if isinstance(propagationModel, PropagationModel) == False:
+            raise TypeError('parameter propagationModel: PropagationModel')
         return self._lib.SetPropagationModel(self._sim_ptr, propagationModel.value)
 
     def GetPropagationModel(self) -> PropagationModel:
@@ -498,12 +547,16 @@ class Simulation(object):
         return self._lib.GetLongleyRiceGroundConductivity(self._sim_ptr)
 
     def SetLongleyRiceClimaticZone(self, climaticZone: LRClimaticZone) -> None:
+        if isinstance(climaticZone, LRClimaticZone) == False:
+            raise TypeError('parameter climaticZone: LRClimaticZone')
         return self._lib.SetLongleyRiceClimaticZone(self._sim_ptr, climaticZone.value)
 
     def GetLongleyRiceClimaticZone(self) -> LRClimaticZone:
         return LRClimaticZone(self._lib.GetLongleyRiceClimaticZone(self._sim_ptr))
 
     def SetLongleyRiceActivePercentageSet(self, percentageSet: LRPercentageSet) -> None:
+        if isinstance(percentageSet, LRPercentageSet) == False:
+            raise TypeError('parameter percentageSet: LRPercentageSet')
         return self._lib.SetLongleyRiceActivePercentageSet(self._sim_ptr, percentageSet.value)
     
     def GetLongleyRiceActivePercentageSet(self) -> LRPercentageSet:
@@ -579,9 +632,13 @@ class Simulation(object):
         return self._lib.GetITURP1812PredictionResolution(self._sim_ptr)
 
     def SetITURP1812RepresentativeClutterHeight(self, clutterCategory: P1812ClutterCategory, reprHeight_meters: float) -> None:
+        if isinstance(clutterCategory, P1812ClutterCategory) == False:
+            raise TypeError('parameter clutterCategory: P1812ClutterCategory')
         return self._lib.SetITURP1812RepresentativeClutterHeight(self._sim_ptr, clutterCategory.value, reprHeight_meters)
 
     def GetITURP1812RepresentativeClutterHeight(self, clutterCategory: P1812ClutterCategory) -> float:
+        if isinstance(clutterCategory, P1812ClutterCategory) == False:
+            raise TypeError('parameter clutterCategory: P1812ClutterCategory')
         return self._lib.GetITURP1812RepresentativeClutterHeight(self._sim_ptr, clutterCategory.value)
 
     def SetITURP1812RadioClimaticZonesFile(self, pathname: str) -> None:
@@ -591,12 +648,16 @@ class Simulation(object):
         return self._lib.GetITURP1812RadioClimaticZonesFile(self._sim_ptr).decode()
 
     def SetITURP1812LandCoverMappingType(self, mappingType: P1812LandCoverMappingType) -> None:
+        if isinstance(mappingType, P1812LandCoverMappingType) == False:
+            raise TypeError('parameter mappingType: P1812LandCoverMappingType')
         return self._lib.SetITURP1812LandCoverMappingType(self._sim_ptr, mappingType.value)
 
     def GetITURP1812LandCoverMappingType(self) -> P1812LandCoverMappingType:
         return P1812LandCoverMappingType(self._lib.GetITURP1812LandCoverMappingType(self._sim_ptr))
 
     def SetITURP1812SurfaceProfileMethod(self, method: P1812SurfaceProfileMethod) -> None:
+        if isinstance(method, P1812SurfaceProfileMethod) == False:
+            raise TypeError('parameter method: P1812SurfaceProfileMethod')
         return self._lib.SetITURP1812SurfaceProfileMethod(self._sim_ptr, method.value)
 
     def GetITURP1812SurfaceProfileMethod(self) -> P1812SurfaceProfileMethod:
@@ -612,6 +673,8 @@ class Simulation(object):
         return self._lib.GetITURP452TimePercentage(self._sim_ptr)
 
     def SetITURP452PredictionType(self, predictionType: P452PredictionType) -> None:
+        if isinstance(predictionType, P452PredictionType) == False:
+            raise TypeError('parameter predictionType: P452PredictionType')
         return self._lib.SetITURP452PredictionType(self._sim_ptr, predictionType.value)
     
     def GetITURP452PredictionType(self) -> P452PredictionType:
@@ -648,30 +711,52 @@ class Simulation(object):
         return self._lib.GetITURP452RadioClimaticZonesFile(self._sim_ptr).decode()
 
     def SetITURP452HeightGainModelClutterValue(self, clutterCategory: P452HeightGainModelClutterCategory, nominalParam: P452HeightGainModelClutterParam, nominalValue: float) -> None:
+        if isinstance(clutterCategory, P452HeightGainModelClutterCategory) == False:
+            raise TypeError('parameter clutterCategory: P452HeightGainModelClutterCategory')
+        if isinstance(nominalParam, P452HeightGainModelClutterParam) == False:
+            raise TypeError('parameter nominalParam: P452HeightGainModelClutterParam')
         return self._lib.SetITURP452HeightGainModelClutterValue(self._sim_ptr, clutterCategory.value, nominalParam.value, nominalValue)
 
     def GetITURP452HeightGainModelClutterValue(self, clutterCategory: P452HeightGainModelClutterCategory, nominalParam: P452HeightGainModelClutterParam) -> float:
+        if isinstance(clutterCategory, P452HeightGainModelClutterCategory) == False:
+            raise TypeError('parameter clutterCategory: P452HeightGainModelClutterCategory')
+        if isinstance(nominalParam, P452HeightGainModelClutterParam) == False:
+            raise TypeError('parameter nominalParam: P452HeightGainModelClutterParam')
         return self._lib.GetITURP452HeightGainModelClutterValue(self._sim_ptr, clutterCategory.value, nominalParam.value)
 
     def SetITURP452HeightGainModelMode(self, terminal: Terminal, mode: P452HeightGainModelMode) -> None:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
+        if isinstance(mode, P452HeightGainModelMode) == False:
+            raise TypeError('parameter mode: P452HeightGainModelMode')
         return self._lib.SetITURP452HeightGainModelMode(self._sim_ptr, terminal.value, mode.value)
 
     def GetITURP452HeightGainModelMode(self, terminal: Terminal) -> P452HeightGainModelMode:
+        if isinstance(terminal, Terminal) == False:
+            raise TypeError('parameter terminal: Terminal')
         return P452HeightGainModelMode(self._lib.GetITURP452HeightGainModelMode(self._sim_ptr, terminal.value))
 
     def SetITURP452RepresentativeClutterHeight(self, clutterCategory: P452ClutterCategory, reprHeight_meters: float) -> None:
+        if isinstance(clutterCategory, P452ClutterCategory) == False:
+            raise TypeError('parameter clutterCategory: P452ClutterCategory')
         return self._lib.SetITURP452RepresentativeClutterHeight(self._sim_ptr, clutterCategory.value, reprHeight_meters)
 
     def GetITURP452RepresentativeClutterHeight(self, clutterCategory: P452ClutterCategory) -> float:
+        if isinstance(clutterCategory, P452ClutterCategory) == False:
+            raise TypeError('parameter clutterCategory: P452ClutterCategory')
         return self._lib.GetITURP452RepresentativeClutterHeight(self._sim_ptr, clutterCategory.value)
 
     def SetITURP452LandCoverMappingType(self, mappingType: P452LandCoverMappingType) -> None:
+        if isinstance(mappingType, P452LandCoverMappingType) == False:
+            raise TypeError('parameter mappingType: P452LandCoverMappingType')
         return self._lib.SetITURP452LandCoverMappingType(self._sim_ptr, mappingType.value)
     
     def GetITURP452LandCoverMappingType(self) -> P452LandCoverMappingType:
         return P452LandCoverMappingType(self._lib.GetITURP452LandCoverMappingType(self._sim_ptr))
 
     def SetITURP452SurfaceProfileMethod(self, method: P452SurfaceProfileMethod) -> None:
+        if isinstance(method, P452SurfaceProfileMethod) == False:
+            raise TypeError('parameter method: P452SurfaceProfileMethod')
         return self._lib.SetITURP452SurfaceProfileMethod(self._sim_ptr, method.value)
 
     def GetITURP452SurfaceProfileMethod(self) -> P452SurfaceProfileMethod:
@@ -681,6 +766,8 @@ class Simulation(object):
     # Extended Hata propagation model parameters
 
     def SetEHataClutterEnvironment(self, clutterEnvironment: EHataClutterEnvironment) -> None:
+        if isinstance(clutterEnvironment, EHataClutterEnvironment) == False:
+            raise TypeError('parameter clutterEnvironment: EHataClutterEnvironment')
         return self._lib.SetEHataClutterEnvironment(self._sim_ptr, clutterEnvironment.value)
 
     def GetEHataClutterEnvironment(self) -> EHataClutterEnvironment:
@@ -726,6 +813,8 @@ class Simulation(object):
         return self._lib.GetITURP2109Probability(self._sim_ptr)
 
     def SetITURP2109DefaultBuildingType(self, buildingType: P2109BuildingType) -> None:
+        if isinstance(buildingType, P2109BuildingType) == False:
+            raise TypeError('parameter buildingType: P2109BuildingType')
         return self._lib.SetITURP2109DefaultBuildingType(self._sim_ptr, buildingType.value)
 
     def GetITURP2109DefaultBuildingType(self) -> int:
@@ -750,33 +839,45 @@ class Simulation(object):
     # ITU digial maps
 
     def GetITUDigitalMapValue(self, map: ITUDigitalMap, latitude_degrees: float, longitude_degrees: float) -> float:
+        if isinstance(map, ITUDigitalMap) == False:
+            raise TypeError('parameter map: ITUDigitalMap')
         return self._lib.GetITUDigitalMapValue(self._sim_ptr, map.value, latitude_degrees, longitude_degrees)
 
 
     # Terrain elevation data parameters
 
     def SetPrimaryTerrainElevDataSource(self, terrainElevSource: TerrainElevDataSource) -> None:
+        if isinstance(terrainElevSource, TerrainElevDataSource) == False:
+            raise TypeError('parameter terrainElevSource: TerrainElevDataSource')
         return self._lib.SetPrimaryTerrainElevDataSource(self._sim_ptr, terrainElevSource.value)
 
     def GetPrimaryTerrainElevDataSource(self) -> TerrainElevDataSource:
         return TerrainElevDataSource(self._lib.GetPrimaryTerrainElevDataSource(self._sim_ptr))
 
     def SetSecondaryTerrainElevDataSource(self, terrainElevSource: TerrainElevDataSource) -> None:
+        if isinstance(terrainElevSource, TerrainElevDataSource) == False:
+            raise TypeError('parameter terrainElevSource: TerrainElevDataSource')
         return self._lib.SetSecondaryTerrainElevDataSource(self._sim_ptr, terrainElevSource.value)
 
     def GetSecondaryTerrainElevDataSource(self) -> TerrainElevDataSource:
         return TerrainElevDataSource(self._lib.GetSecondaryTerrainElevDataSource(self._sim_ptr))
 
     def SetTertiaryTerrainElevDataSource(self, terrainElevSource: TerrainElevDataSource) -> None:
+        if isinstance(terrainElevSource, TerrainElevDataSource) == False:
+            raise TypeError('parameter terrainElevSource: TerrainElevDataSource')
         return self._lib.SetTertiaryTerrainElevDataSource(self._sim_ptr, terrainElevSource.value)
 
     def GetTertiaryTerrainElevDataSource(self) -> TerrainElevDataSource:
         return TerrainElevDataSource(self._lib.GetTertiaryTerrainElevDataSource(self._sim_ptr))
 
     def SetTerrainElevDataSourceDirectory(self, terrainElevSource: TerrainElevDataSource, directory: str, useIndexFile: bool=False, overwriteIndexFile: bool=False) -> None:
+        if isinstance(terrainElevSource, TerrainElevDataSource) == False:
+            raise TypeError('parameter terrainElevSource: TerrainElevDataSource')
         return self._lib.SetTerrainElevDataSourceDirectory(self._sim_ptr, terrainElevSource.value, directory.encode(), useIndexFile, overwriteIndexFile)
 
     def GetTerrainElevDataSourceDirectory(self, terrainElevSource: TerrainElevDataSource) -> str:
+        if isinstance(terrainElevSource, TerrainElevDataSource) == False:
+            raise TypeError('parameter terrainElevSource: TerrainElevDataSource')
         return self._lib.GetTerrainElevDataSourceDirectory(self._sim_ptr, terrainElevSource.value).decode()
 
     def SetTerrainElevDataSamplingResolution(self, samplingResolution_meters: float) -> None:
@@ -786,9 +887,15 @@ class Simulation(object):
         return self._lib.GetTerrainElevDataSamplingResolution(self._sim_ptr)
 
     def SetTerrainElevDataSourceSamplingMethod(self, terrainElevSource: TerrainElevDataSource, samplingMethod: SamplingMethod) -> None:
+        if isinstance(terrainElevSource, TerrainElevDataSource) == False:
+            raise TypeError('parameter terrainElevSource: TerrainElevDataSource')
+        if isinstance(samplingMethod, SamplingMethod) == False:
+            raise TypeError('parameter samplingMethod: SamplingMethod')
         return self._lib.SetTerrainElevDataSourceSamplingMethod(self._sim_ptr, terrainElevSource.value, samplingMethod.value)
 
     def GetTerrainElevDataSourceSamplingMethod(self, terrainElevSource: TerrainElevDataSource) -> SamplingMethod:
+        if isinstance(terrainElevSource, TerrainElevDataSource) == False:
+            raise TypeError('parameter terrainElevSource: TerrainElevDataSource')
         return SamplingMethod(self._lib.GetTerrainElevDataSourceSamplingMethod(self._sim_ptr, terrainElevSource.value))
 
     def AddCustomTerrainElevData(self, lowerLeftCornerLat_degrees: float, lowerLeftCornerLon_degrees: float, upperRightCornerLat_degrees: float, upperRightCornerLon_degrees: float, numHorizSamples: int, numVertSamples: int, terrainElevData_meters: List[float], defineNoDataValue: bool=False, noDataValue: float=0) -> bool:
@@ -808,21 +915,29 @@ class Simulation(object):
     # Land cover data parameters
 
     def SetPrimaryLandCoverDataSource(self, landCoverSource: LandCoverDataSource) -> None:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
         return self._lib.SetPrimaryLandCoverDataSource(self._sim_ptr, landCoverSource.value)
 
     def GetPrimaryLandCoverDataSource(self) -> LandCoverDataSource:
         return LandCoverDataSource(self._lib.GetPrimaryLandCoverDataSource(self._sim_ptr))
 
     def SetSecondaryLandCoverDataSource(self, landCoverSource: LandCoverDataSource) -> None:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
         return self._lib.SetSecondaryLandCoverDataSource(self._sim_ptr, landCoverSource.value)
 
     def GetSecondaryLandCoverDataSource(self) -> LandCoverDataSource:
         return LandCoverDataSource(self._lib.GetSecondaryLandCoverDataSource(self._sim_ptr))
 
     def SetLandCoverDataSourceDirectory(self, landCoverSource: LandCoverDataSource, directory: str, useIndexFile: bool=False, overwriteIndexFile: bool=False) -> None:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
         return self._lib.SetLandCoverDataSourceDirectory(self._sim_ptr, landCoverSource.value, directory.encode(), useIndexFile, overwriteIndexFile)
 
     def GetLandCoverDataSourceDirectory(self, landCoverSource: LandCoverDataSource) -> str:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
         return self._lib.GetLandCoverDataSourceDirectory(self._sim_ptr, landCoverSource.value).decode()
 
     def AddCustomLandCoverData(self, lowerLeftCornerLat_degrees: float, lowerLeftCornerLon_degrees: float, upperRightCornerLat_degrees: float, upperRightCornerLon_degrees: float, numHorizSamples: int, numVertSamples: int, landCoverData: List[int], defineNoDataValue: bool=False, noDataValue: int=0) -> bool:
@@ -839,48 +954,80 @@ class Simulation(object):
         return self._lib.GetLandCoverClass(self._sim_ptr, latitude_degrees, longitude_degrees)
 
     def GetLandCoverClassMappedValue(self, latitude_degrees: float, longitude_degrees: float, propagationModel: PropagationModel) -> int:
+        if isinstance(propagationModel, PropagationModel) == False:
+            raise TypeError('parameter propagationModel: PropagationModel')
         return self._lib.GetLandCoverClassMappedValue(self._sim_ptr, latitude_degrees, longitude_degrees, propagationModel.value)
 
     def SetLandCoverClassMapping(self, landCoverSource: LandCoverDataSource, sourceClass: int, propagationModel: PropagationModel, modelValue: int) -> None:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
+        if isinstance(propagationModel, PropagationModel) == False:
+            raise TypeError('parameter propagationModel: PropagationModel')
         return self._lib.SetLandCoverClassMapping(self._sim_ptr, landCoverSource.value, sourceClass, propagationModel.value, modelValue)
 
     def GetLandCoverClassMapping(self, landCoverSource: LandCoverDataSource, sourceClass: int, propagationModel: PropagationModel) -> int:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
+        if isinstance(propagationModel, PropagationModel) == False:
+            raise TypeError('parameter propagationModel: PropagationModel')
         return self._lib.GetLandCoverClassMapping(self._sim_ptr, landCoverSource.value, sourceClass, propagationModel.value)
 
     def SetDefaultLandCoverClassMapping(self, landCoverSource: LandCoverDataSource, propagationModel: PropagationModel, modelValue: int) -> None:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
+        if isinstance(propagationModel, PropagationModel) == False:
+            raise TypeError('parameter propagationModel: PropagationModel')
         return self._lib.SetDefaultLandCoverClassMapping(self._sim_ptr, landCoverSource.value, propagationModel.value, modelValue)
 
     def GetDefaultLandCoverClassMapping(self, landCoverSource: LandCoverDataSource, propagationModel: PropagationModel) -> int:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
+        if isinstance(propagationModel, PropagationModel) == False:
+            raise TypeError('parameter propagationModel: PropagationModel')
         return self._lib.GetDefaultLandCoverClassMapping(self._sim_ptr, landCoverSource.value, propagationModel.value)
 
     def ClearLandCoverClassMappings(self, landCoverSource: LandCoverDataSource, propagationModel: PropagationModel) -> None:
+        if isinstance(landCoverSource, LandCoverDataSource) == False:
+            raise TypeError('parameter landCoverSource: LandCoverDataSource')
+        if isinstance(propagationModel, PropagationModel) == False:
+            raise TypeError('parameter propagationModel: PropagationModel')
         return self._lib.ClearLandCoverClassMappings(self._sim_ptr, landCoverSource.value, propagationModel.value)
 
 
     # Surface elevation data parameters
 
     def SetPrimarySurfaceElevDataSource(self, surfaceElevSource: SurfaceElevDataSource) -> None:
+        if isinstance(surfaceElevSource, SurfaceElevDataSource) == False:
+            raise TypeError('parameter surfaceElevSource: SurfaceElevDataSource')
         return self._lib.SetPrimarySurfaceElevDataSource(self._sim_ptr, surfaceElevSource.value)
 
     def GetPrimarySurfaceElevDataSource(self) -> SurfaceElevDataSource:
         return SurfaceElevDataSource(self._lib.GetPrimarySurfaceElevDataSource(self._sim_ptr))
 
     def SetSecondarySurfaceElevDataSource(self, surfaceElevSource: SurfaceElevDataSource) -> None:
+        if isinstance(surfaceElevSource, SurfaceElevDataSource) == False:
+            raise TypeError('parameter surfaceElevSource: SurfaceElevDataSource')
         return self._lib.SetSecondarySurfaceElevDataSource(self._sim_ptr, surfaceElevSource.value)
 
     def GetSecondarySurfaceElevDataSource(self) -> SurfaceElevDataSource:
         return SurfaceElevDataSource(self._lib.GetSecondarySurfaceElevDataSource(self._sim_ptr))
 
     def SetTertiarySurfaceElevDataSource(self, surfaceElevSource: SurfaceElevDataSource) -> None:
+        if isinstance(surfaceElevSource, SurfaceElevDataSource) == False:
+            raise TypeError('parameter surfaceElevSource: SurfaceElevDataSource')
         return self._lib.SetTertiarySurfaceElevDataSource(self._sim_ptr, surfaceElevSource.value)
 
     def GetTertiarySurfaceElevDataSource(self) -> SurfaceElevDataSource:
         return SurfaceElevDataSource(self._lib.GetTertiarySurfaceElevDataSource(self._sim_ptr))
 
     def SetSurfaceElevDataSourceDirectory(self, surfaceElevSource: SurfaceElevDataSource, directory: str, useIndexFile: bool=False, overwriteIndexFile: bool=False) -> None:
+        if isinstance(surfaceElevSource, SurfaceElevDataSource) == False:
+            raise TypeError('parameter surfaceElevSource: SurfaceElevDataSource')
         return self._lib.SetSurfaceElevDataSourceDirectory(self._sim_ptr, surfaceElevSource.value, directory.encode(), useIndexFile, overwriteIndexFile)
 
     def GetSurfaceElevDataSourceDirectory(self, surfaceElevSource: SurfaceElevDataSource) -> str:
+        if isinstance(surfaceElevSource, SurfaceElevDataSource) == False:
+            raise TypeError('parameter surfaceElevSource: SurfaceElevDataSource')
         return self._lib.GetSurfaceElevDataSourceDirectory(self._sim_ptr, surfaceElevSource.value).decode()
 
     def SetSurfaceAndTerrainDataSourcePairing(self, usePairing: bool) -> None:
@@ -890,9 +1037,15 @@ class Simulation(object):
         return self._lib.GetSurfaceAndTerrainDataSourcePairing(self._sim_ptr)
 
     def SetSurfaceElevDataSourceSamplingMethod(self, surfaceElevSource: SurfaceElevDataSource, samplingMethod: SamplingMethod) -> None:
+        if isinstance(surfaceElevSource, SurfaceElevDataSource) == False:
+            raise TypeError('parameter surfaceElevSource: SurfaceElevDataSource')
+        if isinstance(samplingMethod, SamplingMethod) == False:
+            raise TypeError('parameter samplingMethod: SamplingMethod')
         return self._lib.SetSurfaceElevDataSourceSamplingMethod(self._sim_ptr, surfaceElevSource.value, samplingMethod.value)
 
     def GetSurfaceElevDataSourceSamplingMethod(self, surfaceElevSource: SurfaceElevDataSource) -> SamplingMethod:
+        if isinstance(surfaceElevSource, SurfaceElevDataSource) == False:
+            raise TypeError('parameter surfaceElevSource: SurfaceElevDataSource')
         return SamplingMethod(self._lib.GetSurfaceElevDataSourceSamplingMethod(self._sim_ptr, surfaceElevSource.value))
 
     def AddCustomSurfaceElevData(self, lowerLeftCornerLat_degrees: float, lowerLeftCornerLon_degrees: float, upperRightCornerLat_degrees: float, upperRightCornerLon_degrees: float, numHorizSamples: int, numVertSamples: int, surfaceElevData_meters: List[float], defineNoDataValue: bool=False, noDataValue: float=0) -> bool:
@@ -942,6 +1095,8 @@ class Simulation(object):
     # Result type parameters
 
     def SetResultType(self, resultType: ResultType) -> None:
+        if isinstance(resultType, ResultType) == False:
+            raise TypeError('parameter resultType: ResultType')
         return self._lib.SetResultType(self._sim_ptr, resultType.value)
 
     def GetResultType(self) -> ResultType:

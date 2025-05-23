@@ -57,6 +57,7 @@ private:
 	PathLossFuncOutput pPathLossP452v18(Simulation& sim, double rxLat, double rxLon, CustomData customData, std::vector<double>* optionalOutputPathLossProfile);
 	PathLossFuncOutput pPathLossFreeSpace(Simulation& sim, double rxLat, double rxLon, CustomData customData, std::vector<double>* optionalOutputPathLossProfile);
 	PathLossFuncOutput pPathLossEHata(Simulation& sim, double rxLat, double rxLon, CustomData customData, std::vector<double>* optionalOutputPathLossProfile);
+	PathLossFuncOutput pPathLossCrcMlpl(Simulation& sim, double rxLat, double rxLon, CustomData customData, std::vector<double>* optionalOutputPathLossProfile);
 
 	MissesStats pFillProfiles(Simulation& sim, double rxLat, double rxLon, PropagModel* propagModel, CustomData customData);
 
