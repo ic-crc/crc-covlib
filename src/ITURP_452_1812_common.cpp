@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2025 His Majesty the King in Right of Canada as represented by the Minister of
+ * Industry through the Communications Research Centre Canada.
+ * 
+ * Licensed under the MIT License
+ * See LICENSE file in the project root for full license text.
+ */
+
 // Implements calculations that are common to both ITU-R P.452 and ITU-R P.1812
 #include "ITURP_452_1812_common.h"
 #include "ITURP_2001.h"

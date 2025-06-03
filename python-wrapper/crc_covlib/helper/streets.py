@@ -1,3 +1,9 @@
+# Copyright (c) 2025 His Majesty the King in Right of Canada as represented by the Minister of
+# Industry through the Communications Research Centre Canada.
+#
+# Licensed under the MIT License
+# See LICENSE file in the project root for full license text.
+
 """Additional street related functionalities using OpenStreetMap data in support of crc-covlib.
 
 This module aims at determining potential propagation paths for scenarios where antennas are below

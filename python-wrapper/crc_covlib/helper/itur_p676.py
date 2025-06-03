@@ -1,3 +1,9 @@
+# Copyright (c) 2025 His Majesty the King in Right of Canada as represented by the Minister of
+# Industry through the Communications Research Centre Canada.
+#
+# Licensed under the MIT License
+# See LICENSE file in the project root for full license text.
+
 """Implementation of ITU-R P.676-13. Fully implemented except for Section 5 of Annex 1.
 
 Note: Statistical (Stat) functions from Annex 2 support using both annual and monthly statistics

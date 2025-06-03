@@ -1,3 +1,9 @@
+# Copyright (c) 2025 His Majesty the King in Right of Canada as represented by the Minister of
+# Industry through the Communications Research Centre Canada.
+#
+# Licensed under the MIT License
+# See LICENSE file in the project root for full license text.
+
 # The following lines are to specify the location of the crc_covlib package,
 # they are not required when the crc_covlib package is in the same folder as
 # the python script using it.
