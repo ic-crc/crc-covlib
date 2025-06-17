@@ -549,14 +549,7 @@ def RayHeights(He_km: float, theta_deg: float, deltaDist_km: float=1
             Dc_list.append(Dc)
             Hr_list.append(Hr)
             Dc = Dc + delta_d
-            
-            # calculates d (in km), the distance from earth-based station
-            # (these equations are not in the recommendation)
-            alpha_rad = Dc/Re
-            gamma_rad = (pi/2) + radians(theta_deg)
-            beta_rad = pi - alpha_rad - gamma_rad
-            d = sin(alpha_rad)*(Re+Ht)/sin(beta_rad) # from Law of Sines
-
+            d = Dc
             Hr = Ht + (d*tan_theta) + ((d*d)/(2*Re))
 
     return (Dc_list, Hr_list)

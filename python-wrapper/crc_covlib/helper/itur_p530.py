@@ -47,11 +47,11 @@ def GeoclimaticFactorK(lat: float, lon: float) -> float:
     Returns:
         K (float): The geoclimatic factor K.
     """
-    # lat from +90 to -90, lon from -180 to +180 in dN75.csv
+    # lat from +90 to -90, lon from -180 to +180 in LogK.csv
     latInterval = 0.25
     lonInterval = 0.25
     numRows = 721 # number of points from [-90, 90] latitude deg range, at 0.25 deg intervals: (180/0.25)+1
-    rowSize = 1441 # number of points from [-180, 180] longitude deg range, at 0.25 deg intervals: (360/0.75)+1
+    rowSize = 1441 # number of points from [-180, 180] longitude deg range, at 0.25 deg intervals: (360/0.25)+1
     r = (90.0 - lat) / latInterval
     c = (180.0 + lon) / lonInterval
     log10_K = itur_p1144.SquareGridBilinearInterpolation(_LOGK, numRows, rowSize, r, c)
@@ -79,7 +79,7 @@ def DN75(lat: float, lon: float) -> float:
     latInterval = 0.25
     lonInterval = 0.25
     numRows = 721 # number of points from [-90, 90] latitude deg range, at 0.25 deg intervals: (180/0.25)+1
-    rowSize = 1441 # number of points from [-180, 180] longitude deg range, at 0.25 deg intervals: (360/0.75)+1
+    rowSize = 1441 # number of points from [-180, 180] longitude deg range, at 0.25 deg intervals: (360/0.25)+1
     r = (90.0 - lat) / latInterval
     c = (180.0 + lon) / lonInterval
     return itur_p1144.SquareGridBilinearInterpolation(_DN75, numRows, rowSize, r, c)
@@ -357,14 +357,14 @@ def InverseDistribution(distribFunc: Callable[..., float], p: float, *distribFun
     """
     if distribFunc.__name__ == "EnhancementDistribution":
         # the time percentage is for the dB value **not** being exceeded
-        return _InverseDistribution(distribFunc, p, distribFuncArgs, True)
+        return _InverseDistribution(distribFunc, p, True, *distribFuncArgs)
     else:
         # the time percentage is for the dB value being exceeded
-        return _InverseDistribution(distribFunc, p, distribFuncArgs, False)
+        return _InverseDistribution(distribFunc, p, False, *distribFuncArgs)
 
 
 @jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
-def _InverseDistribution(distribFunc, p: float, *distribFuncArgs, notExceeded: bool) -> float:
+def _InverseDistribution(distribFunc, p: float, notExceeded: bool, *distribFuncArgs) -> float:
     """
     See InverseDistribution() for details.
     """
@@ -387,7 +387,7 @@ def _InverseDistribution(distribFunc, p: float, *distribFuncArgs, notExceeded: b
 @jit(nopython=True, cache=COVLIB_NUMBA_CACHE)
 def _DeltaG(d_km: float, he_masl: float, hr_masl: float, lat: float) -> float:
     """
-    ITU-R P.530-18, Annex 1, Sectoin 2.3.4 (Step 2)
+    ITU-R P.530-18, Annex 1, Section 2.3.4 (Step 2)
     Calculates the logarithmic geoclimatic conversion factor (dB).
 
     Args:
