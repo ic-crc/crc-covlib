@@ -137,7 +137,7 @@ Args:
 - __p__ (float): Time percentage (%), with 1 <= p <= 99.
 - __d_km__ (float): Great-circle path distance between terminals (km), with 0 <= d_km.
 - __hr1_m__ (float): Height of the low terminal above mean sea level (m), with 1.5 <= hr1_m <= 20000.
-- __hr2_m__ (float): Height of the high terminal above mean sea level (km), with 1.5 <= hr2_m <= 20000, and with hr1_m <= hr2_m.
+- __hr2_m__ (float): Height of the high terminal above mean sea level (m), with 1.5 <= hr2_m <= 20000, and with hr1_m <= hr2_m.
 - __Tpol__ (crc_covlib.helper.itur_p528.Polarization): Parameter indicating either horizontal or vertical linear polarization.
 
 Returns:
@@ -161,7 +161,7 @@ Args:
 - __p__ (float): Time percentage (%), with 1 <= p <= 99.
 - __d_km__ (float): Great-circle path distance between terminals (km), with 0 <= d_km.
 - __hr1_m__ (float): Height of the low terminal above mean sea level (m), with 1.5 <= hr1_m <= 20000.
-- __hr2_m__ (float): Height of the high terminal above mean sea level (km), with 1.5 <= hr2_m <= 20000, and with hr1_m <= hr2_m.
+- __hr2_m__ (float): Height of the high terminal above mean sea level (m), with 1.5 <= hr2_m <= 20000, and with hr1_m <= hr2_m.
 - __Tpol__ (crc_covlib.helper.itur_p528.Polarization): Parameter indicating either horizontal or vertical linear polarization.
 
 Returns:

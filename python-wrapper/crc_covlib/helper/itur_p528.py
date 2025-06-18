@@ -143,7 +143,7 @@ def BasicTransmissionLoss(f_MHz: float, p: float, d_km: float, hr1_m: float, hr2
         d_km (float): Great-circle path distance between terminals (km), with 0 <= d_km.
         hr1_m (float): Height of the low terminal above mean sea level (m),
             with 1.5 <= hr1_m <= 20000.
-        hr2_m (float): Height of the high terminal above mean sea level (km),
+        hr2_m (float): Height of the high terminal above mean sea level (m),
             with 1.5 <= hr2_m <= 20000, and with hr1_m <= hr2_m.
         Tpol (crc_covlib.helper.itur_p528.Polarization): Parameter indicating either horizontal or
             vertical linear polarization.
@@ -177,7 +177,7 @@ def BasicTransmissionLossEx(f_MHz: float, p: float, d_km: float, hr1_m: float, h
         d_km (float): Great-circle path distance between terminals (km), with 0 <= d_km.
         hr1_m (float): Height of the low terminal above mean sea level (m),
             with 1.5 <= hr1_m <= 20000.
-        hr2_m (float): Height of the high terminal above mean sea level (km),
+        hr2_m (float): Height of the high terminal above mean sea level (m),
             with 1.5 <= hr2_m <= 20000, and with hr1_m <= hr2_m.
         Tpol (crc_covlib.helper.itur_p528.Polarization): Parameter indicating either horizontal or
             vertical linear polarization.
