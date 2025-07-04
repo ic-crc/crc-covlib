@@ -626,38 +626,21 @@ void GeoTIFFReader::pUpdateFilesCacheSettings()
 {
 GeoTIFFReader::GeoTIFFFileInfo* tiffInfo;
 uint8_t bytesPerSample;
-uint32_t maxStripOrTileSizeInBytes;
+uint32_t stripOrTileSizeInBytes;
 
 	for (size_t i=0; i < pGeoTiffs.size(); i++)
 	{
 		tiffInfo = &(pGeoTiffs[i]);
 
-		bytesPerSample =tiffInfo-> m_bitsPerSample/8;
+		bytesPerSample = tiffInfo-> m_bitsPerSample/8;
 
 		if( tiffInfo->m_rowsPerStrip > 0 )
-			maxStripOrTileSizeInBytes = (uint32_t) tiffInfo->m_bytesPerStrip;
+			stripOrTileSizeInBytes = (uint32_t) tiffInfo->m_bytesPerStrip;
 		else
-			maxStripOrTileSizeInBytes = (uint32_t) tiffInfo->m_bytesPerTile;
+			stripOrTileSizeInBytes = (uint32_t) tiffInfo->m_bytesPerTile;
 		
-		/*
-		if( tiffInfo->m_compression == 1 ) // 1 = no compression
-		{
-			tiffInfo->m_cache.SetCacheEntrySize(256, bytesPerSample, maxStripOrTileSizeInBytes);
-			tiffInfo->m_cache.SetTotalSizeLimit(8E6);
-		}
-		else
-		*/
-		{
-		// When the data is compressed, file readings are usually a lot more costly (in terms of execution time),
-		// we will allow to keep the whole file content in memory.
-		uint32_t numPixels = 64;	
-
-			while(numPixels*bytesPerSample < maxStripOrTileSizeInBytes)
-				numPixels *= 2;
-
-			tiffInfo->m_cache.SetCacheEntrySize(numPixels, bytesPerSample, maxStripOrTileSizeInBytes);
-			tiffInfo->m_cache.SetTotalSizeLimit(tiffInfo->m_rasterHeight*tiffInfo->m_rasterWidth*bytesPerSample*1.01);
-		}
+		tiffInfo->m_cache.SetCacheEntrySize(bytesPerSample, stripOrTileSizeInBytes);
+		tiffInfo->m_cache.SetTotalSizeLimit(UINT32_MAX);
 	}
 }
 
@@ -946,12 +929,12 @@ bool GeoTIFFReader::pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32
 
 			if(tiffInfo->m_readBuf == NULL)
 				tiffInfo->m_readBuf = _TIFFmalloc(tiffInfo->m_bytesPerStrip);
-			numBytesRead = TIFFReadEncodedStrip(tiffInfo->m_tiffPtr, stripIndex, tiffInfo->m_readBuf, (tsize_t) -1);
-			if( (int32_t)bytesOffsetWithinStrip < numBytesRead)
+			numBytesRead = TIFFReadEncodedStrip(tiffInfo->m_tiffPtr, stripIndex, tiffInfo->m_readBuf, (tmsize_t) tiffInfo->m_bytesPerStrip);
+			if( (tmsize_t)bytesOffsetWithinStrip < numBytesRead)
 			{
 				valueLocationWithinStrip = ((uint8_t*)tiffInfo->m_readBuf) + bytesOffsetWithinStrip;
 				memcpy(value, valueLocationWithinStrip, bytesPerSample);
-				tiffInfo->m_cache.CacheStripData(stripIndex, tiffInfo->m_readBuf, numBytesRead, bytesOffsetWithinStrip);
+				tiffInfo->m_cache.CacheStripData(stripIndex, tiffInfo->m_readBuf, numBytesRead);
 				//pCacheMissCount++;
 				return !pIsNoDataValue(tiffInfo, value);
 			}
@@ -969,6 +952,7 @@ bool GeoTIFFReader::pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32
 			// try to get value from cache first
 			tileIndex = TIFFComputeTile(tiffInfo->m_tiffPtr, x, y, 0, 0);
 			byteOffsetWithinTile = (yWithinTile*tiffInfo->m_tileWidth + xWithinTile)*bytesPerSample;
+
 			if( tiffInfo->m_cache.GetValue(tileIndex, byteOffsetWithinTile, value) == true )
 			{
 				//pCacheHitCount++;
@@ -977,12 +961,12 @@ bool GeoTIFFReader::pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32
 
 			if(tiffInfo->m_readBuf == NULL)
 				tiffInfo->m_readBuf = _TIFFmalloc(tiffInfo->m_bytesPerTile);
-			numBytesRead = TIFFReadEncodedTile(tiffInfo->m_tiffPtr, tileIndex, tiffInfo->m_readBuf, (tsize_t) -1);
-			if( (int32_t)byteOffsetWithinTile < numBytesRead)
+			numBytesRead = TIFFReadEncodedTile(tiffInfo->m_tiffPtr, tileIndex, tiffInfo->m_readBuf, (tmsize_t) tiffInfo->m_bytesPerTile);
+			if( (tmsize_t)byteOffsetWithinTile < numBytesRead)
 			{
 				valueLocationWithinTile = ((uint8_t*)tiffInfo->m_readBuf) + byteOffsetWithinTile;
 				memcpy(value, valueLocationWithinTile, bytesPerSample);
-				tiffInfo->m_cache.CacheTileData(tileIndex, tiffInfo->m_readBuf, numBytesRead, byteOffsetWithinTile);
+				tiffInfo->m_cache.CacheTileData(tileIndex, tiffInfo->m_readBuf, numBytesRead);
 				//pCacheMissCount++;
 				return !pIsNoDataValue(tiffInfo, value);
 			}

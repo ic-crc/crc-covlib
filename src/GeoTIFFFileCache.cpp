@@ -14,8 +14,7 @@
 GeoTIFFFileCache::GeoTIFFFileCache()
 {
 	pBytesPerPixel = 4;
-	pNumSharedBitsPerEntry = 8;
-	pCacheEntryDataSizeInBytes = pow(2, pNumSharedBitsPerEntry);
+	pCacheEntryDataSizeInBytes = 256;
 	pCacheLimitInBytes = 4E6;
 	pCurHitNo = 0;
 }
@@ -27,19 +26,18 @@ GeoTIFFFileCache::GeoTIFFFileCache(const GeoTIFFFileCache& original)
 
 GeoTIFFFileCache::~GeoTIFFFileCache()
 {
-	std::map<uint64_t, CacheEntry>::iterator iter;
+	std::map<uint32_t, CacheEntry>::iterator iter;
 	for (iter = pMap.begin(); iter != pMap.end(); ++iter)
 		delete [] iter->second.m_data;
 }
 
 const GeoTIFFFileCache& GeoTIFFFileCache::operator=(const GeoTIFFFileCache& original)
 {
-	if (&original == this)
+	if( &original == this )
 		return *this;
 
 	Clear();
 	pBytesPerPixel = original.pBytesPerPixel;
-	pNumSharedBitsPerEntry = original.pNumSharedBitsPerEntry;
 	pCacheEntryDataSizeInBytes = original.pCacheEntryDataSizeInBytes;
 	pCacheLimitInBytes = original.pCacheLimitInBytes;
 
@@ -48,7 +46,7 @@ const GeoTIFFFileCache& GeoTIFFFileCache::operator=(const GeoTIFFFileCache& orig
 	return *this;
 }
 
-void GeoTIFFFileCache::SetTotalSizeLimit(uint32_t numBytes)
+void GeoTIFFFileCache::SetTotalSizeLimit(uint64_t numBytes)
 {
 	if( pCacheLimitInBytes != numBytes )
 	{
@@ -57,62 +55,57 @@ void GeoTIFFFileCache::SetTotalSizeLimit(uint32_t numBytes)
 	}
 }
 
-// numPixels: number of pixel values to be stored in each new cache entry, should be a power of two
 // pixelSizeInBytes: size of a pixel value in bytes (usually 1, 2 or 4)
-// maxStripOrTileSizeInBytes: maximum size of a strip or tile (depending on the format of the tiff)
-//                            for the file in bytes. This argument can be omitted.
-void GeoTIFFFileCache::SetCacheEntrySize(uint32_t numPixels, uint8_t pixelSizeInBytes, uint32_t maxStripOrTileSizeInBytes/*=0*/)
+// stripOrTileSizeInBytes: size of a strip or tile (depending on the format of the tiff)
+//                         for the file in bytes.
+void GeoTIFFFileCache::SetCacheEntrySize(uint8_t pixelSizeInBytes, uint32_t stripOrTileSizeInBytes)
 {
-	pCacheEntryDataSizeInBytes = numPixels*pixelSizeInBytes;
-	pNumSharedBitsPerEntry = (uint8_t) log2l(pCacheEntryDataSizeInBytes);
-	if( maxStripOrTileSizeInBytes != 0 )
-		pCacheEntryDataSizeInBytes = std::min(pCacheEntryDataSizeInBytes, maxStripOrTileSizeInBytes);
+	pCacheEntryDataSizeInBytes = stripOrTileSizeInBytes;
 	pBytesPerPixel = pixelSizeInBytes;
 	Clear();
 }
 
-bool GeoTIFFFileCache::GetValue(uint32_t stripOrTileIndex, int64_t byteOffset, void* value)
+bool GeoTIFFFileCache::GetValue(uint32_t stripOrTileIndex, uint32_t byteOffset, void* value)
 {
-uint64_t key = ((uint64_t)stripOrTileIndex << 32) + ((uint64_t)byteOffset >> pNumSharedBitsPerEntry);
+std::map<uint32_t, CacheEntry>::iterator iter = pMap.find(stripOrTileIndex);
 
-	std::map<uint64_t, CacheEntry>::iterator iter = pMap.find(key);
-	if (iter != pMap.end())
+	if( iter != pMap.end() )
 	{
-		memcpy(value, iter->second.m_data + (byteOffset%pCacheEntryDataSizeInBytes), pBytesPerPixel);
-		iter->second.m_lastHitNo = ++pCurHitNo;
-		//pManageSizeLimit();
-		return true;
+		if( (byteOffset+pBytesPerPixel) <= pCacheEntryDataSizeInBytes )
+		{
+			memcpy(value, iter->second.m_data + byteOffset, pBytesPerPixel);
+			iter->second.m_lastHitNo = ++pCurHitNo;
+			return true;
+		}
 	}
 
 	return false;
 }
 
-void GeoTIFFFileCache::CacheStripData(uint32_t stripIndex, void* stripData, int64_t stripDataSizeInBytes, uint32_t requestedByteOffset)
+void GeoTIFFFileCache::CacheStripData(uint32_t stripIndex, void* stripData, uint32_t stripDataSizeInBytes)
 {
-uint64_t key = ((uint64_t)stripIndex << 32) + (requestedByteOffset >> pNumSharedBitsPerEntry);
+uint32_t key = stripIndex;
 
-	if( pMap.count(key) == 0)
+	if( pMap.count(key) == 0 )
 	{
-	uint32_t cacheEntryStartByte = (requestedByteOffset >> pNumSharedBitsPerEntry)*pCacheEntryDataSizeInBytes;
-	uint32_t numRemainingBytes = stripDataSizeInBytes - cacheEntryStartByte;
 	CacheEntry* entryPtr;
 
 		entryPtr = &(pMap[key]);
 		entryPtr->m_lastHitNo = ++pCurHitNo;
 		entryPtr->m_data = new uint8_t[pCacheEntryDataSizeInBytes];
-		memcpy(entryPtr->m_data, ((uint8_t*)stripData) + cacheEntryStartByte, std::min(pCacheEntryDataSizeInBytes, numRemainingBytes));
+		memcpy(entryPtr->m_data, ((uint8_t*)stripData), std::min(pCacheEntryDataSizeInBytes, stripDataSizeInBytes));
 		pManageSizeLimit();
 	}
 }
 
-void GeoTIFFFileCache::CacheTileData(uint32_t tileIndex, void* tileData, int64_t tileDataSizeInBytes, uint32_t requestedByteOffset)
+void GeoTIFFFileCache::CacheTileData(uint32_t tileIndex, void* tileData, uint32_t tileDataSizeInBytes)
 {
-	CacheStripData(tileIndex, tileData, tileDataSizeInBytes, requestedByteOffset);
+	CacheStripData(tileIndex, tileData, tileDataSizeInBytes);
 }
 
 void GeoTIFFFileCache::Clear()
 {
-	std::map<uint64_t, CacheEntry>::iterator iter;
+	std::map<uint32_t, CacheEntry>::iterator iter;
 	for (iter = pMap.begin(); iter != pMap.end(); ++iter)
 		delete [] iter->second.m_data;
 	pMap.clear();
@@ -121,11 +114,11 @@ void GeoTIFFFileCache::Clear()
 
 void GeoTIFFFileCache::pManageSizeLimit()
 {
-	while( (pMap.size()*(pCacheEntryDataSizeInBytes+sizeof(CacheEntry))) > pCacheLimitInBytes )
+	while( (pMap.size()*pCacheEntryDataSizeInBytes) > pCacheLimitInBytes )
 	{
 	uint64_t minHitNo = UINT64_MAX;
-	std::queue< std::map<uint64_t, CacheEntry>::iterator > iterQueue;
-	std::map<uint64_t, CacheEntry>::iterator iter;
+	std::queue< std::map<uint32_t, CacheEntry>::iterator > iterQueue;
+	std::map<uint32_t, CacheEntry>::iterator iter;
 
 		for(iter = pMap.begin() ; iter != pMap.end() ; ++iter)
 		{

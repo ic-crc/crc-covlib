@@ -20,12 +20,12 @@ public:
 	virtual ~GeoTIFFFileCache();
 	const GeoTIFFFileCache& operator=(const GeoTIFFFileCache& original);
 
-	void SetTotalSizeLimit(uint32_t numBytes);
-	void SetCacheEntrySize(uint32_t numPixels, uint8_t pixelSizeInBytes, uint32_t maxStripOrTileSizeInBytes=0);
+	void SetTotalSizeLimit(uint64_t numBytes);
+	void SetCacheEntrySize(uint8_t pixelSizeInBytes, uint32_t stripOrTileSizeInBytes);
 
-	bool GetValue(uint32_t stripOrTileIndex, int64_t byteOffset, void* value);
-	void CacheStripData(uint32_t stripIndex, void* stripData, int64_t stripDataSizeInBytes, uint32_t requestedByteOffset);
-	void CacheTileData(uint32_t tileIndex, void* tileData, int64_t tileDataSizeInBytes, uint32_t requestedByteOffset);
+	bool GetValue(uint32_t stripOrTileIndex, uint32_t byteOffset, void* value);
+	void CacheStripData(uint32_t stripIndex, void* stripData, uint32_t stripDataSizeInBytes);
+	void CacheTileData(uint32_t tileIndex, void* tileData, uint32_t tileDataSizeInBytes);
 	void Clear();
 
 private:
@@ -37,10 +37,9 @@ private:
 
 	void pManageSizeLimit();
 
-	std::map<uint64_t, CacheEntry> pMap;
+	std::map<uint32_t, CacheEntry> pMap;
 	uint64_t pCurHitNo;
 	uint8_t pBytesPerPixel;
-	uint8_t pNumSharedBitsPerEntry;
 	uint32_t pCacheEntryDataSizeInBytes;
-	uint32_t pCacheLimitInBytes;
+	uint64_t pCacheLimitInBytes;
 };
