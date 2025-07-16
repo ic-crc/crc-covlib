@@ -127,13 +127,14 @@ crc-covlib's _helper_ functionalities include:
 * Reading antenna pattern files for use in simulations. Displaying antenna patterns (polar, cartesian, 3D), using [_matplotlib_](https://matplotlib.org/). Generating beamforming antenna patterns in accordance with the [ITU-R M.2101-0](https://www.itu.int/rec/R-REC-M.2101/en) recommendation (Section 5).
 * Reading a wide variety of georeferenced raster file types to obtain topographic data for simulations, using [_Rasterio_](https://rasterio.readthedocs.io/en/latest/index.html).
 * Downloading OpenStreetMap data and computing routes for scenarios where the propagation path is understood to occur mainly through street canyons. Obtaining building footprint and height data from OpenStreetMap and shapefiles, using [_OSMnx_](https://osmnx.readthedocs.io/en/stable/), [_Shapely_](https://shapely.readthedocs.io/en/stable/), [_PyShp_](https://pypi.org/project/pyshp/), [_pyproj_](https://pyproj4.github.io/pyproj/stable/).
-* Providing partial implementations for different ITU recommendations.
+* Providing partial implementations for different ITU-R P. series recommendations.
   - [ITU-R P.453-14](https://www.itu.int/rec/R-REC-P.453/en) (The radio refractive index: its formula and refractivity data). [API ref.](./docs/helper.itur_p453.md)
   - [ITU-R P.528-5](https://www.itu.int/rec/R-REC-P.528/en) (A propagation prediction method for aeronautical mobile and radionavigation services using the VHF, UHF and SHF bands). [API ref.](./docs/helper.itur_p528.md)
   - [ITU-R P.530-18](https://www.itu.int/rec/R-REC-P.530/en) (Propagation data and prediction methods required for the design of terrestrial line-of-sight systems). [API ref.](./docs/helper.itur_p530.md)
   - [ITU-R P.618-14](https://www.itu.int/rec/R-REC-P.618/en) (Propagation data and prediction methods required for the design of Earth-space telecommunication systems). [API ref.](./docs/helper.itur_p618.md)
   - [ITU-R P.619-5](https://www.itu.int/rec/R-REC-P.619/en) (Propagation data required for the evaluation of interference between stations in space and those on the surface of the Earth). [API ref.](./docs/helper.itur_p619.md)
   - [ITU-R P.676-13](https://www.itu.int/rec/R-REC-P.676/en) (Attenuation by atmospheric gases and related effects). [API ref.](./docs/helper.itur_p676.md)
+  - [ITU-R P.681-11](https://www.itu.int/rec/R-REC-P.681/en) (Propagation data required for the design systems in the land mobile-satellite service) [API ref.](./docs/helper.itur_p681.md)
   - [ITU-R P.835-6](https://www.itu.int/rec/R-REC-P.835/en) (Reference standard atmospheres). [API ref.](./docs/helper.itur_p835.md)
   - [ITU-R P.837-7](https://www.itu.int/rec/R-REC-P.837/en) (Characteristics of precipitation for propagation modelling). [API ref.](./docs/helper.itur_p837.md)
   - [ITU-R P.838-3](https://www.itu.int/rec/R-REC-P.838/en) (Specific attenuation model for rain for use in prediction methods). [API ref.](./docs/helper.itur_p838.md)

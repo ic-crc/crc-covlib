@@ -120,7 +120,7 @@ if __name__ == '__main__':
 
 ## Documentation du paquet crc_covlib
 
-Les fonctionnalités de base (implémentation en C++) de crc-covlib sont accessibles en python par l'intermédiaire du module _simulation_ (`crc_covlib.simulation`) tel que démontré dans l'exemple de code ci-haut. Les détails de ces fonctionnalités sont décrites le document d'[interface de programmation (API)](../docs/CRC-COVLIB%20API%20Reference.pdf) (anglais seulement). Bien que ce document soit écrit pour le langage C++, le module python `crc_covlib.simulation` utilise exactement les mêmes noms de classes, d'énumérations, de méthodes et d'arguments.
+Les fonctionnalités de base (implémentation en C++) de crc-covlib sont accessibles en python par l'intermédiaire du module _simulation_ (`crc_covlib.simulation`) tel que démontré dans l'exemple de code ci-haut. Les détails de ces fonctionnalités sont décrites dans le document d'[interface de programmation (API)](../docs/CRC-COVLIB%20API%20Reference.pdf) (anglais seulement). Bien que ce document soit écrit pour le langage C++, le module python `crc_covlib.simulation` utilise exactement les mêmes noms de classes, d'énumérations, de méthodes et d'arguments.
 
 Certaines fonctionnalités additionnelles écrites en python et qui viennent complémenter les fonctionnalités de base écrites en C++ sont disponibles par l'intermédiaire du sous-paquet _helper_ (`crc_covlib.helper`). Voir la page de [documentation du sous-paquet helper (API)](./docs/readme.md) (anglais seulement) pour plus de détails
 
@@ -128,13 +128,14 @@ Les fonctionnalités du sous-paquet _helper_ incluent:
 * La lecture de fichiers de patrons d'antenne. L'affichage de patrons d'antenne (en coordonnées polaires, cartésiennes ou 3D) utilisant [_matplotlib_](https://matplotlib.org/). La génération de patrons pour antennes à formation de faisceaux selon la section 5 de la recommandation [UIT-R M.2101-0](https://www.itu.int/rec/R-REC-M.2101/fr).
 * La lecture de nombreux formats de fichiers matriciels pour l'obtention des données topographiques à utiliser avec les simulations crc-covlib, utilisant [_Rasterio_](https://rasterio.readthedocs.io/en/latest/index.html).
 * Le téléchargement de données OpenStreetMap et le calcul de routes pour les scénarios où la propagation s'effectue principalement par les canyons urbains. L'obtention de données de hauteur et d'empreinte de bâtiments (OpenStreetMap, fichiers shapefile), utilisant [_OSMnx_](https://osmnx.readthedocs.io/en/stable/), [_Shapely_](https://shapely.readthedocs.io/en/stable/), [_PyShp_](#https://pypi.org/project/pyshp/), [_pyproj_](#https://pyproj4.github.io/pyproj/stable/).
-* L'implémentation partielle de plusieurs recommandations de l'UIT.
+* L'implémentation partielle de plusieurs recommandations de l'UIT (série P.).
   -  [UIT-R P.453-14](https://www.itu.int/rec/R-REC-P.453/fr) (Indice de réfraction radioélectrique: formules et données de réfractivité). [réf. API](./docs/helper.itur_p453.md)
   -  [UIT-R P.528-5](https://www.itu.int/rec/R-REC-P.528/fr) (Méthode de prévision de la propagation dans les bandes d'ondes métriques, décimétriques et centimétriques pour le service mobile aéronautique et le service de radionavigation aéronautique). [réf. API](./docs/helper.itur_p528.md)
   - [UIT-R P.530-18](https://www.itu.int/rec/R-REC-P.530/fr) (Données de propagation et méthodes de prévision nécessaires pour la conception de faisceaux hertziens à visibilité directe de Terre). [réf. API](./docs/helper.itur_p530.md)
   - [UIT-R P.618-14](https://www.itu.int/rec/R-REC-P.618/fr) (Données de propagation et méthodes de prévision nécessaires pour la conception de systèmes de télécommunication Terre-espace). [réf. API](./docs/helper.itur_p618.md)
   - [UIT-R P.619-5](https://www.itu.int/rec/R-REC-P.619/fr) (Données sur la propagation nécessaires à l'évaluation des brouillages entre des stations dans l'espace et des stations situées à la surface de la Terre). [réf. API](./docs/helper.itur_p619.md)
   - [UIT-R P.676-13](https://www.itu.int/rec/R-REC-P.676/fr) (Affaiblissement dû aux gaz de l'atmosphère et effets associés). [réf. API](./docs/helper.itur_p676.md)
+  - [UIT-R P.681-11](https://www.itu.int/rec/R-REC-P.681/fr) (Données de propagation nécessaires pour la conception de systèmes du service mobile terrestre par satellite). [réf. API](./docs/helper.itur_p681.md)
   - [UIT-R P.835-6](https://www.itu.int/rec/R-REC-P.835/fr) (Atmosphère de référence pour l'affaiblissement dû aux gaz). [réf. API](./docs/helper.itur_p835.md)
   - [UIT-R P.837-7](https://www.itu.int/rec/R-REC-P.837/fr) (Caractéristiques des précipitations pour la modélisation de la propagation). [réf. API](./docs/helper.itur_p837.md)
   - [UIT-R P.838-3](https://www.itu.int/rec/R-REC-P.838/fr) (Modèle d'affaiblissement linéique dû à la pluie destiné aux méthodes de prévision). [réf. API](./docs/helper.itur_p838.md)

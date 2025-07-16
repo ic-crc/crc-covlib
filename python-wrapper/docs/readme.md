@@ -15,6 +15,7 @@ List of ITU (International Telecommunication Union) related modules from crc_cov
 [itur_p618](#itur_p618-module) \
 [itur_p619](#itur_p619-module) \
 [itur_p676](#itur_p676-module) \
+[itur_p681](#itur_p681-module) \
 [itur_p835](#itur_p835-module) \
 [itur_p837](#itur_p837-module) \
 [itur_p838](#itur_p838-module) \
@@ -168,6 +169,23 @@ List of ITU (International Telecommunication Union) related modules from crc_cov
   - [SlantPathStatWaterVapourGaseousAttenuation](./helper.itur_p676.md#slantpathstatwatervapourgaseousattenuation)
   - [SlantPathStatGaseousAttenuation](./helper.itur_p676.md#slantpathstatgaseousattenuation)
   - [WeibullApproxAttenuation](./helper.itur_p676.md#weibullapproxattenuation)
+
+- #### [itur_p681 module](./helper.itur_p681.md)
+  - [ShadowingLevel (Enum)](./helper.itur_p681.md#shadowinglevel)
+  - [RoadsideTreesShadowingFade](./helper.itur_p681.md#roadsidetreesshadowingfade)
+  - [RoadsideTreesShadowingFadeEx](./helper.itur_p681.md#roadsidetreesshadowingfadeex)
+  - [NonGsoRoadsideTreesShadowingUnavail](./helper.itur_p681.md#nongsoroadsidetreesshadowingunavail)
+  - [FadeDurationDistribution](./helper.itur_p681.md#fadedurationdistribution)
+  - [NonFadeDurationDistribution](./helper.itur_p681.md#nonfadedurationdistribution)
+  - [BuildingBlockageProbability](./helper.itur_p681.md#buildingblockageprobability)
+  - [StreetCanyonMaskingFunction](./helper.itur_p681.md#streetcanyonmaskingfunction)
+  - [SingleWallMaskingFunction](./helper.itur_p681.md#singlewallmaskingfunction)
+  - [StreetCrossingMaskingFunction](./helper.itur_p681.md#streetcrossingmaskingfunction)
+  - [TJunctionMaskingFunction](./helper.itur_p681.md#tjunctionmaskingfunction)
+  - [MountainousMultipathFadingDistribution](./helper.itur_p681.md#mountainousmultipathfadingdistribution)
+  - [RoadsideTreesMultipathFadingDistribution](./helper.itur_p681.md#roadsidetreesmultipathfadingdistribution)
+  - [ShadowingCrossCorrelationCoefficient](./helper.itur_p681.md#shadowingcrosscorrelationcoefficient)
+  - [AvailabilityImprobability](./helper.itur_p681.md#availabilityimprobability)
 
 - #### [itur_p835 module](./helper.itur_p835.md)
   - [ReferenceAtmosphere (Enum)](./helper.itur_p835.md#referenceatmosphere)
