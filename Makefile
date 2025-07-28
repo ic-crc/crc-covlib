@@ -22,7 +22,7 @@ ifeq ($(OS), Windows_NT)
 	LDFLAGS += -static
 	LDLIBS = -lGeographicLib -ltiff -ljpeg -lz -ljbig -llzma -ldeflate -lwebp -lzstd -lLerc -lsharpyuv
 #	Static lib for CRC-MLPL
-	LDLIBS += src/crc-mlpl/libs/libcrcmlpl.lib
+	LDLIBS += src/crc-ml/libs/libcrcml.lib
 #   May be required for <filesystem> (see https://en.cppreference.com/w/cpp/filesystem)
 	LDLIBS += -lstdc++fs 
 else
@@ -35,7 +35,7 @@ else
 	endif
 	LDLIBS += -lstdc++fs
 #	Static lib for CRC-MLPL
-	LDLIBS += -Bstatic src/crc-mlpl/libs/libcrcmlpl.a
+	LDLIBS += -Bstatic src/crc-ml/libs/libcrcml.a
 #	LDLIBS += -Wl,-rpath,'$$ORIGIN'	
 endif
 

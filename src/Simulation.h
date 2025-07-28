@@ -31,6 +31,7 @@
 #include "ITURP676GaseousAttenuationModel.h"
 #include "EHataPropagModel.h"
 #include "CRCMLPLPropagModel.h"
+#include "CRCPathObscuraPropagModel.h"
 
 
 class Simulation : public Crc::Covlib::ISimulation
@@ -269,7 +270,7 @@ public:
 	// Generating and accessing results
 	virtual double GenerateReceptionPointResult(double latitude_degrees, double longitude_degrees);
 	virtual Crc::Covlib::ReceptionPointDetailedResult GenerateReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees);
-	virtual double GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const Crc::Covlib::ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL);
+	virtual double GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=nullptr, const double* surfaceElevProfile=nullptr, const Crc::Covlib::ITURadioClimaticZone* ituRadioClimaticZoneProfile=nullptr);
 	virtual void GenerateReceptionAreaResults();
 	virtual int GetGenerateStatus() const;
 	virtual double GetReceptionAreaResultValue(int xIndex, int yIndex) const;
@@ -277,9 +278,9 @@ public:
 	virtual double GetReceptionAreaResultValueAtLatLon(double latitude_degrees, double longitude_degrees) const;
 	virtual double GetReceptionAreaResultLatitude(int xIndex, int yIndex) const;
 	virtual double GetReceptionAreaResultLongitude(int xIndex, int yIndex) const;
-	virtual bool ExportReceptionAreaResultsToTextFile(const char* pathname, const char* resultsColumnName=NULL) const;
-	virtual bool ExportReceptionAreaResultsToMifFile(const char* pathname, const char* resultsUnits=NULL) const;
-	virtual bool ExportReceptionAreaResultsToKmlFile(const char* pathname, double fillOpacity_percent=50, double lineOpacity_percent=50, const char* resultsUnits=NULL) const;
+	virtual bool ExportReceptionAreaResultsToTextFile(const char* pathname, const char* resultsColumnName=nullptr) const;
+	virtual bool ExportReceptionAreaResultsToMifFile(const char* pathname, const char* resultsUnits=nullptr) const;
+	virtual bool ExportReceptionAreaResultsToKmlFile(const char* pathname, double fillOpacity_percent=50, double lineOpacity_percent=50, const char* resultsUnits=nullptr) const;
 	virtual bool ExportReceptionAreaResultsToBilFile(const char* pathname) const;
 	virtual bool ExportReceptionAreaTerrainElevationToBilFile(const char* pathname, int numHorizontalPoints, int numVerticalPoints, bool setNoDataToZero=false);
 	virtual bool ExportReceptionAreaSurfaceElevationToBilFile(const char* pathname, int numHorizontalPoints, int numVerticalPoints, bool setNoDataToZero=false);
@@ -320,6 +321,7 @@ private:
 	FreeSpacePropagModel pFreeSpaceModel;
 	EHataPropagModel pEHataModel;
 	CRCMLPLPropagModel pCrcMlplModel;
+	CRCPathObscuraPropagModel pCrcPathObscuraModel;
 
 	ITURP2108ClutterLossModel pIturp2108Model;
 	ITURP2109BldgEntryLossModel pIturp2109Model;

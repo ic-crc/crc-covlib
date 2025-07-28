@@ -143,7 +143,7 @@ double har = 0;
 	ClutterParams clutterParams;
 	double distFromRxKm;
 
-		for(int i=((int)sizeProfiles)-1 ; i>=0 ; i--)
+		for(int i=static_cast<int>(sizeProfiles)-1 ; i>=0 ; i--)
 		{
 			distFromRxKm = distKmProfile[sizeProfiles-1] - distKmProfile[i];
 			if( distFromRxKm <= pClutterProfileUsageLimitKm )
@@ -169,13 +169,15 @@ double har = 0;
 
 	static_assert(std::isnan(Crc::Covlib::AUTOMATIC) && std::isnan(ITURP_452_1812_common::AUTO), "");
 
-	static_assert((int)Crc::Covlib::ITURadioClimaticZone::ITU_COASTAL_LAND == (int)ITURP_452_1812_common::RadioClimaticZone::COASTAL_LAND, "");
-	static_assert((int)Crc::Covlib::ITURadioClimaticZone::ITU_INLAND == (int)ITURP_452_1812_common::RadioClimaticZone::INLAND, "");
-	static_assert((int)Crc::Covlib::ITURadioClimaticZone::ITU_SEA == (int)ITURP_452_1812_common::RadioClimaticZone::SEA, "");
+	static_assert(static_cast<int>(Crc::Covlib::ITURadioClimaticZone::ITU_COASTAL_LAND) == static_cast<int>(ITURP_452_1812_common::RadioClimaticZone::COASTAL_LAND), "");
+	static_assert(static_cast<int>(Crc::Covlib::ITURadioClimaticZone::ITU_INLAND) == static_cast<int>(ITURP_452_1812_common::RadioClimaticZone::INLAND), "");
+	static_assert(static_cast<int>(Crc::Covlib::ITURadioClimaticZone::ITU_SEA) == static_cast<int>(ITURP_452_1812_common::RadioClimaticZone::SEA), "");
+
+	static_assert(sizeof(ITURadioClimaticZone) == sizeof(RadioClimaticZone), "Size mismatch!");
 
 	return ClearAirBasicTransmissionLoss(freq_Ghz, pTimePercent, pPredictionType==P452_WORST_MONTH, txLat, txLon, rxLat, rxLon, txRcagl_m, rxRcagl_m,
 	                                     txAntGain_dBi, rxAntGain_dBi, pol==VERTICAL_POL, sizeProfiles, distKmProfile, elevProfile,
-	                                     (RadioClimaticZone*)radioClimaticZoneProfile, /*dct*/AUTO, /*dcr*/AUTO, pPressure_hPa, pTemperature_C,
+	                                     reinterpret_cast<RadioClimaticZone*>(radioClimaticZoneProfile), /*dct*/AUTO, /*dcr*/AUTO, pPressure_hPa, pTemperature_C,
 	                                     pDeltaN, pN0,  dkt, dkr, hat, har);
 }
 

@@ -22,7 +22,7 @@ CustomLandCoverSource::~CustomLandCoverSource()
 
 bool CustomLandCoverSource::GetLandCoverClass(double lat, double lon, int* landCoverClass)
 {
-short data;
+short data = 0;
 bool success;
 
 	success = GetClosestData(lat, lon, &data);

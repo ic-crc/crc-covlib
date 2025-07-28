@@ -20,8 +20,8 @@ Example showing usage of an antenna pattern file and other antenna parameters.
 ### area-results-comparison
 Example comparing results from two different simulations. The reception area of a third Simulation object is used to store and export the difference between the two simulations.
 
-### crc-mlpl
-Example using CRC-MLPL, a machine learning-based path loss model developed at the Communications Research Centre Canada, trained with an openly available ITU-R UK Ofcom drive test dataset. See https://arxiv.org/abs/2405.10006
+### crc-ml-models
+Example using CRC-MLPL and CRC Path Obscura, two machine learning-based path loss models developed at the Communications Research Centre Canada, trained with an openly available ITU-R UK Ofcom drive test dataset. See https://arxiv.org/abs/2405.10006 and https://arxiv.org/abs/2501.08306 for more details on these models.
 
 ### datacube
 Example downloading terrain and surface elevation data (MRDEM DTM & DSM) from the Canada Centre for Mapping and Earth Observation Data Cube Platform. The data is then used as input for an ITU-R P.1812 simulation.

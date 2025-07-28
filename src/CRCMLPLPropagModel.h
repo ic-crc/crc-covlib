@@ -9,10 +9,10 @@
 #pragma once
 #include "PropagModel.h"
 #include "FreeSpacePropagModel.h"
-#include "crc-mlpl/include/crc-mlpl.h"
+#include "crc-ml/include/crc-ml.h"
 
 
-class CRCMLPLPropagModel : PropagModel
+class CRCMLPLPropagModel : public PropagModel
 {
 public:
 	CRCMLPLPropagModel();

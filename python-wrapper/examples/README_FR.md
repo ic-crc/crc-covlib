@@ -19,8 +19,8 @@ Exemple démontrant différents paramètres d'antenne dont l'utilisation d'un fi
 ### area-results-comparison
 Comparaison de résultats entre deux différentes simulations. L'aire de réception d'un troisième objet de type Simulation est utilisée pour la sauvegarde de la différence.
 
-### crc-mlpl
-Exemple utilisant CRC-MLPL, un modèle de propagation basé sur les technologies d'apprentissage automatique («machine learning») développé au Centre de Recherches sur les Communications Canada à partir de données de mesures prises au Royaume-Uni. Voir https://arxiv.org/abs/2405.10006
+### crc-ml-models
+Exemple utilisant CRC-MLPL, deux modèles de propagation basés sur les technologies d'apprentissage automatique («machine learning»), développés au Centre de Recherches sur les Communications Canada à partir de données de mesures prises au Royaume-Uni. Voir https://arxiv.org/abs/2405.10006 et https://arxiv.org/abs/2501.08306 pour plus de détails sur ces modèles.
 
 ### datacube
 Exemple de téléchargement de données d'élévation de terrain et de hauteur de surface en provenance de la plateforme de Cube de données du Centre canadien de cartographie et d'observation de la Terre. Les fichiers de données téléchargés sont ensuite utilisés en entrée au modèle de propagation UIT-R P.1812.

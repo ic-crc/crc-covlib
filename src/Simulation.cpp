@@ -85,6 +85,7 @@ const Simulation& Simulation::operator=(const Simulation& original)
 		pFreeSpaceModel = original.pFreeSpaceModel;
 		pEHataModel = original.pEHataModel;
 		pCrcMlplModel = original.pCrcMlplModel;
+		pCrcPathObscuraModel = original.pCrcPathObscuraModel;
 		pIturp2108Model = original.pIturp2108Model;
 		pIturp2109Model = original.pIturp2109Model;
 		pIturp676Model = original.pIturp676Model;
@@ -282,7 +283,7 @@ void Simulation::ClearAntennaPatterns(Crc::Covlib::Terminal terminal, bool clear
 {
 CommTerminal* term = pGetTerminalObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 	{
 		if( clearHorizontalPattern )
 			term->antPattern.ClearHPattern();
@@ -295,7 +296,7 @@ void Simulation::AddAntennaHorizontalPatternEntry(Terminal terminal, double azim
 {
 CommTerminal* term = pGetTerminalObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		term->antPattern.AddHPatternEntry(azimuth_degrees, gain_dB);
 }
 
@@ -303,7 +304,7 @@ void Simulation::AddAntennaVerticalPatternEntry(Terminal terminal, int azimuth_d
 {
 CommTerminal* term = pGetTerminalObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		term->antPattern.AddVPatternSliceEntry(azimuth_degrees, elevAngle_degrees, gain_dB);
 }
 
@@ -311,7 +312,7 @@ void Simulation::SetAntennaElectricalTilt(Terminal terminal, double elecricalTil
 {
 CommTerminal* term = pGetTerminalObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		term->antPattern.SetElectricalTilt(elecricalTilt_degrees);
 }
 
@@ -319,7 +320,7 @@ double Simulation::GetAntennaElectricalTilt(Terminal terminal) const
 {
 const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->antPattern.GetElectricalTilt();
 
 	return pTx.antPattern.GetElectricalTilt();
@@ -329,7 +330,7 @@ void Simulation::SetAntennaMechanicalTilt(Terminal terminal, double mechanicalTi
 {
 CommTerminal* term = pGetTerminalObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		term->antPattern.SetMechanicalTilt(azimuth_degrees, mechanicalTilt_degrees);
 }
 	
@@ -337,7 +338,7 @@ double Simulation::GetAntennaMechanicalTilt(Terminal terminal) const
 {
 const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->antPattern.GetMechanicalTilt();
 
 	return pTx.antPattern.GetMechanicalTilt();
@@ -347,7 +348,7 @@ double Simulation::GetAntennaMechanicalTiltAzimuth(Terminal terminal) const
 {
 const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->antPattern.GetMechanicalTiltAzimuth();
 
 	return pTx.antPattern.GetMechanicalTiltAzimuth();
@@ -357,7 +358,7 @@ void Simulation::SetAntennaMaximumGain(Terminal terminal, double maxGain_dBi)
 {
 CommTerminal* term = pGetTerminalObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		term->maxGain_dBi = maxGain_dBi;
 }
 
@@ -365,7 +366,7 @@ double Simulation::GetAntennaMaximumGain(Terminal terminal) const
 {
 const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->maxGain_dBi;
 
 	return pTx.maxGain_dBi;
@@ -382,7 +383,7 @@ CommTerminal* term;
 		return;
 
 	term = pGetTerminalObjPtr(terminal);
-	if( term != NULL )
+	if( term != nullptr )
 	{
 		term->bearingRef = bearingRef;
 		term->bearingDeg = bearing_degrees;
@@ -393,7 +394,7 @@ BearingReference Simulation::GetAntennaBearingReference(Terminal terminal) const
 {
 const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->bearingRef;
 
 	return pTx.bearingRef;
@@ -403,7 +404,7 @@ double Simulation::GetAntennaBearing(Terminal terminal) const
 {
 const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->bearingDeg;
 
 	return pTx.bearingDeg;
@@ -413,7 +414,7 @@ double Simulation::NormalizeAntennaHorizontalPattern(Crc::Covlib::Terminal termi
 {
 CommTerminal* term = pGetTerminalObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->antPattern.NormalizeHPattern();
 
 	return 0;
@@ -423,7 +424,7 @@ double Simulation::NormalizeAntennaVerticalPattern(Crc::Covlib::Terminal termina
 {
 CommTerminal* term = pGetTerminalObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->antPattern.NormalizeVPattern();
 
 	return 0;
@@ -443,7 +444,7 @@ CommTerminal* term;
 		return;
 
 	term = pGetTerminalObjPtr(terminal);
-	if( term != NULL )
+	if( term != nullptr )
 		term->patternApproxMethod = method;
 }
 
@@ -451,7 +452,7 @@ PatternApproximationMethod Simulation::GetAntennaPatternApproximationMethod(Term
 {
 const CommTerminal* term = pGetTerminalConstObjPtr(terminal);
 
-	if( term != NULL )
+	if( term != nullptr )
 		return term->patternApproxMethod;
 
 	return pTx.patternApproxMethod;
@@ -478,7 +479,7 @@ double gain_dBi = 0;
 
 void Simulation::SetPropagationModel(PropagationModel propagationModel)
 {
-	if( propagationModel < LONGLEY_RICE || propagationModel > CRC_MLPL )
+	if( propagationModel < LONGLEY_RICE || propagationModel > CRC_PATH_OBSCURA )
 		return;
 	pPropagModelId = propagationModel;
 }
@@ -1101,7 +1102,7 @@ const char* Simulation::GetTerrainElevDataSourceDirectory(TerrainElevDataSource 
 	default:
 		break;
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool Simulation::AddCustomTerrainElevData(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees,
@@ -1124,7 +1125,7 @@ void Simulation::SetTerrainElevDataSourceSamplingMethod(TerrainElevDataSource te
 TerrainElevSource* source;
 
 	source = pGetTerrainElevSourceObjPtr(terrainElevSource);
-	if( source != NULL )
+	if( source != nullptr )
 	{
 		if( samplingMethod == BILINEAR_INTERPOLATION )
 			source->SetInterpolationType(TerrainElevSource::BILINEAR);
@@ -1138,7 +1139,7 @@ SamplingMethod Simulation::GetTerrainElevDataSourceSamplingMethod(TerrainElevDat
 const TerrainElevSource* source;
 
 	source = pGetTerrainElevSourceConstObjPtr(terrainElevSource);
-	if( source != NULL )
+	if( source != nullptr )
 		if( source->GetInterpolationType() == TerrainElevSource::CLOSEST_POINT )
 			return NEAREST_NEIGHBOR;
 
@@ -1230,7 +1231,7 @@ const char* Simulation::GetLandCoverDataSourceDirectory(Crc::Covlib::LandCoverDa
 	default:
 		break;
 	}
-	return NULL;
+	return nullptr;
 }
 
 bool Simulation::AddCustomLandCoverData(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, 
@@ -1273,7 +1274,7 @@ void Simulation::SetLandCoverClassMapping(LandCoverDataSource landCoverSource, i
 LandCoverSource* source;
 
 	source = pGetLandCoverSourceObjPtr(landCoverSource);
-	if( source != NULL )
+	if( source != nullptr )
 		source->SetMapping(sourceClass, propagationModel, modelValue);
 }
 
@@ -1283,7 +1284,7 @@ const LandCoverSource* source;
 int modelValue;
 
 	source = pGetLandCoverSourceConstObjPtr(landCoverSource);
-	if( source != NULL )
+	if( source != nullptr )
 		if( source->GetMapping(sourceClass, propagationModel, &modelValue) == true )
 			return modelValue;
 
@@ -1295,7 +1296,7 @@ void Simulation::SetDefaultLandCoverClassMapping(LandCoverDataSource landCoverSo
 LandCoverSource* source;
 
 	source = pGetLandCoverSourceObjPtr(landCoverSource);
-	if( source != NULL )
+	if( source != nullptr )
 		source->SetDefaultMapping(propagationModel, modelValue);
 }
 
@@ -1305,7 +1306,7 @@ const LandCoverSource* source;
 int modelValue;
 
 	source = pGetLandCoverSourceConstObjPtr(landCoverSource);
-	if( source != NULL )
+	if( source != nullptr )
 		if( source->GetDefaultMapping(propagationModel, &modelValue) == true )
 			return modelValue;
 
@@ -1317,7 +1318,7 @@ void Simulation::ClearLandCoverClassMappings(LandCoverDataSource landCoverSource
 LandCoverSource* source;
 
 	source = pGetLandCoverSourceObjPtr(landCoverSource);
-	if( source != NULL )
+	if( source != nullptr )
 		source->ClearMappings(propagationModel);
 }
 
@@ -1404,7 +1405,7 @@ const char* Simulation::GetSurfaceElevDataSourceDirectory(SurfaceElevDataSource 
 	default:
 		break;
 	}
-	return NULL;
+	return nullptr;
 }
 
 void Simulation::SetSurfaceAndTerrainDataSourcePairing(bool usePairing)
@@ -1423,7 +1424,7 @@ void Simulation::SetSurfaceElevDataSourceSamplingMethod(SurfaceElevDataSource su
 SurfaceElevSource* source;
 
 	source = pGetSurfaceElevSourceObjPtr(surfaceElevSource);
-	if( source != NULL )
+	if( source != nullptr )
 	{
 		if( samplingMethod == BILINEAR_INTERPOLATION )
 			source->SetInterpolationType(SurfaceElevSource::BILINEAR);
@@ -1437,7 +1438,7 @@ SamplingMethod Simulation::GetSurfaceElevDataSourceSamplingMethod(SurfaceElevDat
 const SurfaceElevSource* source;
 
 	source = pGetSurfaceElevSourceConstObjPtr(surfaceElevSource);
-	if( source != NULL )
+	if( source != nullptr )
 		if( source->GetInterpolationType() == SurfaceElevSource::CLOSEST_POINT )
 			return NEAREST_NEIGHBOR;
 
@@ -1641,9 +1642,9 @@ ReceptionPointDetailedResult detailedResult = {0,0,0,0,0,0,0,0,0,0,0};
 
 double Simulation::GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numSamples,
                                                        const double* terrainElevProfile,
-                                                       const int* landCoverClassMappedValueProfile/*=NULL*/,
-                                                       const double* surfaceElevProfile/*=NULL*/,
-                                                       const ITURadioClimaticZone* ituRadioClimaticZoneProfile/*=NULL*/)
+                                                       const int* landCoverClassMappedValueProfile/*=nullptr*/,
+                                                       const double* surfaceElevProfile/*=nullptr*/,
+                                                       const ITURadioClimaticZone* ituRadioClimaticZoneProfile/*=nullptr*/)
 {
 	if( numSamples < 0 )
 		numSamples = 0;
@@ -1691,9 +1692,9 @@ double Simulation::GetReceptionAreaResultLongitude(int xIndex, int yIndex) const
 	return pRxAreaResults.GetPos((unsigned int)xIndex, (unsigned int)yIndex).m_lon;
 }
 
-bool Simulation::ExportReceptionAreaResultsToTextFile(const char* pathname, const char* resultsColumnName/*=NULL*/) const
+bool Simulation::ExportReceptionAreaResultsToTextFile(const char* pathname, const char* resultsColumnName/*=nullptr*/) const
 {
-	if( resultsColumnName != NULL )
+	if( resultsColumnName != nullptr )
 		return pRxAreaResults.ExportToTextFile(pathname, resultsColumnName);
 	else
 	{
@@ -1703,22 +1704,22 @@ bool Simulation::ExportReceptionAreaResultsToTextFile(const char* pathname, cons
 	}
 }
 
-bool Simulation::ExportReceptionAreaResultsToMifFile(const char* pathname, const char* resultsUnits/*=NULL*/) const
+bool Simulation::ExportReceptionAreaResultsToMifFile(const char* pathname, const char* resultsUnits/*=nullptr*/) const
 {
 ContourFillsEngine contourEngine;
 std::vector<ContourFillsEngine::PolyPolygon> polyPolygons;
 
 	polyPolygons = contourEngine.GeneratePolyPolygons(pRxAreaResults, pCoverageFills);
-	return contourEngine.ExportToMifFile(pathname, (resultsUnits != NULL) ? resultsUnits : pRxAreaResults.GetDataUnit(), polyPolygons);
+	return contourEngine.ExportToMifFile(pathname, (resultsUnits != nullptr) ? resultsUnits : pRxAreaResults.GetDataUnit(), polyPolygons);
 }
 
-bool Simulation::ExportReceptionAreaResultsToKmlFile(const char* pathname, double fillOpacity_percent/*=50*/, double lineOpacity_percent/*=50*/, const char* resultsUnits/*=NULL*/) const
+bool Simulation::ExportReceptionAreaResultsToKmlFile(const char* pathname, double fillOpacity_percent/*=50*/, double lineOpacity_percent/*=50*/, const char* resultsUnits/*=nullptr*/) const
 {
 ContourFillsEngine contourEngine;
 std::vector<ContourFillsEngine::PolyPolygon> polyPolygons;
 
 	polyPolygons = contourEngine.GeneratePolyPolygons(pRxAreaResults, pCoverageFills);
-	return contourEngine.ExportToKmlFile(pathname, fillOpacity_percent, lineOpacity_percent, (resultsUnits != NULL) ? resultsUnits : pRxAreaResults.GetDataUnit(), polyPolygons);
+	return contourEngine.ExportToKmlFile(pathname, fillOpacity_percent, lineOpacity_percent, (resultsUnits != nullptr) ? resultsUnits : pRxAreaResults.GetDataUnit(), polyPolygons);
 }
 
 bool Simulation::ExportReceptionAreaResultsToBilFile(const char* pathname) const
@@ -1893,33 +1894,33 @@ LandCoverSource *landCoverSource1, *landCoverSource2;
 	surfaceElevSource2 = pGetSurfaceElevSourceObjPtr(pSecondarySurfElevSourceId);
 	surfaceElevSource3 = pGetSurfaceElevSourceObjPtr(pTertiarySurfElevSourceId);
 
-	if( terrainElevSource1 != NULL ) pTopoManager.AddTerrainElevSource(terrainElevSource1);
-	if( terrainElevSource2 != NULL ) pTopoManager.AddTerrainElevSource(terrainElevSource2);
-	if( terrainElevSource3 != NULL ) pTopoManager.AddTerrainElevSource(terrainElevSource3);
+	if( terrainElevSource1 != nullptr ) pTopoManager.AddTerrainElevSource(terrainElevSource1);
+	if( terrainElevSource2 != nullptr ) pTopoManager.AddTerrainElevSource(terrainElevSource2);
+	if( terrainElevSource3 != nullptr ) pTopoManager.AddTerrainElevSource(terrainElevSource3);
 
-	if( landCoverSource1 != NULL ) pTopoManager.AddLandCoverSource(landCoverSource1);
-	if( landCoverSource2 != NULL ) pTopoManager.AddLandCoverSource(landCoverSource2);
+	if( landCoverSource1 != nullptr ) pTopoManager.AddLandCoverSource(landCoverSource1);
+	if( landCoverSource2 != nullptr ) pTopoManager.AddLandCoverSource(landCoverSource2);
 
-	if( surfaceElevSource1 != NULL ) pTopoManager.AddSurfaceElevSource(surfaceElevSource1);
-	if( surfaceElevSource2 != NULL ) pTopoManager.AddSurfaceElevSource(surfaceElevSource2);
-	if( surfaceElevSource3 != NULL ) pTopoManager.AddSurfaceElevSource(surfaceElevSource3);
+	if( surfaceElevSource1 != nullptr ) pTopoManager.AddSurfaceElevSource(surfaceElevSource1);
+	if( surfaceElevSource2 != nullptr ) pTopoManager.AddSurfaceElevSource(surfaceElevSource2);
+	if( surfaceElevSource3 != nullptr ) pTopoManager.AddSurfaceElevSource(surfaceElevSource3);
 
 	if( pTopoManager.UsePairedTerrainAndSurfaceElevSources() )
 	{
-		if( terrainElevSource1 != NULL && surfaceElevSource1 != NULL )
+		if( terrainElevSource1 != nullptr && surfaceElevSource1 != nullptr )
 			pTopoManager.AddPairedTerrainAndSurfaceElevSources(terrainElevSource1, surfaceElevSource1);
 
-		if( terrainElevSource2 != NULL && surfaceElevSource2 != NULL )
+		if( terrainElevSource2 != nullptr && surfaceElevSource2 != nullptr )
 			pTopoManager.AddPairedTerrainAndSurfaceElevSources(terrainElevSource2, surfaceElevSource2);
 
-		if( terrainElevSource3 != NULL && surfaceElevSource3 != NULL )
+		if( terrainElevSource3 != nullptr && surfaceElevSource3 != nullptr )
 			pTopoManager.AddPairedTerrainAndSurfaceElevSources(terrainElevSource3, surfaceElevSource3);
 	}
 }
 
 TerrainElevSource* Simulation::pGetTerrainElevSourceObjPtr(TerrainElevDataSource terrainElevSource)
 {
-	return (TerrainElevSource*) pGetTerrainElevSourceConstObjPtr(terrainElevSource);
+	return const_cast<TerrainElevSource*>(pGetTerrainElevSourceConstObjPtr(terrainElevSource));
 }
 
 const TerrainElevSource* Simulation::pGetTerrainElevSourceConstObjPtr(TerrainElevDataSource terrainElevSource) const
@@ -1927,26 +1928,26 @@ const TerrainElevSource* Simulation::pGetTerrainElevSourceConstObjPtr(TerrainEle
 	switch (terrainElevSource)
 	{
 	case TERR_ELEV_NONE:
-		return NULL;
+		return nullptr;
 	case TERR_ELEV_SRTM:
-		return (const TerrainElevSource*) &pTerrainElevSrtm;
+		return &pTerrainElevSrtm;
 	case TERR_ELEV_CUSTOM:
-		return (const TerrainElevSource*) &pTerrainElevCustom;
+		return &pTerrainElevCustom;
 	case TERR_ELEV_NRCAN_CDEM:
-		return (const TerrainElevSource*) &pTerrainElevCdem;
+		return &pTerrainElevCdem;
 	case TERR_ELEV_NRCAN_HRDEM_DTM:
-		return (const TerrainElevSource*) &pTerrainElevHrdemDtm;
+		return &pTerrainElevHrdemDtm;
 	case TERR_ELEV_GEOTIFF:
-		return (const TerrainElevSource*) &pTerrainElevGeotiff;
+		return &pTerrainElevGeotiff;
 	case TERR_ELEV_NRCAN_MRDEM_DTM:
-		return (const TerrainElevSource*) &pTerrainElevMrdemDtm;
+		return &pTerrainElevMrdemDtm;
 	}
-	return NULL;
+	return nullptr;
 }
 
 LandCoverSource* Simulation::pGetLandCoverSourceObjPtr(LandCoverDataSource landCoverSource)
 {
-	return (LandCoverSource*) pGetLandCoverSourceConstObjPtr(landCoverSource);
+	return const_cast<LandCoverSource*>(pGetLandCoverSourceConstObjPtr(landCoverSource));
 }
 
 const LandCoverSource* Simulation::pGetLandCoverSourceConstObjPtr(LandCoverDataSource landCoverSource) const
@@ -1954,22 +1955,22 @@ const LandCoverSource* Simulation::pGetLandCoverSourceConstObjPtr(LandCoverDataS
 	switch (landCoverSource)
 	{
 	case LAND_COVER_NONE:
-		return NULL;
+		return nullptr;
 	case LAND_COVER_GEOTIFF:
-		return (const LandCoverSource*) &pLandCoverGeotiff;
+		return &pLandCoverGeotiff;
 	case LAND_COVER_ESA_WORLDCOVER:
-		return (const LandCoverSource*) &pLandCoverEsaWorldcover;
+		return &pLandCoverEsaWorldcover;
 	case LAND_COVER_CUSTOM:
-		return (const LandCoverSource*) &pLandCoverCustom;
+		return &pLandCoverCustom;
 	case LAND_COVER_NRCAN:
-		return (const LandCoverSource*) &pLandCoverNrcan;
+		return &pLandCoverNrcan;
 	}
-	return NULL;
+	return nullptr;
 }
 
 SurfaceElevSource* Simulation::pGetSurfaceElevSourceObjPtr(SurfaceElevDataSource surfaceElevSource)
 {
-	return (SurfaceElevSource*) pGetSurfaceElevSourceConstObjPtr(surfaceElevSource);
+	return const_cast<SurfaceElevSource*>(pGetSurfaceElevSourceConstObjPtr(surfaceElevSource));
 }
 	
 const SurfaceElevSource* Simulation::pGetSurfaceElevSourceConstObjPtr(SurfaceElevDataSource surfaceElevSource) const
@@ -1977,21 +1978,21 @@ const SurfaceElevSource* Simulation::pGetSurfaceElevSourceConstObjPtr(SurfaceEle
 	switch (surfaceElevSource)
 	{
 	case SURF_ELEV_NONE:
-		return NULL;
+		return nullptr;
 	case SURF_ELEV_SRTM:
-		return (const SurfaceElevSource*) &pSurfElevSrtm;
+		return &pSurfElevSrtm;
 	case SURF_ELEV_CUSTOM:
-		return (const SurfaceElevSource*) &pSurfElevCustom;
+		return &pSurfElevCustom;
 	case SURF_ELEV_NRCAN_CDSM:
-		return (const SurfaceElevSource*) &pSurfElevCdsm;
+		return &pSurfElevCdsm;
 	case SURF_ELEV_NRCAN_HRDEM_DSM:
-		return (const SurfaceElevSource*) &pSurfElevHrdemDsm;
+		return &pSurfElevHrdemDsm;
 	case SURF_ELEV_GEOTIFF:
-		return (const SurfaceElevSource*) &pSurfElevGeotiff;
+		return &pSurfElevGeotiff;
 	case SURF_ELEV_NRCAN_MRDEM_DSM:
-		return (const SurfaceElevSource*) &pSurfElevMrdemDsm;
+		return &pSurfElevMrdemDsm;
 	}
-	return NULL;
+	return nullptr;
 }
 
 void Simulation::pSetDefaultEsaWorldcoverToP1812Mappings()
@@ -2081,14 +2082,14 @@ const CommTerminal* Simulation::pGetTerminalConstObjPtr(Terminal terminal) const
 	switch (terminal)
 	{
 	case TRANSMITTER:
-		return (const CommTerminal*) &pTx;
+		return &pTx;
 	case RECEIVER:
-		return (const CommTerminal*) &pRx;
+		return &pRx;
 	}
-	return NULL;
+	return nullptr;
 }
 
 CommTerminal* Simulation::pGetTerminalObjPtr(Crc::Covlib::Terminal terminal)
 {
-	return (CommTerminal*) pGetTerminalConstObjPtr(terminal);
+	return const_cast<CommTerminal*>(pGetTerminalConstObjPtr(terminal));
 }

@@ -216,6 +216,9 @@ PathLossFuncOutput result;
 	case CRC_MLPL:
 		result = pPathLossCrcMlpl(sim, rxLat, rxLon, customData, optionalOutputPathLossProfile);
 		break;
+	case CRC_PATH_OBSCURA:
+		result = pPathLossCrcPathObscura(sim, rxLat, rxLon, customData, optionalOutputPathLossProfile);
+		break;
 	default:
 		result = {0, {0,0,0,0,0}};
 		break;
@@ -231,7 +234,7 @@ Generator::PathLossFuncOutput Generator::pPathLossLongleyRice(Simulation& sim, d
 {
 PathLossFuncOutput result = {0, {0,0,0,0,0}};
 
-	result.stats = pFillProfiles(sim, rxLat, rxLon, (PropagModel*) &(sim.pLongleyRiceModel), customData);
+	result.stats = pFillProfiles(sim, rxLat, rxLon, &(sim.pLongleyRiceModel), customData);
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
@@ -257,7 +260,7 @@ Generator::PathLossFuncOutput Generator::pPathLossP1812(Simulation& sim, double 
 {
 PathLossFuncOutput result = {0, {0,0,0,0,0}};
 
-	result.stats = pFillProfiles(sim, rxLat, rxLon, (PropagModel*) &(sim.pIturp1812Model), customData);
+	result.stats = pFillProfiles(sim, rxLat, rxLon, &(sim.pIturp1812Model), customData);
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
@@ -287,7 +290,9 @@ Generator::PathLossFuncOutput Generator::pPathLossP452v17(Simulation& sim, doubl
 PathLossFuncOutput result = {0, {0,0,0,0,0}};
 double txAntennaGain_dBi, rxAntennaGain_dBi;
 
-	result.stats = pFillProfiles(sim, rxLat, rxLon, (PropagModel*) &(sim.pIturp452v17Model), customData);
+	result.stats = pFillProfiles(sim, rxLat, rxLon, &(sim.pIturp452v17Model), customData);
+
+	static_assert(sizeof(int) == sizeof(P452HeightGainModelClutterCategory), "Size mismatch!");
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
@@ -296,7 +301,7 @@ double txAntennaGain_dBi, rxAntennaGain_dBi;
 		result.pathLoss = sim.pIturp452v17Model.CalcPathLoss(sim.pTx.freqMHz/1000.0, sim.pTx.lat, sim.pTx.lon, rxLat, rxLon, sim.pTx.rcagl, sim.pRx.heightAGL,
 		                                                     txAntennaGain_dBi, rxAntennaGain_dBi, sim.pTx.pol, pLatLonProfile.size(), pDistKmProfile.data(),
 		                                                     pTerrainElevProfile.data(), pRadioClimaticZoneProfile.data(),
-		                                                     (P452HeightGainModelClutterCategory*) pMappedLandCoverProfile.data());
+		                                                     reinterpret_cast<P452HeightGainModelClutterCategory*>(pMappedLandCoverProfile.data()));
 	}
 	else
 	{
@@ -309,7 +314,7 @@ double txAntennaGain_dBi, rxAntennaGain_dBi;
 			result.pathLoss = sim.pIturp452v17Model.CalcPathLoss(sim.pTx.freqMHz/1000.0, sim.pTx.lat, sim.pTx.lon, pLatLonProfile[i].first, pLatLonProfile[i].second,
 			                                                     sim.pTx.rcagl, sim.pRx.heightAGL, txAntennaGain_dBi, rxAntennaGain_dBi, sim.pTx.pol, i+1, 
 			                                                     pDistKmProfile.data(), pTerrainElevProfile.data(), pRadioClimaticZoneProfile.data(),
-			                                                     (P452HeightGainModelClutterCategory*) pMappedLandCoverProfile.data());
+			                                                     reinterpret_cast<P452HeightGainModelClutterCategory*>(pMappedLandCoverProfile.data()));
 			optionalOutputPathLossProfile->push_back(result.pathLoss);
 		}
 	}
@@ -323,7 +328,7 @@ Generator::PathLossFuncOutput Generator::pPathLossP452v18(Simulation& sim, doubl
 PathLossFuncOutput result = {0, {0,0,0,0,0}};
 double txAntennaGain_dBi, rxAntennaGain_dBi;
 
-	result.stats = pFillProfiles(sim, rxLat, rxLon, (PropagModel*) &(sim.pIturp452v18Model), customData);
+	result.stats = pFillProfiles(sim, rxLat, rxLon, &(sim.pIturp452v18Model), customData);
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
@@ -357,7 +362,7 @@ Generator::PathLossFuncOutput Generator::pPathLossFreeSpace(Simulation& sim, dou
 {
 PathLossFuncOutput result = {0, {0,0,0,0,0}};
 
-	result.stats = pFillProfiles(sim, rxLat, rxLon, (PropagModel*) &(sim.pFreeSpaceModel), customData);
+	result.stats = pFillProfiles(sim, rxLat, rxLon, &(sim.pFreeSpaceModel), customData);
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
@@ -384,7 +389,7 @@ Generator::PathLossFuncOutput Generator::pPathLossEHata(Simulation& sim, double 
 {
 PathLossFuncOutput result = {0, {0,0,0,0,0}};
 
-	result.stats = pFillProfiles(sim, rxLat, rxLon, (PropagModel*) &(sim.pEHataModel), customData);
+	result.stats = pFillProfiles(sim, rxLat, rxLon, &(sim.pEHataModel), customData);
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
@@ -411,7 +416,7 @@ Generator::PathLossFuncOutput Generator::pPathLossCrcMlpl(Simulation& sim, doubl
 {
 PathLossFuncOutput result = {0, {0,0,0,0,0}};
 
-	result.stats = pFillProfiles(sim, rxLat, rxLon, (PropagModel*) &(sim.pCrcMlplModel), customData);
+	result.stats = pFillProfiles(sim, rxLat, rxLon, &(sim.pCrcMlplModel), customData);
 
 	if( optionalOutputPathLossProfile == nullptr )
 	{
@@ -429,6 +434,36 @@ PathLossFuncOutput result = {0, {0,0,0,0,0}};
 			result.pathLoss = sim.pCrcMlplModel.CalcPathLoss(sim.pTx.freqMHz, sim.pTx.lat, sim.pTx.lon, rxLat, rxLon,
 			                                                 sim.pTx.rcagl, sim.pRx.heightAGL, i+1, pDistKmProfile.data(),
 			                                                 pTerrainElevProfile.data(), pSurfaceElevProfile.data());
+			optionalOutputPathLossProfile->push_back(result.pathLoss);
+		}
+	}
+
+	return result;
+}
+
+Generator::PathLossFuncOutput Generator::pPathLossCrcPathObscura(Simulation& sim, double rxLat, double rxLon, CustomData customData,
+                                                                 std::vector<double>* optionalOutputPathLossProfile)
+{
+PathLossFuncOutput result = {0, {0,0,0,0,0}};
+
+	result.stats = pFillProfiles(sim, rxLat, rxLon, &(sim.pCrcPathObscuraModel), customData);
+
+	if( optionalOutputPathLossProfile == nullptr )
+	{
+		result.pathLoss = sim.pCrcPathObscuraModel.CalcPathLoss(sim.pTx.freqMHz, sim.pTx.lat, sim.pTx.lon, rxLat, rxLon,
+		                                                        sim.pTx.rcagl, sim.pRx.heightAGL, pLatLonProfile.size(),
+		                                                        pDistKmProfile.data(), pTerrainElevProfile.data(),
+		                                                        pSurfaceElevProfile.data());
+	}
+	else
+	{
+		optionalOutputPathLossProfile->clear();
+		optionalOutputPathLossProfile->reserve(pLatLonProfile.size());
+		for(unsigned int i=0 ; i<pLatLonProfile.size() ; i++)
+		{
+			result.pathLoss = sim.pCrcPathObscuraModel.CalcPathLoss(sim.pTx.freqMHz, sim.pTx.lat, sim.pTx.lon, rxLat, rxLon,
+			                                                        sim.pTx.rcagl, sim.pRx.heightAGL, i+1, pDistKmProfile.data(),
+			                                                        pTerrainElevProfile.data(), pSurfaceElevProfile.data());
 			optionalOutputPathLossProfile->push_back(result.pathLoss);
 		}
 	}
@@ -938,6 +973,8 @@ const char* Generator::pGetPropagModelShortName(Crc::Covlib::PropagationModel pr
 		return "eHata";
 	case CRC_MLPL:
 		return "MLPL";
+	case CRC_PATH_OBSCURA:
+		return "PathObscura";
 	default:
 		return "";
 	}
@@ -948,19 +985,21 @@ PropagModel* Generator::pGetPropagModelPtr(Simulation& sim)
 	switch (sim.pPropagModelId)
 	{
 	case LONGLEY_RICE:
-		return (PropagModel*) &(sim.pLongleyRiceModel);
+		return &(sim.pLongleyRiceModel);
 	case ITU_R_P_1812:
-		return (PropagModel*) &(sim.pIturp1812Model);
+		return &(sim.pIturp1812Model);
 	case ITU_R_P_452_V17:
-		return (PropagModel*) &(sim.pIturp452v17Model);
+		return &(sim.pIturp452v17Model);
 	case ITU_R_P_452_V18:
-		return (PropagModel*) &(sim.pIturp452v18Model);
+		return &(sim.pIturp452v18Model);
 	case FREE_SPACE:
-		return (PropagModel*) &(sim.pFreeSpaceModel);
+		return &(sim.pFreeSpaceModel);
 	case EXTENDED_HATA:
-		return (PropagModel*) &(sim.pEHataModel);
+		return &(sim.pEHataModel);
 	case CRC_MLPL:
-		return (PropagModel*) &(sim.pCrcMlplModel);
+		return &(sim.pCrcMlplModel);
+	case CRC_PATH_OBSCURA:
+		return &(sim.pCrcPathObscuraModel);
 	default:
 		return nullptr;
 	}

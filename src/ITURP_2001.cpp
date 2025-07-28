@@ -212,7 +212,9 @@ void ITURP_2001::GreatCircleDistance(double lat0, double lon0, double lat1, doub
 	lon0 = lon0*PI_ON_180;
 	lat1 = lat1*PI_ON_180;
 	lon1 = lon1*PI_ON_180;
-	distKm = acos( (sin(lat0)*sin(lat1)) + (cos(lat0)*cos(lat1)*cos(lon1-lon0)) ) * Re;
+	double x = (sin(lat0)*sin(lat1)) + (cos(lat0)*cos(lat1)*cos(lon1-lon0));
+	x = std::min(x, 1.0); // to avoid domain error in acos() in some cases where (lat0, lon0) == (lat1, lon1)
+	distKm = acos(x) * Re;
 }
 
 // Rec. ITU-R P.2001-4, Section 3.6 of Annex

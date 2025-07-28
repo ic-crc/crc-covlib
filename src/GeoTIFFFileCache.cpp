@@ -93,7 +93,7 @@ uint32_t key = stripIndex;
 		entryPtr = &(pMap[key]);
 		entryPtr->m_lastHitNo = ++pCurHitNo;
 		entryPtr->m_data = new uint8_t[pCacheEntryDataSizeInBytes];
-		memcpy(entryPtr->m_data, ((uint8_t*)stripData), std::min(pCacheEntryDataSizeInBytes, stripDataSizeInBytes));
+		memcpy(entryPtr->m_data, stripData, std::min(pCacheEntryDataSizeInBytes, stripDataSizeInBytes));
 		pManageSizeLimit();
 	}
 }

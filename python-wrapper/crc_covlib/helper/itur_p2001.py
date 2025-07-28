@@ -190,7 +190,9 @@ def PathLength(lat0: float, lon0: float, lat1: float, lon1: float) -> float:
     lon0 = radians(lon0)
     lat1 = radians(lat1)
     lon1 = radians(lon1)
-    path_length_km = acos( (sin(lat0)*sin(lat1)) + (cos(lat0)*cos(lat1)*cos(lon1-lon0)) ) * Re
+    x = (sin(lat0)*sin(lat1)) + (cos(lat0)*cos(lat1)*cos(lon1-lon0))
+    x = min(x, 1) # to avoid domain error in acos() in some cases where (lat0, lon0)==(lat1, lon1)
+    path_length_km = acos(x) * Re
     return path_length_km
 
 

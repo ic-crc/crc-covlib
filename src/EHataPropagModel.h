@@ -10,7 +10,7 @@
 #include "CRC-COVLIB.h"
 #include "PropagModel.h"
 
-class EHataPropagModel : PropagModel
+class EHataPropagModel : public PropagModel
 {
 public:
 	EHataPropagModel();

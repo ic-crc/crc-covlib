@@ -83,13 +83,15 @@ double* reprClutterHeightProfile = nullptr;
 
 	static_assert(std::isnan(Crc::Covlib::AUTOMATIC) && std::isnan(ITURP_452_1812_common::AUTO), "");
 
-	static_assert((int)Crc::Covlib::ITURadioClimaticZone::ITU_COASTAL_LAND == (int)ITURP_452_1812_common::RadioClimaticZone::COASTAL_LAND, "");
-	static_assert((int)Crc::Covlib::ITURadioClimaticZone::ITU_INLAND == (int)ITURP_452_1812_common::RadioClimaticZone::INLAND, "");
-	static_assert((int)Crc::Covlib::ITURadioClimaticZone::ITU_SEA == (int)ITURP_452_1812_common::RadioClimaticZone::SEA, "");
+	static_assert(static_cast<int>(Crc::Covlib::ITURadioClimaticZone::ITU_COASTAL_LAND) == static_cast<int>(ITURP_452_1812_common::RadioClimaticZone::COASTAL_LAND), "");
+	static_assert(static_cast<int>(Crc::Covlib::ITURadioClimaticZone::ITU_INLAND) == static_cast<int>(ITURP_452_1812_common::RadioClimaticZone::INLAND), "");
+	static_assert(static_cast<int>(Crc::Covlib::ITURadioClimaticZone::ITU_SEA) == static_cast<int>(ITURP_452_1812_common::RadioClimaticZone::SEA), "");
+
+	static_assert(sizeof(Crc::Covlib::ITURadioClimaticZone) == sizeof(ITURP_452_1812_common::RadioClimaticZone), "Size mismatch!");
 
 	return BasicTransmissionloss(freq_Ghz, pTimePercent, pLocationPercent, txLat, txLon, rxLat, rxLon, txRcagl_m, rxRcagl_m,
 	                             pol==VERTICAL_POL, sizeProfiles, distKmProfile, elevProfile, nullptr, reprClutterHeightProfile,
-	                             surfaceHeightProfile, (RadioClimaticZone*)radioClimaticZoneProfile, pDeltaN, pN0);
+	                             surfaceHeightProfile, reinterpret_cast<RadioClimaticZone*>(radioClimaticZoneProfile), pDeltaN, pN0);
 }
 
 void ITURP1812PropagModel::GetReprClutterHeightProfile(unsigned int sizeProfile, int* mappedLandCoverProfile, std::vector<double>* reprClutterHeightProfile)
@@ -98,12 +100,12 @@ void ITURP1812PropagModel::GetReprClutterHeightProfile(unsigned int sizeProfile,
 	if( pMappingType == P1812_MAP_TO_CLUTTER_CATEGORY )
 	{
 		for(unsigned int i=0 ; i<sizeProfile ; i++)
-			(*reprClutterHeightProfile)[i] = GetClutterCategoryReprHeight((P1812ClutterCategory)mappedLandCoverProfile[i]);
+			(*reprClutterHeightProfile)[i] = GetClutterCategoryReprHeight(static_cast<P1812ClutterCategory>(mappedLandCoverProfile[i]));
 	}
 	else // P1812_MAP_TO_REPR_CLUTTER_HEIGHT
 	{
 		for(unsigned int i=0 ; i<sizeProfile ; i++)
-			(*reprClutterHeightProfile)[i] = (double)mappedLandCoverProfile[i];
+			(*reprClutterHeightProfile)[i] = static_cast<double>(mappedLandCoverProfile[i]);
 	}
 }
 
@@ -155,18 +157,18 @@ double ITURP1812PropagModel::GetLocationPercentage() const
 
 void ITURP1812PropagModel::SetClutterCategoryReprHeight(P1812ClutterCategory clutterCategory, double representativeHeight_m)
 {
-static_assert((int)ITURP_452_1812_common::ClutterCategory::WATER_SEA == (int)Crc::Covlib::P1812ClutterCategory::P1812_WATER_SEA, "");
-static_assert((int)ITURP_452_1812_common::ClutterCategory::OPEN_RURAL == (int)Crc::Covlib::P1812ClutterCategory::P1812_OPEN_RURAL, "");
-static_assert((int)ITURP_452_1812_common::ClutterCategory::SUBURBAN == (int)Crc::Covlib::P1812ClutterCategory::P1812_SUBURBAN, "");
-static_assert((int)ITURP_452_1812_common::ClutterCategory::URBAN_TREES_FOREST == (int)Crc::Covlib::P1812ClutterCategory::P1812_URBAN_TREES_FOREST, "");
-static_assert((int)ITURP_452_1812_common::ClutterCategory::DENSE_URBAN == (int)Crc::Covlib::P1812ClutterCategory::P1812_DENSE_URBAN, "");
+static_assert(static_cast<int>(ITURP_452_1812_common::ClutterCategory::WATER_SEA) == static_cast<int>(Crc::Covlib::P1812ClutterCategory::P1812_WATER_SEA), "");
+static_assert(static_cast<int>(ITURP_452_1812_common::ClutterCategory::OPEN_RURAL) == static_cast<int>(Crc::Covlib::P1812ClutterCategory::P1812_OPEN_RURAL), "");
+static_assert(static_cast<int>(ITURP_452_1812_common::ClutterCategory::SUBURBAN) == static_cast<int>(Crc::Covlib::P1812ClutterCategory::P1812_SUBURBAN), "");
+static_assert(static_cast<int>(ITURP_452_1812_common::ClutterCategory::URBAN_TREES_FOREST) == static_cast<int>(Crc::Covlib::P1812ClutterCategory::P1812_URBAN_TREES_FOREST), "");
+static_assert(static_cast<int>(ITURP_452_1812_common::ClutterCategory::DENSE_URBAN) == static_cast<int>(Crc::Covlib::P1812ClutterCategory::P1812_DENSE_URBAN), "");
 
-	ITURP_1812::SetDefaultRepresentativeHeight((ITURP_452_1812_common::ClutterCategory) clutterCategory, representativeHeight_m);
+	ITURP_1812::SetDefaultRepresentativeHeight(static_cast<ClutterCategory>(clutterCategory), representativeHeight_m);
 }
 
 double ITURP1812PropagModel::GetClutterCategoryReprHeight(P1812ClutterCategory clutterCategory) const
 {
-	return ITURP_1812::GetDefaultRepresentativeHeight((ITURP_452_1812_common::ClutterCategory) clutterCategory);
+	return ITURP_1812::GetDefaultRepresentativeHeight(static_cast<ClutterCategory>(clutterCategory));
 }
 
 void ITURP1812PropagModel::SetLandCoverMappingType(P1812LandCoverMappingType mappingType)

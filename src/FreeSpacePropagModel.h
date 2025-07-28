@@ -10,7 +10,7 @@
 #include "PropagModel.h"
 
 
-class FreeSpacePropagModel : PropagModel
+class FreeSpacePropagModel : public PropagModel
 {
 public:
 	FreeSpacePropagModel();

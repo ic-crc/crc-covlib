@@ -30,7 +30,11 @@ namespace Crc
 
 		CRCCOVLIB_API ISimulation* APIENTRY DeepCopySimulation(ISimulation* sim)
 		{
-			return new Simulation(*((Simulation*)sim));
+			Simulation* simPtr = dynamic_cast<Simulation*>(sim);
+			if( simPtr == nullptr )
+				return nullptr;
+			else
+				return new Simulation(*(simPtr));
 		}
 
 		CRCCOVLIB_API bool APIENTRY SetITUProprietaryDataDirectory(const char* directory)

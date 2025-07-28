@@ -36,8 +36,13 @@ else
 #	For dynamic linking (unless -static is used):
 #	LDLIBS = -lGeographicLib -ltiff
 
-#	For static linking (some development files packages may need to be installed first, like libwebp-dev, libzstd-dev):
+#	For static linking (some development files packages may need to be installed first, like libwebp-dev, libzstd-dev, etc.):
 	LDLIBS = -l:libGeographicLib.a -l:libtiff.a -l:libz.a -l:libjpeg.a -l:libjbig.a -l:liblzma.a -l:libwebp.a -l:libzstd.a -l:libdeflate.a -l:libLerc.a -l:libsharpyuv.a
+
+#    Or use this instead on older systems:
+#    LDLIBS = -l:libGeographic.a -l:libtiff.a -l:libz.a -l:libjpeg.a -l:libjbig.a -l:liblzma.a -l:libwebp.a -l:libzstd.a -l:libdeflate.a
+
+	LDLIBS += ../../src/crc-ml/libs/libcrcml.a
 endif
 
 

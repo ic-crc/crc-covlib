@@ -11,7 +11,7 @@
 #include "PropagModel.h"
 
 
-class LongleyRicePropagModel : PropagModel
+class LongleyRicePropagModel : public PropagModel
 {
 public:
 	LongleyRicePropagModel();
