@@ -209,6 +209,7 @@ public:
 	virtual void SetTerrainElevDataSamplingResolution(double samplingResolution_meters);
 	virtual double GetTerrainElevDataSamplingResolution() const;
 	virtual double GetTerrainElevation(double latitude_degrees, double longitude_degrees, double noDataValue=0);
+	virtual int GetTerrainElevationProfile(double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile);
 
 	// Land cover data parameters
 	virtual void SetPrimaryLandCoverDataSource(Crc::Covlib::LandCoverDataSource landCoverSource);
@@ -220,7 +221,9 @@ public:
 	virtual bool AddCustomLandCoverData(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const short* landCoverData, bool defineNoDataValue=false, short noDataValue=0);
 	virtual void ClearCustomLandCoverData();
 	virtual int GetLandCoverClass(double latitude_degrees, double longitude_degrees);
+	virtual int GetLandCoverClassProfile(double latitude_degrees, double longitude_degrees, int* outputProfile, int sizeOutputProfile);
 	virtual int GetLandCoverClassMappedValue(double latitude_degrees, double longitude_degrees, Crc::Covlib::PropagationModel propagationModel);
+	virtual int GetLandCoverClassMappedValueProfile(double latitude_degrees, double longitude_degrees, Crc::Covlib::PropagationModel propagationModel, int* outputProfile, int sizeOutputProfile);
 	virtual void SetLandCoverClassMapping(Crc::Covlib::LandCoverDataSource landCoverSource, int sourceClass, Crc::Covlib::PropagationModel propagationModel, int modelValue);
 	virtual int GetLandCoverClassMapping(Crc::Covlib::LandCoverDataSource landCoverSource, int sourceClass, Crc::Covlib::PropagationModel propagationModel) const;
 	virtual void SetDefaultLandCoverClassMapping(Crc::Covlib::LandCoverDataSource landCoverSource, Crc::Covlib::PropagationModel propagationModel, int modelValue);
@@ -243,6 +246,7 @@ public:
 	virtual bool AddCustomSurfaceElevData(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const float* surfaceElevData_meters, bool defineNoDataValue=false, float noDataValue=0);
 	virtual void ClearCustomSurfaceElevData();
 	virtual double GetSurfaceElevation(double latitude_degrees, double longitude_degrees, double noDataValue=0);
+	virtual int GetSurfaceElevationProfile(double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile);
 
 	// Reception area parameters
 	virtual void SetReceptionAreaCorners(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees);
@@ -271,6 +275,7 @@ public:
 	virtual double GenerateReceptionPointResult(double latitude_degrees, double longitude_degrees);
 	virtual Crc::Covlib::ReceptionPointDetailedResult GenerateReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees);
 	virtual double GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=nullptr, const double* surfaceElevProfile=nullptr, const Crc::Covlib::ITURadioClimaticZone* ituRadioClimaticZoneProfile=nullptr);
+	virtual Crc::Covlib::ReceptionPointDetailedResult GenerateProfileReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=nullptr, const double* surfaceElevProfile=nullptr, const Crc::Covlib::ITURadioClimaticZone* ituRadioClimaticZoneProfile=nullptr);
 	virtual void GenerateReceptionAreaResults();
 	virtual int GetGenerateStatus() const;
 	virtual double GetReceptionAreaResultValue(int xIndex, int yIndex) const;
@@ -307,6 +312,7 @@ private:
 	void pSetDefaultNrcanLandCoverToP452v18Mappings();
 	const CommTerminal* pGetTerminalConstObjPtr(Crc::Covlib::Terminal terminal) const;
 	CommTerminal* pGetTerminalObjPtr(Crc::Covlib::Terminal terminal);
+	PropagModel* pGetPropagModelPtr(Crc::Covlib::PropagationModel propagModelId);
 
 	// Note: when adding new members here, add them to the operator=() method as well
 

@@ -469,6 +469,7 @@ namespace Crc
 			virtual bool AddCustomTerrainElevData(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const float* terrainElevData_meters, bool defineNoDataValue=false, float noDataValue=0) = 0;
 			virtual void ClearCustomTerrainElevData() = 0;
 			virtual double GetTerrainElevation(double latitude_degrees, double longitude_degrees, double noDataValue=0) = 0;
+			virtual int GetTerrainElevationProfile(double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile) = 0;
 
 			// Land cover data parameters
 			virtual void SetPrimaryLandCoverDataSource(LandCoverDataSource landCoverSource) = 0;
@@ -480,7 +481,9 @@ namespace Crc
 			virtual bool AddCustomLandCoverData(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const short* landCoverData, bool defineNoDataValue=false, short noDataValue=0) = 0;
 			virtual void ClearCustomLandCoverData() = 0;
 			virtual int GetLandCoverClass(double latitude_degrees, double longitude_degrees) = 0;
+			virtual int GetLandCoverClassProfile(double latitude_degrees, double longitude_degrees, int* outputProfile, int sizeOutputProfile) = 0;
 			virtual int GetLandCoverClassMappedValue(double latitude_degrees, double longitude_degrees, PropagationModel propagationModel) = 0;
+			virtual int GetLandCoverClassMappedValueProfile(double latitude_degrees, double longitude_degrees, PropagationModel propagationModel, int* outputProfile, int sizeOutputProfile) = 0;
 			virtual void SetLandCoverClassMapping(LandCoverDataSource landCoverSource, int sourceClass, PropagationModel propagationModel, int modelValue) = 0;
 			virtual int GetLandCoverClassMapping(LandCoverDataSource landCoverSource, int sourceClass, PropagationModel propagationModel) const = 0;
 			virtual void SetDefaultLandCoverClassMapping(LandCoverDataSource landCoverSource, PropagationModel propagationModel, int modelValue) = 0;
@@ -503,6 +506,7 @@ namespace Crc
 			virtual bool AddCustomSurfaceElevData(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const float* surfaceElevData_meters, bool defineNoDataValue=false, float noDataValue=0) = 0;
 			virtual void ClearCustomSurfaceElevData() = 0;
 			virtual double GetSurfaceElevation(double latitude_degrees, double longitude_degrees, double noDataValue=0) = 0;
+			virtual int GetSurfaceElevationProfile(double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile) = 0;
 
 			// Reception area parameters
 			virtual void SetReceptionAreaCorners(double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees) = 0;
@@ -531,6 +535,7 @@ namespace Crc
 			virtual double GenerateReceptionPointResult(double latitude_degrees, double longitude_degrees) = 0;
 			virtual ReceptionPointDetailedResult GenerateReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees) = 0;
 			virtual double GenerateProfileReceptionPointResult(double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL) = 0;
+			virtual ReceptionPointDetailedResult GenerateProfileReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL) = 0;
 			virtual void GenerateReceptionAreaResults() = 0;
 			virtual int GetGenerateStatus() const = 0;
 			virtual double GetReceptionAreaResultValue(int xIndex, int yIndex) const = 0;
@@ -719,6 +724,7 @@ namespace Crc
 		extern "C" CRCCOVLIB_API bool __stdcall AddCustomTerrainElevData(ISimulation* sim, double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const float* terrainElevData_meters, bool defineNoDataValue=false, float noDataValue=0);
 		extern "C" CRCCOVLIB_API void __stdcall ClearCustomTerrainElevData(ISimulation* sim);
 		extern "C" CRCCOVLIB_API double __stdcall GetTerrainElevation(ISimulation* sim, double latitude_degrees, double longitude_degrees, double noDataValue=0);
+		extern "C" CRCCOVLIB_API int __stdcall GetTerrainElevationProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile);
 
 		// Land cover data parameters
 		extern "C" CRCCOVLIB_API void __stdcall SetPrimaryLandCoverDataSource(ISimulation* sim, LandCoverDataSource landCoverSource);
@@ -730,7 +736,9 @@ namespace Crc
 		extern "C" CRCCOVLIB_API bool __stdcall AddCustomLandCoverData(ISimulation* sim, double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const short* landCoverData, bool defineNoDataValue=false, short noDataValue=0);
 		extern "C" CRCCOVLIB_API void __stdcall ClearCustomLandCoverData(ISimulation* sim);
 		extern "C" CRCCOVLIB_API int __stdcall GetLandCoverClass(ISimulation* sim, double latitude_degrees, double longitude_degrees);
+		extern "C" CRCCOVLIB_API int __stdcall GetLandCoverClassProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, int* outputProfile, int sizeOutputProfile);
 		extern "C" CRCCOVLIB_API int __stdcall GetLandCoverClassMappedValue(ISimulation* sim, double latitude_degrees, double longitude_degrees, PropagationModel propagationModel);
+		extern "C" CRCCOVLIB_API int __stdcall GetLandCoverClassMappedValueProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, PropagationModel propagationModel, int* outputProfile, int sizeOutputProfile);
 		extern "C" CRCCOVLIB_API void __stdcall SetLandCoverClassMapping(ISimulation* sim, LandCoverDataSource landCoverSource, int sourceClass, PropagationModel propagationModel, int modelValue);
 		extern "C" CRCCOVLIB_API int __stdcall GetLandCoverClassMapping(ISimulation* sim, LandCoverDataSource landCoverSource, int sourceClass, PropagationModel propagationModel);
 		extern "C" CRCCOVLIB_API void __stdcall SetDefaultLandCoverClassMapping(ISimulation* sim, LandCoverDataSource landCoverSource, PropagationModel propagationModel, int modelValue);
@@ -753,6 +761,7 @@ namespace Crc
 		extern "C" CRCCOVLIB_API bool __stdcall AddCustomSurfaceElevData(ISimulation* sim, double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const float* surfaceElevData_meters, bool defineNoDataValue=false, float noDataValue=0);
 		extern "C" CRCCOVLIB_API void __stdcall ClearCustomSurfaceElevData(ISimulation* sim);
 		extern "C" CRCCOVLIB_API double __stdcall GetSurfaceElevation(ISimulation* sim, double latitude_degrees, double longitude_degrees, double noDataValue=0);
+		extern "C" CRCCOVLIB_API __stdcall int GetSurfaceElevationProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile);
 
 		// Reception area parameters
 		extern "C" CRCCOVLIB_API void __stdcall SetReceptionAreaCorners(ISimulation* sim, double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees);
@@ -781,6 +790,7 @@ namespace Crc
 		extern "C" CRCCOVLIB_API double __stdcall GenerateReceptionPointResult(ISimulation* sim, double latitude_degrees, double longitude_degrees);
 		extern "C" CRCCOVLIB_API ReceptionPointDetailedResult __stdcall GenerateReceptionPointDetailedResult(ISimulation* sim, double latitude_degrees, double longitude_degrees);
 		extern "C" CRCCOVLIB_API double __stdcall GenerateProfileReceptionPointResult(ISimulation* sim, double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL);
+		extern "C" CRCCOVLIB_API ReceptionPointDetailedResult __stdcall GenerateProfileReceptionPointDetailedResult(ISimulation* sim, double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile=NULL, const double* surfaceElevProfile=NULL, const ITURadioClimaticZone* ituRadioClimaticZoneProfile=NULL);
 		extern "C" CRCCOVLIB_API void __stdcall GenerateReceptionAreaResults(ISimulation* sim);
 		extern "C" CRCCOVLIB_API int __stdcall GetGenerateStatus(ISimulation* sim);
 		extern "C" CRCCOVLIB_API double __stdcall GetReceptionAreaResultValue(ISimulation* sim, int xIndex, int yIndex);

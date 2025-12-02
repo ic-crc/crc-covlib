@@ -102,7 +102,7 @@ bool Generator::ExportProfilesToCsvFile(Simulation& sim, const char* pathname, d
 {
 PathLossFuncOutput pathlossOutput = {0, {0,0,0,0,0}};
 std::string propagModelName = pGetPropagModelShortName(sim.pPropagModelId);
-PropagModel* propagModelPtr = pGetPropagModelPtr(sim);
+PropagModel* propagModelPtr = sim.pGetPropagModelPtr(sim.pPropagModelId);
 Position rxPos = {lat, lon};
 CustomData nullCustomData = {0, nullptr, nullptr, nullptr, nullptr};
 std::vector<double> resultProfile;
@@ -695,10 +695,10 @@ double Generator::pToTransmissionLoss(Simulation& sim, double pathLoss_dB, doubl
 double Generator::pToReceivedPower(Simulation& sim, double pathLoss_dB, double txAntGain_dBi, double rxAntGain_dBi)
 {
 double tpo_dBm = sim.pTx.tpo(Transmitter::PowerUnit::DBM);
-double rp_dbuVm;
+double rp_dBm;
 
-	rp_dbuVm = tpo_dBm - pathLoss_dB + txAntGain_dBi - sim.pTx.losses_dB + rxAntGain_dBi - sim.pRx.losses_dB;
-	return rp_dbuVm;
+	rp_dBm = tpo_dBm - pathLoss_dB + txAntGain_dBi - sim.pTx.losses_dB + rxAntGain_dBi - sim.pRx.losses_dB;
+	return rp_dBm;
 }
 
 // azmDeg: from 0 to 360 degrees, 0 = True North
@@ -977,30 +977,5 @@ const char* Generator::pGetPropagModelShortName(Crc::Covlib::PropagationModel pr
 		return "PathObscura";
 	default:
 		return "";
-	}
-}
-
-PropagModel* Generator::pGetPropagModelPtr(Simulation& sim)
-{
-	switch (sim.pPropagModelId)
-	{
-	case LONGLEY_RICE:
-		return &(sim.pLongleyRiceModel);
-	case ITU_R_P_1812:
-		return &(sim.pIturp1812Model);
-	case ITU_R_P_452_V17:
-		return &(sim.pIturp452v17Model);
-	case ITU_R_P_452_V18:
-		return &(sim.pIturp452v18Model);
-	case FREE_SPACE:
-		return &(sim.pFreeSpaceModel);
-	case EXTENDED_HATA:
-		return &(sim.pEHataModel);
-	case CRC_MLPL:
-		return &(sim.pCrcMlplModel);
-	case CRC_PATH_OBSCURA:
-		return &(sim.pCrcPathObscuraModel);
-	default:
-		return nullptr;
 	}
 }

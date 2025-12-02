@@ -179,17 +179,36 @@ double xNativeMin, xNativeMax, yNativeMin, yNativeMax;
 
 void GeoRasterFileInfo::GetWgs84BoundingBox(double* minLat_wgs84, double* minLon_wgs84, double* maxLat_wgs84, double* maxLon_wgs84)
 {
-double lat1_wgs84, lon1_wgs84, lat2_wgs84, lon2_wgs84, lat3_wgs84, lon3_wgs84, lat4_wgs84, lon4_wgs84;
+int num_x_pts = 9;
+int num_y_pts = 9;
+double delta_x = fabs(m_leftLimit-m_rightLimit)/(num_x_pts-1);
+double delta_y = fabs(m_bottomLimit-m_topLimit)/(num_y_pts-1);
+double min_x = std::min(m_leftLimit, m_rightLimit);
+double min_y = std::min(m_bottomLimit, m_topLimit);
+double lat_wgs84, lon_wgs84;
+std::vector<double> lats;
+std::vector<double> lons;
 
-	NativeToWgs84Coords(m_leftLimit, m_bottomLimit, &lat1_wgs84, &lon1_wgs84);
-	NativeToWgs84Coords(m_leftLimit, m_topLimit, &lat2_wgs84, &lon2_wgs84);
-	NativeToWgs84Coords(m_rightLimit, m_bottomLimit, &lat3_wgs84, &lon3_wgs84);
-	NativeToWgs84Coords(m_rightLimit, m_topLimit, &lat4_wgs84, &lon4_wgs84);
-
-	*minLat_wgs84 = std::min({lat1_wgs84, lat2_wgs84, lat3_wgs84, lat4_wgs84});
-	*maxLat_wgs84 = std::max({lat1_wgs84, lat2_wgs84, lat3_wgs84, lat4_wgs84});
-	*minLon_wgs84 = std::min({lon1_wgs84, lon2_wgs84, lon3_wgs84, lon4_wgs84});
-	*maxLon_wgs84 = std::max({lon1_wgs84, lon2_wgs84, lon3_wgs84, lon4_wgs84});
+	for(int i=0 ; i<num_x_pts ; i++)
+	{
+		for(int j=0 ; j<num_y_pts ; j++)
+		{
+			if( i==0 || i==(num_x_pts-1) || j==0 || j==(num_y_pts-1))
+			{
+				double x = min_x + delta_x*i;
+				double y = min_y + delta_y*j;
+				NativeToWgs84Coords(x, y, &lat_wgs84, &lon_wgs84);
+				lats.push_back(lat_wgs84);
+				lons.push_back(lon_wgs84);
+			}
+		}
+	}
+	auto [min_lat_it, max_lat_it] = std::minmax_element(lats.begin(), lats.end());
+	auto [min_lon_it, max_lon_it] = std::minmax_element(lons.begin(), lons.end());
+	*minLat_wgs84 = *min_lat_it;
+	*maxLat_wgs84 = *max_lat_it;
+	*minLon_wgs84 = *min_lon_it;
+	*maxLon_wgs84 = *max_lon_it;
 }
 
 // assumes (x=0, y=0) is the raster's top left pixel

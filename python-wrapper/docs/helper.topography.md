@@ -243,20 +243,17 @@ Returns:
 ### GetMappedLandCoverProfile
 #### crc_covlib.helper.topography.GetMappedLandCoverProfile
 ```python
-def GetMappedLandCoverProfile(sim: Simulation, latLonProfile: ArrayLike, noDataValue: int=-1
-                              ) -> tuple[NDArray[intc], bool]
+def GetMappedLandCoverProfile(sim: Simulation, latLonProfile: ArrayLike) -> tuple[NDArray[intc], bool]
 ```
 Gets a mapped land cover profile using the land cover source(s) and mappings from the specified Simulation object. A mapped land cover value is a land cover value that has been converted to a recognized and usable value by the currently selected propagation model in the Simulation object.
 
 Args:
 - __sim__ (crc_covlib.simulation.Simulation): A crc-covlib Simulation object.
 - __latLonProfile__ (numpy.typing.ArrayLike): A latitude/longitude profile (degrees) in the form of a 2D list or array. The latitude of the first point should be at latLonProfile[0][0] and its longitude at profile[0][1]. Such a profile may be obtained from the GetLatLonProfile() function.
-- __noDataValue__ (int): Value to be used in the returned profile when no land cover data or
-            mapping can be retrieved.
 
 Returns:
 - __mappedLandCoverProfile__ (numpy.typing.NDArray[numpy.intc]): The mapped land cover profile for the points specified in latLonProfile.
-- __status__ (bool): True when all land cover data could be successfully retrieved and mapped. False when the land cover data could not be retrieved or mapped for at least one of the locations in latLonProfile.
+- __status__ (bool): True when all land cover data could be successfully retrieved. False when the land cover data could not be retrieved for at least one of the locations in latLonProfile.
 
 [Back to top](#topography-helper-module) | [Back to main index](./readme.md#helper-sub-package-api-documentation)
 

@@ -13,6 +13,7 @@
 #include "ITURP_DigitalMaps.h"
 #include <algorithm>
 #include <GeographicLib/Geodesic.hpp>
+#include <climits>
 
 
 using namespace Crc::Covlib;
@@ -1171,6 +1172,31 @@ float terrainElevation_meters = noDataValue;
 		return noDataValue;
 }
 
+// Returns required size if buffer too small, otherwise returns items written
+int Simulation::GetTerrainElevationProfile(double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile)
+{
+std::vector<std::pair<double,double>> latLonProfile;
+std::vector<double> distKmProfile;
+
+	pTopoManager.GetLatLonProfileByRes(pTx.lat, pTx.lon, latitude_degrees, longitude_degrees, pTerrainElevDataSamplingResKm,
+	                                   TopographicDataManager::ITU_GREAT_CIRCLE, &latLonProfile, &distKmProfile);
+
+	size_t latLonSize = latLonProfile.size();
+	if( latLonSize <= static_cast<size_t>(INT_MAX) )
+	{
+		int requiredSize = static_cast<int>(latLonSize);
+		if( sizeOutputProfile >= requiredSize )
+		{
+			std::vector<double> terrainElevProfile;
+			pTopoManager.GetTerrainElevProfile(latLonProfile, &terrainElevProfile);
+			std::memcpy(outputProfile, terrainElevProfile.data(), latLonSize*sizeof(double));
+		}
+		return requiredSize;
+	}
+	else
+		return -1;
+}
+
 
 // Land cover data parameters
 
@@ -1259,12 +1285,63 @@ int landCoverClass = -1;
 		return -1;
 }
 
+// Returns required size if buffer too small, otherwise returns items written
+int Simulation::GetLandCoverClassProfile(double latitude_degrees, double longitude_degrees, int* outputProfile, int sizeOutputProfile)
+{
+std::vector<std::pair<double,double>> latLonProfile;
+std::vector<double> distKmProfile;
+
+	pTopoManager.GetLatLonProfileByRes(pTx.lat, pTx.lon, latitude_degrees, longitude_degrees, pTerrainElevDataSamplingResKm,
+	                                   TopographicDataManager::ITU_GREAT_CIRCLE, &latLonProfile, &distKmProfile);
+
+	size_t latLonSize = latLonProfile.size();
+	if( latLonSize <= static_cast<size_t>(INT_MAX) )
+	{
+		int requiredSize = static_cast<int>(latLonSize);
+		if( sizeOutputProfile >= requiredSize )
+		{
+			std::vector<int> landCoverClassProfile;
+			pTopoManager.GetLandCoverProfile(latLonProfile, &landCoverClassProfile);
+			std::memcpy(outputProfile, landCoverClassProfile.data(), latLonSize*sizeof(int));
+		}
+		return requiredSize;
+	}
+	else
+		return -1;
+}
+
 int Simulation::GetLandCoverClassMappedValue(double latitude_degrees, double longitude_degrees, PropagationModel propagationModel)
 {
 int modelValue = -1;
 
 	if( pTopoManager.GetLandCoverMappedValue(latitude_degrees, longitude_degrees, propagationModel, &modelValue) == true )
 		return modelValue;
+	else
+		return pGetPropagModelPtr(propagationModel)->DefaultMappedLandCoverValue();
+}
+
+// Returns required size if buffer too small, otherwise returns items written
+int Simulation::GetLandCoverClassMappedValueProfile(double latitude_degrees, double longitude_degrees, PropagationModel propagationModel, int* outputProfile, int sizeOutputProfile)
+{
+std::vector<std::pair<double,double>> latLonProfile;
+std::vector<double> distKmProfile;
+
+	pTopoManager.GetLatLonProfileByRes(pTx.lat, pTx.lon, latitude_degrees, longitude_degrees, pTerrainElevDataSamplingResKm,
+	                                   TopographicDataManager::ITU_GREAT_CIRCLE, &latLonProfile, &distKmProfile);
+
+	size_t latLonSize = latLonProfile.size();
+	if( latLonSize <= static_cast<size_t>(INT_MAX) )
+	{
+		int requiredSize = static_cast<int>(latLonSize);
+		if( sizeOutputProfile >= requiredSize )
+		{
+			std::vector<int> landCoverClassMappedValueProfile;
+			int defaultValue = pGetPropagModelPtr(propagationModel)->DefaultMappedLandCoverValue();
+			pTopoManager.GetMappedLandCoverProfile(latLonProfile, propagationModel, defaultValue, &landCoverClassMappedValueProfile);
+			std::memcpy(outputProfile, landCoverClassMappedValueProfile.data(), latLonSize*sizeof(int));
+		}
+		return requiredSize;
+	}
 	else
 		return -1;
 }
@@ -1474,6 +1551,31 @@ float surfaceElevation_meters = noDataValue;
 		return noDataValue;
 }
 
+// Returns required size if buffer too small, otherwise returns items written
+int Simulation::GetSurfaceElevationProfile(double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile)
+{
+std::vector<std::pair<double,double>> latLonProfile;
+std::vector<double> distKmProfile;
+
+	pTopoManager.GetLatLonProfileByRes(pTx.lat, pTx.lon, latitude_degrees, longitude_degrees, pTerrainElevDataSamplingResKm,
+	                                   TopographicDataManager::ITU_GREAT_CIRCLE, &latLonProfile, &distKmProfile);
+
+	size_t latLonSize = latLonProfile.size();
+	if( latLonSize <= static_cast<size_t>(INT_MAX) )
+	{
+		int requiredSize = static_cast<int>(latLonSize);
+		if( sizeOutputProfile >= requiredSize )
+		{
+			std::vector<double> surfaceElevProfile;
+			pTopoManager.GetSurfaceElevProfile(latLonProfile, &surfaceElevProfile);
+			std::memcpy(outputProfile, surfaceElevProfile.data(), latLonSize*sizeof(double));
+		}
+		return requiredSize;
+	}
+	else
+		return -1;
+}
+
 
 // Reception area parameters
 
@@ -1649,10 +1751,26 @@ double Simulation::GenerateProfileReceptionPointResult(double latitude_degrees, 
 	if( numSamples < 0 )
 		numSamples = 0;
 
-	return pGenerator.RunPointCalculation(*this, latitude_degrees, longitude_degrees, (unsigned int)numSamples, terrainElevProfile,
+	return pGenerator.RunPointCalculation(*this, latitude_degrees, longitude_degrees, static_cast<unsigned int>(numSamples), terrainElevProfile,
 	                                      landCoverClassMappedValueProfile, surfaceElevProfile, ituRadioClimaticZoneProfile);
 }
 
+ReceptionPointDetailedResult Simulation::GenerateProfileReceptionPointDetailedResult(double latitude_degrees, double longitude_degrees, int numSamples,
+                                                                                     const double* terrainElevProfile,
+																					 const int* landCoverClassMappedValueProfile/*=nullptr*/,
+																					 const double* surfaceElevProfile/*=nullptr*/,
+																					 const ITURadioClimaticZone* ituRadioClimaticZoneProfile/*=nullptr*/)
+{
+ReceptionPointDetailedResult detailedResult = {0,0,0,0,0,0,0,0,0,0,0};
+
+	if( numSamples < 0 )
+		numSamples = 0;
+
+	pGenerator.RunPointCalculation(*this, latitude_degrees, longitude_degrees, static_cast<unsigned int>(numSamples), terrainElevProfile,
+	                               landCoverClassMappedValueProfile, surfaceElevProfile, ituRadioClimaticZoneProfile, &detailedResult);
+
+	return detailedResult;
+}
 
 void Simulation::GenerateReceptionAreaResults()
 {
@@ -2092,4 +2210,29 @@ const CommTerminal* Simulation::pGetTerminalConstObjPtr(Terminal terminal) const
 CommTerminal* Simulation::pGetTerminalObjPtr(Crc::Covlib::Terminal terminal)
 {
 	return const_cast<CommTerminal*>(pGetTerminalConstObjPtr(terminal));
+}
+
+PropagModel* Simulation::pGetPropagModelPtr(PropagationModel propagModelId)
+{
+	switch (propagModelId)
+	{
+	case LONGLEY_RICE:
+		return &pLongleyRiceModel;
+	case ITU_R_P_1812:
+		return &pIturp1812Model;
+	case ITU_R_P_452_V17:
+		return &pIturp452v17Model;
+	case ITU_R_P_452_V18:
+		return &pIturp452v18Model;
+	case FREE_SPACE:
+		return &pFreeSpaceModel;
+	case EXTENDED_HATA:
+		return &pEHataModel;
+	case CRC_MLPL:
+		return &pCrcMlplModel;
+	case CRC_PATH_OBSCURA:
+		return &pCrcPathObscuraModel;
+	default:
+		return nullptr;
+	}
 }

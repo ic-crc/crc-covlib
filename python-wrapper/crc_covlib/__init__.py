@@ -4,4 +4,4 @@
 # Licensed under the MIT License
 # See LICENSE file in the project root for full license text.
 
-__version__ = '4.5.0'
+__version__ = '4.6.0'

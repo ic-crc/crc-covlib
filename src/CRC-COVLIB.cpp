@@ -773,6 +773,11 @@ namespace Crc
 			return sim->GetTerrainElevation(latitude_degrees, longitude_degrees, noDataValue);
 		}
 
+		CRCCOVLIB_API int APIENTRY GetTerrainElevationProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile)
+		{
+			return sim->GetTerrainElevationProfile(latitude_degrees, longitude_degrees, outputProfile, sizeOutputProfile);
+		}
+
 
 		// Land cover data parameters
 
@@ -821,9 +826,19 @@ namespace Crc
 			return sim->GetLandCoverClass(latitude_degrees, longitude_degrees);
 		}
 
+		CRCCOVLIB_API int APIENTRY GetLandCoverClassProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, int* outputProfile, int sizeOutputProfile)
+		{
+			return sim->GetLandCoverClassProfile(latitude_degrees, longitude_degrees, outputProfile, sizeOutputProfile);
+		}
+
 		CRCCOVLIB_API int APIENTRY GetLandCoverClassMappedValue(ISimulation* sim, double latitude_degrees, double longitude_degrees, PropagationModel propagationModel)
 		{
 			return sim->GetLandCoverClassMappedValue(latitude_degrees, longitude_degrees, propagationModel);
+		}
+
+		CRCCOVLIB_API int APIENTRY GetLandCoverClassMappedValueProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, PropagationModel propagationModel, int* outputProfile, int sizeOutputProfile)
+		{
+			return sim->GetLandCoverClassMappedValueProfile(latitude_degrees, longitude_degrees, propagationModel, outputProfile, sizeOutputProfile);
 		}
 
 		CRCCOVLIB_API void APIENTRY SetLandCoverClassMapping(ISimulation* sim, LandCoverDataSource landCoverSource, int sourceClass, PropagationModel propagationModel, int modelValue)
@@ -927,6 +942,11 @@ namespace Crc
 		CRCCOVLIB_API double APIENTRY GetSurfaceElevation(ISimulation* sim, double latitude_degrees, double longitude_degrees, double noDataValue)
 		{
 			return sim->GetSurfaceElevation(latitude_degrees, longitude_degrees, noDataValue);
+		}
+
+		CRCCOVLIB_API int APIENTRY GetSurfaceElevationProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile)
+		{
+			return sim->GetSurfaceElevationProfile(latitude_degrees, longitude_degrees, outputProfile, sizeOutputProfile);
 		}
 
 
@@ -1039,6 +1059,11 @@ namespace Crc
 		CRCCOVLIB_API double APIENTRY GenerateProfileReceptionPointResult(ISimulation* sim, double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile, const double* surfaceElevProfile, const ITURadioClimaticZone* ituRadioClimaticZoneProfile)
 		{
 			return sim->GenerateProfileReceptionPointResult(latitude_degrees, longitude_degrees, numSamples, terrainElevProfile, landCoverClassMappedValueProfile, surfaceElevProfile, ituRadioClimaticZoneProfile);
+		}
+
+		CRCCOVLIB_API ReceptionPointDetailedResult APIENTRY GenerateProfileReceptionPointDetailedResult(ISimulation* sim, double latitude_degrees, double longitude_degrees, int numSamples, const double* terrainElevProfile, const int* landCoverClassMappedValueProfile, const double* surfaceElevProfile, const ITURadioClimaticZone* ituRadioClimaticZoneProfile)
+		{
+			return sim->GenerateProfileReceptionPointDetailedResult(latitude_degrees, longitude_degrees, numSamples, terrainElevProfile, landCoverClassMappedValueProfile, surfaceElevProfile, ituRadioClimaticZoneProfile);
 		}
 
 		CRCCOVLIB_API void APIENTRY GenerateReceptionAreaResults(ISimulation* sim)

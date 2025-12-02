@@ -331,8 +331,9 @@ double distKm;
 unsigned int numPoints;
 
 	distKm = GetDistKm(startLat, startLon, endLat, endLon, geodesicAlgo);
-	numPoints = 1 + (unsigned int)((distKm / resolutionKm) + 1);
-	numPoints = std::max(3u, numPoints);
+	numPoints = 1 + static_cast<unsigned int>((distKm / resolutionKm) + 1);
+	numPoints = std::max(3u, numPoints); // min of 3 points
+	numPoints = std::min(numPoints, 1000000u); // max of 1 million
 	return GetLatLonProfileByNumPoints(startLat, startLon, endLat, endLon, numPoints, geodesicAlgo, latLonProfile, distKmProfile);
 }
 
@@ -378,7 +379,7 @@ int numMisses = 0;
 	terrainElevProfile->clear();
 	terrainElevProfile->reserve(latLonProfile.size());
 
-	for(unsigned int i=0 ; i<latLonProfile.size() ; i++)
+	for(size_t i=0 ; i<latLonProfile.size() ; i++)
 	{
 		lat = latLonProfile[i].first;
 		lon = latLonProfile[i].second;
@@ -403,7 +404,7 @@ int numMisses = 0;
 	landCoverProfile->clear();
 	landCoverProfile->reserve(latLonProfile.size());
 
-	for(unsigned int i=0 ; i<latLonProfile.size() ; i++)
+	for(size_t i=0 ; i<latLonProfile.size() ; i++)
 	{
 		lat = latLonProfile[i].first;
 		lon = latLonProfile[i].second;
@@ -429,7 +430,7 @@ int numMisses = 0;
 	mappedLandCoverProfile->clear();
 	mappedLandCoverProfile->reserve(latLonProfile.size());
 
-	for(unsigned int i=0 ; i<latLonProfile.size() ; i++)
+	for(size_t i=0 ; i<latLonProfile.size() ; i++)
 	{
 		lat = latLonProfile[i].first;
 		lon = latLonProfile[i].second;
@@ -464,7 +465,7 @@ int numMisses = 0;
 	surfaceElevProfile->clear();
 	surfaceElevProfile->reserve(latLonProfile.size());
 
-	for(unsigned int i=0 ; i<latLonProfile.size() ; i++)
+	for(size_t i=0 ; i<latLonProfile.size() ; i++)
 	{
 		lat = latLonProfile[i].first;
 		lon = latLonProfile[i].second;
@@ -491,7 +492,7 @@ int numMisses = 0;
 	radioClimaticZoneProfile->clear();
 	radioClimaticZoneProfile->reserve(latLonProfile.size());
 
-	for(unsigned int i=0 ; i<latLonProfile.size() ; i++)
+	for(size_t i=0 ; i<latLonProfile.size() ; i++)
 	{
 		lat = latLonProfile[i].first;
 		lon = latLonProfile[i].second;

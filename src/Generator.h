@@ -87,7 +87,6 @@ private:
 	const char* pGetResultUnitString(Crc::Covlib::ResultType resultType);
 	const char* pGetResultNameString(Crc::Covlib::ResultType resultType);
 	const char* pGetPropagModelShortName(Crc::Covlib::PropagationModel propagModel);
-	PropagModel* pGetPropagModelPtr(Simulation& sim);
 
 	std::vector<std::pair<double,double>> pLatLonProfile;
 	std::vector<double> pDistKmProfile;

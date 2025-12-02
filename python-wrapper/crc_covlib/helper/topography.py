@@ -626,8 +626,8 @@ def GetLandCoverProfile(sim: Simulation, latLonProfile: npt.ArrayLike,
     return (land_cover_profile, no_missing_data)
 
 
-def GetMappedLandCoverProfile(sim: Simulation, latLonProfile: npt.ArrayLike,
-                              noDataValue: int=-1) -> tuple[npt.NDArray[np.intc], bool]:
+def GetMappedLandCoverProfile(sim: Simulation, latLonProfile: npt.ArrayLike
+                              ) -> tuple[npt.NDArray[np.intc], bool]:
     """
     Gets a mapped land cover profile using the land cover source(s) and mappings from the specified
     Simulation object. A mapped land cover value is a land cover value that has been converted to a
@@ -640,28 +640,24 @@ def GetMappedLandCoverProfile(sim: Simulation, latLonProfile: npt.ArrayLike,
             of a 2D list or array. The latitude of the first point should be at latLonProfile[0][0]
             and its longitude at profile[0][1]. Such a profile may be obtained from the
             GetLatLonProfile() function.
-        noDataValue (int): Value to be used in the returned profile when no land cover data or
-            mapping can be retrieved.
 
     Returns:
         mappedLandCoverProfile (numpy.typing.NDArray[numpy.intc]): The mapped land cover profile
             for the points specified in latLonProfile.
-        status (bool): True when all land cover data could be successfully retrieved and mapped.
-            False when the land cover data could not be retrieved or mapped for at least one of the
-            locations in latLonProfile.
+        status (bool): True when all land cover data could be successfully retrieved. False when
+            the land cover data could not be retrieved for at least one of the locations in
+            latLonProfile.
     """
     no_missing_data = True
     propag_model_id = sim.GetPropagationModel()
     num_points = len(latLonProfile)
     mapped_land_cover_profile = np.zeros(num_points, dtype=np.intc)
     for i in range(0, num_points):
-        mapped_land_cover_class = sim.GetLandCoverClassMappedValue(latLonProfile[i][0],
-                                      latLonProfile[i][1], propag_model_id)
-        if mapped_land_cover_class == -1:
+        unmapped_land_cover_class = sim.GetLandCoverClass(latLonProfile[i][0], latLonProfile[i][1])
+        if unmapped_land_cover_class == -1:
             no_missing_data = False
-            mapped_land_cover_profile[i] = noDataValue
-        else:
-            mapped_land_cover_profile[i] = mapped_land_cover_class
+        mapped_land_cover_profile[i] = sim.GetLandCoverClassMappedValue(latLonProfile[i][0],
+                                                       latLonProfile[i][1], propag_model_id)
     return (mapped_land_cover_profile, no_missing_data)
 
 
