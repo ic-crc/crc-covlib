@@ -337,6 +337,23 @@ class ITUDigitalMap(enum.Enum):
     ITU_MAP_SURFWV_50 = 4
 
 
+class LogLevel(enum.Enum):
+			LOG_LEVEL_ERROR   = 1
+			LOG_LEVEL_WARNING = 2
+			LOG_LEVEL_INFO    = 3
+			LOG_LEVEL_DEBUG   = 4
+
+
+def SetLogLevel(level: LogLevel, pathname: str=None) -> None:
+    if not isinstance(level, LogLevel):
+        raise TypeError('parameter level: LogLevel')
+    if pathname is not None:
+        pathname = pathname.encode()
+    else:
+        pathname = ctypes.POINTER(ctypes.c_char)()
+    _covlib_cdll.SetLogLevel(level.value, pathname)
+
+
 class ReceptionPointDetailedResult(ctypes.Structure):
     _fields_ = [("result", ctypes.c_double),
                 ("pathLoss_dB", ctypes.c_double),
@@ -1367,6 +1384,9 @@ def _set_args_and_return_ctypes(lib):
 
     lib.SetITUProprietaryDataDirectory.argtypes = [ctypes.c_char_p]
     lib.SetITUProprietaryDataDirectory.restype = ctypes.c_bool
+
+    lib.SetLogLevel.argtypes = [ctypes.c_int, ctypes.c_char_p]
+    lib.SetLogLevel.restype = ctypes.c_void_p
 
     # Transmitter parameters
 

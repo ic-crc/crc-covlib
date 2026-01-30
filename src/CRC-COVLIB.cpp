@@ -18,6 +18,7 @@
 
 #include "Simulation.h"
 #include "ITURP_DigitalMaps.h"
+#include "Logger.h"
 
 namespace Crc
 {
@@ -47,6 +48,18 @@ namespace Crc
 			success &= ITURP_DigitalMaps::Init_T_Annual((ituDir + "/T_Annual.TXT").c_str());
 			success &= ITURP_DigitalMaps::Init_Surfwv_50((ituDir + "/surfwv_50_fixed.txt").c_str());
 			return success;
+		}
+
+		CRCCOVLIB_API void APIENTRY SetLogLevel(LogLevel level, const char* pathname/*=NULL*/)
+		{
+			static_assert(static_cast<int>(LogLevel::LOG_LEVEL_ERROR) == static_cast<int>(Logger::Level::ERROR_LVL), "");
+			static_assert(static_cast<int>(LogLevel::LOG_LEVEL_WARNING) == static_cast<int>(Logger::Level::WARNING_LVL), "");
+			static_assert(static_cast<int>(LogLevel::LOG_LEVEL_INFO) == static_cast<int>(Logger::Level::INFO_LVL), "");
+			static_assert(static_cast<int>(LogLevel::LOG_LEVEL_DEBUG) == static_cast<int>(Logger::Level::DEBUG_LVL), "");
+
+			Logger::GetInstance().SetLevel(static_cast<Logger::Level>(level));
+			if( pathname != NULL )
+				Logger::GetInstance().SwitchToFileMode(pathname);
 		}
 
 #ifdef CRCCOVLIB_WRAP

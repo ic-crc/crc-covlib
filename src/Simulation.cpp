@@ -1079,7 +1079,7 @@ void Simulation::SetTerrainElevDataSourceDirectory(TerrainElevDataSource terrain
 		pTerrainElevGeotiff.SetDirectory(directory, useIndexFile, overwriteIndexFile);
 		break;
 	case TERR_ELEV_NRCAN_MRDEM_DTM:
-		pTerrainElevMrdemDtm.SetDirectory(directory, false, false); // has online 1 file, so no index use
+		pTerrainElevMrdemDtm.SetDirectory(directory, useIndexFile, overwriteIndexFile);
 		break;
 	default:
 		break;
@@ -1237,7 +1237,7 @@ void Simulation::SetLandCoverDataSourceDirectory(Crc::Covlib::LandCoverDataSourc
 		pLandCoverGeotiff.SetDirectory(directory, useIndexFile, overwriteIndexFile);
 		break;
 	case LAND_COVER_NRCAN:
-		pLandCoverNrcan.SetDirectory(directory, false, false); // only 1 file so don't use index file
+		pLandCoverNrcan.SetDirectory(directory, useIndexFile, overwriteIndexFile);
 		break;
 	default:
 		break;
@@ -1458,7 +1458,7 @@ void Simulation::SetSurfaceElevDataSourceDirectory(SurfaceElevDataSource surface
 		pSurfElevGeotiff.SetDirectory(directory, useIndexFile, overwriteIndexFile);
 		break;
 	case SURF_ELEV_NRCAN_MRDEM_DSM:
-		pSurfElevMrdemDsm.SetDirectory(directory, false, false); // only 1 file so don't use index
+		pSurfElevMrdemDsm.SetDirectory(directory, useIndexFile, overwriteIndexFile);
 		break;
 	default:
 		break;

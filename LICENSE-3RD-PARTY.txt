@@ -8,7 +8,10 @@ src/ntia_p528/include/ directories is source code from the NTIA. Provided
 crc-covlib.dll, iturp528.dll and iturp528.so binary files were built in part
 using source code from the NTIA.
 
-These files are provided under the following notice:
+The p2p.csv and pfls.csv files under tests/longley-rice/ are also from the
+NTIA.
+
+NTIA files are provided under the following notice:
 
     SOFTWARE DISCLAIMER / RELEASE
 
@@ -1330,5 +1333,36 @@ using public domain data from the following third-party sources:
     Natural Earth. Free vector and raster map data @ naturalearthdata.com.
 
     Shuttle Radar Topography Mission (SRTM) 30 arcseconds data.
+
+-------------------------------------------------------------------------------
+
+The tests/iturp452v17/validation_examples/ and
+tests/iturp452v18/validation_examples/ directories contain files from
+https://github.com/eeveetza/p452
+
+The tests/iturp1812/validation_profiles/ directory contains files from
+https://github.com/eeveetza/p1812
+
+The tests/iturp2109/validation.csv file was generated using code from
+https://github.com/eeveetza/p2109
+
+Obtained under the following license:
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+    OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+    ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+    OTHER DEALINGS IN THE SOFTWARE.
+
+    You may improve, modify, and create derivative works of the software or 
+    any portion of the software, and you may copy and distribute such 
+    modifications or works. Modified works should carry a notice stating 
+    that you changed the software and should note the date and nature of 
+    any such change.
+
+    Please provide appropriate acknowledgments in any copies or 
+    derivative works of this software.
 
 -------------------------------------------------------------------------------

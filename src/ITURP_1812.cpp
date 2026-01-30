@@ -6,7 +6,7 @@
  * See LICENSE file in the project root for full license text.
  */
 
-// Implementation of ITU-R P.1812-6
+// Implementation of ITU-R P.1812-7
 // Does not include building entry loss (Annex1, Section 4.8)
 // Does not include the alternative method to calculate the spherical earth diffraction loss (Attachment 3 to Annex 1)
 #include "ITURP_1812.h"

@@ -297,6 +297,14 @@ namespace Crc
 			double elevAngleFromReceiver_degrees;
 		};
 
+		enum LogLevel
+		{
+			LOG_LEVEL_ERROR   = 1,
+			LOG_LEVEL_WARNING = 2,
+			LOG_LEVEL_INFO    = 3,
+			LOG_LEVEL_DEBUG   = 4
+		};
+
 		// COM-Like abstract interface. 
 		// This interface doesn't require __declspec(dllexport/dllimport) specifier. 
 		// Method calls are dispatched via virtual table. 
@@ -559,6 +567,9 @@ namespace Crc
 
 		// Location of ITU digital maps
 		extern "C" CRCCOVLIB_API bool __stdcall SetITUProprietaryDataDirectory(const char* directory);
+
+		// Overall logging level
+		extern "C" CRCCOVLIB_API void __stdcall SetLogLevel(LogLevel level, const char* pathname=NULL);
 
 #ifdef CRCCOVLIB_WRAP
 		extern "C" CRCCOVLIB_API void __stdcall Release(ISimulation* sim);
