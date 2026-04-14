@@ -76,3 +76,6 @@ data/terrain-samples/**/crc_covlib_geotiff_index
 
 # Visual Studio Code folders and files
 .vscode/
+
+# Python virtual environments
+venv_covlib/

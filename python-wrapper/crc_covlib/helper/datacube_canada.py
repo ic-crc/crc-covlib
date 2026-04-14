@@ -1,4 +1,4 @@
-# Copyright (c) 2025 His Majesty the King in Right of Canada as represented by the Minister of
+# Copyright (c) 2026 His Majesty the King in Right of Canada as represented by the Minister of
 # Industry through the Communications Research Centre Canada.
 #
 # Licensed under the MIT License
@@ -16,9 +16,9 @@ https://datacube.services.geo.ca/en/index.html
 https://datacube.services.geo.ca/stac/api/
 """
 import os
+import urllib.request # part of the python standard library
 import pyproj
 import rasterio
-import urllib.request # part of the python standard library
 
 
 __all__ = ['LatLonBox',
@@ -71,7 +71,7 @@ def DownloadCdem(bounds: LatLonBox, outputPathname: str) -> None:
             will be created if non-existent, otherwise the file will be overwritten. The extract is
             saved in the GeoTIFF (.tif) format.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.amazonaws.com/store/elevation/cdem-cdsm/cdem/cdem-canada-dem.tif'
+    cogUrl = 'https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/elevation/cdem-cdsm/cdem/cdem-canada-dem.tif'
     _DownloadFromDatacube(bounds, outputPathname, cogUrl, 30.0, 30.0, False)
 
 
@@ -89,7 +89,7 @@ def DownloadCdsm(bounds: LatLonBox, outputPathname: str) -> None:
             will be created if non-existent, otherwise the file will be overwritten. The extract is
             saved in the GeoTIFF (.tif) format.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.amazonaws.com/store/elevation/cdem-cdsm/cdsm/cdsm-canada-dem.tif'
+    cogUrl = 'https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/elevation/cdem-cdsm/cdsm/cdsm-canada-dem.tif'
     _DownloadFromDatacube(bounds, outputPathname, cogUrl, 30.0, 30.0, False)
 
 
@@ -107,7 +107,7 @@ def DownloadMrdemDtm(bounds: LatLonBox, outputPathname: str) -> None:
             will be created if non-existent, otherwise the file will be overwritten. The extract is
             saved in the GeoTIFF (.tif) format.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/elevation/mrdem/mrdem-30/mrdem-30-dtm.tif'
+    cogUrl = 'https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dtm.tif'
     _DownloadFromDatacube(bounds, outputPathname, cogUrl, 30.0, 30.0, False)
 
 
@@ -125,7 +125,7 @@ def DownloadMrdemDsm(bounds: LatLonBox, outputPathname: str) -> None:
             will be created if non-existent, otherwise the file will be overwritten. The extract is
             saved in the GeoTIFF (.tif) format.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/elevation/mrdem/mrdem-30/mrdem-30-dsm.tif'
+    cogUrl = 'https://canelevation-dem.s3.ca-central-1.amazonaws.com/mrdem-30/mrdem-30-dsm.tif'
     _DownloadFromDatacube(bounds, outputPathname, cogUrl, 30.0, 30.0, False)
 
 
@@ -150,7 +150,7 @@ def DownloadHrdemDtm1m(bounds: LatLonBox, outputPathname: str) -> list[str]:
             Created files may contain some or even only "no data" values depending on the
             availability of data for the requested area.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.amazonaws.com/store/elevation/hrdem/hrdem-mosaic-1m/___-mosaic-1m-dtm.tif'
+    cogUrl = 'https://canelevation-dem.s3.ca-central-1.amazonaws.com/hrdem-mosaic-1m/___-mosaic-1m-dtm.tif'
     return _DownloadHrdem(bounds, outputPathname, cogUrl, 1.0, 1.0, False)
 
 
@@ -175,7 +175,7 @@ def DownloadHrdemDsm1m(bounds: LatLonBox, outputPathname: str) -> list[str]:
             Created files may contain some or even only "no data" values depending on the
             availability of data for the requested area.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.amazonaws.com/store/elevation/hrdem/hrdem-mosaic-1m/___-mosaic-1m-dsm.tif'
+    cogUrl = 'https://canelevation-dem.s3.ca-central-1.amazonaws.com/hrdem-mosaic-1m/___-mosaic-1m-dsm.tif'
     return _DownloadHrdem(bounds, outputPathname, cogUrl, 1.0, 1.0, False)
 
 
@@ -200,7 +200,7 @@ def DownloadHrdemDtm2m(bounds: LatLonBox, outputPathname: str) -> list[str]:
             Created files may contain some or even only "no data" values depending on the
             availability of data for the requested area.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.amazonaws.com/store/elevation/hrdem/hrdem-mosaic-2m/___-mosaic-2m-dtm.tif'
+    cogUrl = 'https://canelevation-dem.s3.ca-central-1.amazonaws.com/hrdem-mosaic-2m/___-mosaic-2m-dtm.tif'
     return _DownloadHrdem(bounds, outputPathname, cogUrl, 2.0, 2.0, False)
 
 
@@ -225,7 +225,7 @@ def DownloadHrdemDsm2m(bounds: LatLonBox, outputPathname: str) -> list[str]:
             Created files may contain some or even only "no data" values depending on the
             availability of data for the requested area.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.amazonaws.com/store/elevation/hrdem/hrdem-mosaic-2m/___-mosaic-2m-dsm.tif'
+    cogUrl = 'https://canelevation-dem.s3.ca-central-1.amazonaws.com/hrdem-mosaic-2m/___-mosaic-2m-dsm.tif'
     return _DownloadHrdem(bounds, outputPathname, cogUrl, 2.0, 2.0, False)
 
 
@@ -242,7 +242,8 @@ def DownloadLandcover2020(bounds: LatLonBox, outputPathname: str) -> None:
             will be created if non-existent, otherwise the file will be overwritten. The extract is
             saved in the GeoTIFF (.tif) format.
     """
-    cogUrl = 'https://datacube-prod-data-public.s3.amazonaws.com/store/land/landcover/landcover-2020-classification.tif'
+    #cogUrl = 'https://datacube-prod-data-public.s3.amazonaws.com/store/land/landcover/landcover-2020-classification.tif'
+    cogUrl = 'https://datacube-prod-data-public.s3.ca-central-1.amazonaws.com/store/land/landcover/landcover-2020-classification.tif'
     _DownloadFromDatacube(bounds, outputPathname, cogUrl, 30.0, 30.0, False)
 
 
