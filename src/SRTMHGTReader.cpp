@@ -251,6 +251,7 @@ double pixelSizeDeg;
 					SRTMHGTFileInfo(pathList[i].pathname, 6000, 4800, lat-50, lat, lon, lon+40, 30.0/3600.0, 30.0/3600.0, -9999)
 				);
 			}
+			/*
 			else if( sizeInBytes >= 8 )
 			{
 				// Not an official format, but allow here to use a custom resolution as long as
@@ -265,6 +266,7 @@ double pixelSizeDeg;
 					);
 				}
 			}
+			*/
 		}
 	}
 
@@ -376,7 +378,7 @@ bool SRTMHGTReader::pGetValue(SRTMHGTFileInfo* fileInfo, double lat, double lon,
 	{
 	int16_t tmpValue;
 	bool success = pGetClosestValue(fileInfo, lat, lon, &tmpValue);
-		*value = (float)tmpValue;
+		*value = static_cast<float>(tmpValue);
 		return success;
 	}
 	else
@@ -402,14 +404,14 @@ bool success;
 	double result;
 
 		fileInfo->BilinearInterpl(x1, x2, y1, y2, val11, val12, val21, val22, xDbl, yDbl, &result);
-		*value = (float)result;
+		*value = static_cast<float>(result);
 		return true;
 	}
 
 	// try to get closest value at last resort
 	int16_t tmpValue;
 	success = pGetClosestValue(fileInfo, lat, lon, &tmpValue);
-	*value = (float) tmpValue;
+	*value = static_cast<float>(tmpValue);
 	return success;
 }
 
@@ -464,7 +466,7 @@ uint32_t pixelSize = 2; // in bytes
 			return false;
 	}
 
-	if( fseek(fileInfo->m_filePtr, (long int) ((y*fileInfo->m_rasterWidth*pixelSize) + (x*pixelSize)), SEEK_SET) != 0 )
+	if( fseek(fileInfo->m_filePtr, static_cast<long int>((y*fileInfo->m_rasterWidth*pixelSize) + (x*pixelSize)), SEEK_SET) != 0 )
 		return false;
 		
 	if( fread(&tmpValue, pixelSize, 1, fileInfo->m_filePtr) != 1 )

@@ -24,8 +24,8 @@
 
 GeoTIFFReader::GeoTIFFFileInfo::GeoTIFFFileInfo()
 {
-	m_tiffPtr = NULL;
-	m_readBuf = NULL;
+	m_tiffPtr = nullptr;
+	m_readBuf = nullptr;
 	Clear();
 }
 
@@ -36,8 +36,8 @@ GeoTIFFReader::GeoTIFFFileInfo::~GeoTIFFFileInfo()
 
 GeoTIFFReader::GeoTIFFFileInfo::GeoTIFFFileInfo(const GeoTIFFFileInfo& original)
 {
-	m_tiffPtr = NULL;
-	m_readBuf = NULL;
+	m_tiffPtr = nullptr;
+	m_readBuf = nullptr;
 	*this = original;
 }
 
@@ -85,15 +85,15 @@ const GeoTIFFReader::GeoTIFFFileInfo& GeoTIFFReader::GeoTIFFFileInfo::operator=(
 
 void GeoTIFFReader::GeoTIFFFileInfo::Close()
 {
-	if (m_readBuf != NULL)
+	if (m_readBuf != nullptr)
 	{
 		_TIFFfree(m_readBuf);
-		m_readBuf = NULL;
+		m_readBuf = nullptr;
 	}
-	if (m_tiffPtr != NULL)
+	if (m_tiffPtr != nullptr)
 	{
 		TIFFClose(m_tiffPtr);
-		m_tiffPtr = NULL;
+		m_tiffPtr = nullptr;
 	}
 }
 
@@ -288,7 +288,7 @@ GeoTIFFReader::GeoTIFFReader()
 {
 	pDir = "";
 	pFile = "";
-	pLastTiffUsed = NULL;
+	pLastTiffUsed = nullptr;
 
 	//pCacheHitCount = 0;
 	//pCacheMissCount = 0;
@@ -314,7 +314,7 @@ const GeoTIFFReader& GeoTIFFReader::operator=(const GeoTIFFReader& original)
 	pFile = original.pFile;
 	pGeoTiffs = original.pGeoTiffs;
 	pUpdateRTree(); // needs to rebuild the R-Tree (and not copy it) since it stores pointers from pGeoTiffs
-	pLastTiffUsed = NULL;
+	pLastTiffUsed = nullptr;
 
 	return *this;
 }
@@ -363,7 +363,7 @@ GeoTIFFFileInfo tiffInfo;
 	pDir = "";
 
 	pGeoTiffs.clear();
-	pLastTiffUsed = NULL;
+	pLastTiffUsed = nullptr;
 	if (pReadTagsAndKeys(pathname, tiffInfo) == true)
 	{
 		if( tiffInfo.ValidateAndSynch() == true )
@@ -396,8 +396,8 @@ std::string indexPathname = pDir + "/crc_covlib_geotiff_index";
 	size_t num = pGeoTiffs.size();
 	int32_t indexVersion = GEOTIFF_INDEX_VERSION;
 
-		outfile.write((char*) &indexVersion, sizeof(indexVersion));
-		outfile.write((char*) &num, (std::streamsize) sizeof(num));
+		outfile.write(reinterpret_cast<char*>(&indexVersion), sizeof(indexVersion));
+		outfile.write(reinterpret_cast<char*>(&num), (std::streamsize) sizeof(num));
 		for(size_t i=0 ; i<num ; i++)
 			pSerializeTiffInfoFile(outfile, pGeoTiffs[i]);
 		success = true;
@@ -416,14 +416,14 @@ int geotiffIndexVersion = -1;
 	infile.open(indexPathname.c_str(), std::ios::in | std::ios::binary);
 	if(infile)
 	{
-		infile.read((char*) &geotiffIndexVersion, sizeof(geotiffIndexVersion));
+		infile.read(reinterpret_cast<char*>(&geotiffIndexVersion), sizeof(geotiffIndexVersion));
 
 		if( geotiffIndexVersion == GEOTIFF_INDEX_VERSION )
 		{
 			pGeoTiffs.clear();
-			pLastTiffUsed = NULL;
+			pLastTiffUsed = nullptr;
 			size_t num;
-			infile.read((char*) &num, sizeof(num));
+			infile.read(reinterpret_cast<char*>(&num), sizeof(num));
 			pGeoTiffs.resize(num);
 			for(size_t i=0 ; i<num ; i++)
 				pDeserializeTiffInfoFile(infile, pGeoTiffs[i]);
@@ -436,18 +436,19 @@ int geotiffIndexVersion = -1;
 
 bool GeoTIFFReader::pReadTagsAndKeys(const char* pathname, GeoTIFFFileInfo& tiffInfo)
 {
-TIFF* tif = NULL;
+TIFF* tif = nullptr;
 bool readOK = true;
 
 	tiffInfo.Clear();
 	tiffInfo.m_pathname = pathname;
 
-	TIFFSetWarningHandler(NULL);
+	TIFFSetWarningHandler(nullptr);
 	tif = TIFFOpen(pathname, "r");
-	if( tif != NULL )
+	if( tif != nullptr )
 	{
-	uint32_t count = 0;
-	void* data = NULL;
+	uint16_t count = 0;
+	char* dataStr = nullptr;
+	uint16_t* data = nullptr;
 
 		readOK &= (TIFFGetField(tif, TIFFTAG_COMPRESSION, &(tiffInfo.m_compression)) == 1);
 		readOK &= (TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &(tiffInfo.m_rasterWidth)) == 1);
@@ -456,19 +457,34 @@ bool readOK = true;
 		readOK &= (TIFFGetField(tif, TIFFTAG_SAMPLEFORMAT, &(tiffInfo.m_sampleFormat)) == 1);
 		readOK &= (TIFFGetField(tif, TIFFTAG_SAMPLESPERPIXEL, &(tiffInfo.m_samplesPerPixel)) == 1);
 		readOK &= (TIFFGetField(tif, TIFFTAG_BITSPERSAMPLE, &(tiffInfo.m_bitsPerSample)) == 1);
-		if(TIFFGetField(tif, 42113, &count, &data) == 1)
+		if (TIFFGetField(tif, 42113, &count, &dataStr) == 1 && dataStr != nullptr)
 		{
-			tiffInfo.m_noDataValue = atoi((char*)data);
-			tiffInfo.m_noDataValuePresent = true;
+			try {
+				tiffInfo.m_noDataValue = static_cast<int32_t>(std::stoi(dataStr)); // NOTE : dataStr may contain a float
+				tiffInfo.m_noDataValuePresent = true;
+			}
+			catch (const std::exception& e) {
+				// handle invalid string
+				tiffInfo.m_noDataValue = INT16_MIN;
+				tiffInfo.m_noDataValuePresent = false;
+			}
 		}
 		TIFFGetField(tif, TIFFTAG_TILELENGTH, &(tiffInfo.m_tileHeight)); // will not be present in strip-oriented tiffs
 		TIFFGetField(tif, TIFFTAG_TILEWIDTH, &(tiffInfo.m_tileWidth)); // will not be present in strip-oriented tiffs
 
-		tiffInfo.m_bytesPerStrip = TIFFStripSize(tif);
-		tiffInfo.m_bytesPerTile = TIFFTileSize(tif); 
+		int64_t bytesPerStrip = TIFFStripSize(tif);
+		if( bytesPerStrip <= INT32_MAX )
+			tiffInfo.m_bytesPerStrip = static_cast<int32_t>(bytesPerStrip); // NOTE : could eventually support bigger strip size
+		else
+			readOK = false;
+		int64_t bytesPerTile = TIFFTileSize(tif);
+		if( bytesPerTile <= INT32_MAX )
+			tiffInfo.m_bytesPerTile = static_cast<int32_t>(bytesPerTile); // NOTE : could eventually support bigger tile size
+		else
+			readOK = false;
 
-		readOK &= pGetGeoTagDoubleArrayValue(tif, 33550, tiffInfo.m_ModelPixelScale, 3);
-		readOK &= pGetGeoTagDoubleArrayValue(tif, 33922, tiffInfo.m_ModelTiepoint[0], 6);
+		readOK &= pGetGeoTagDoubleArrayValue(tif, 33550, &(tiffInfo.m_ModelPixelScale[0]), 3);
+		readOK &= pGetGeoTagDoubleArrayValue(tif, 33922, &(tiffInfo.m_ModelTiepoint[0][0]), 6);
 
 		readOK &= (TIFFGetField(tif, 34735, &count, &data) == 1); // 34735 = GeoKeyDirectoryTag
 		if( count % 4 == 0 )
@@ -477,10 +493,10 @@ bool readOK = true;
 
 			for(uint32_t i=0 ; i<count ; i+=4)
 			{
-				keyID = ((uint16_t*)data)[i];
-				tiffTagLocation = ((uint16_t*)data)[i+1];
-				numValues = ((uint16_t*)data)[i+2];
-				valueOffset = ((uint16_t*)data)[i+3];
+				keyID = data[i];
+				tiffTagLocation = data[i+1];
+				numValues = data[i+2];
+				valueOffset = data[i+3];
 
 				// see http://geotiff.maptools.org/spec/geotiff6.html
 				if( tiffTagLocation == 0 )
@@ -547,62 +563,72 @@ bool readOK = true;
 
 bool GeoTIFFReader::pGetGeoTagDoubleArrayValue(TIFF* tif, uint32_t tag, double* dst, uint32_t dstSize)
 {
-uint32_t count = 0;
-void* data = NULL;
+    uint16_t count = 0;  // libtiff uses uint16_t for count in most array tags
+    double* data = nullptr;
 
-	if(TIFFGetField(tif, tag, &count, &data) == 1 && count == dstSize)
-	{
-		memcpy(dst, data, dstSize*sizeof(double));
-		return true;
-	}
-	return false;
+    if (TIFFGetField(tif, tag, &count, &data) == 1 
+        && data != nullptr 
+        && count == dstSize)
+    {
+        memcpy(dst, data, dstSize * sizeof(double));
+        return true;
+    }
+    return false;
 }
 
 bool GeoTIFFReader::pGetGeoKeyStringValue(TIFF* tif, uint16_t tiffTagLocation, uint16_t numValues, uint16_t valueOffset, std::string& dst)
 {
-uint32_t count = 0;
-void* data = NULL;
+    if (numValues == 0)
+        return false;
 
-	if(TIFFGetField(tif, tiffTagLocation, &count, &data) == 1)
-	{
-		if( valueOffset+numValues <= count && numValues > 0 )
-		{
-			dst = ((char*)data) + valueOffset;
-			dst.resize((size_t)numValues-1);
-			return true;
-		}
-	}
-	return false;
+    uint16_t count = 0;
+    char* data = nullptr;
+
+    if (TIFFGetField(tif, tiffTagLocation, &count, &data) == 1
+        && data != nullptr
+        && valueOffset + numValues <= count)
+    {
+        dst.assign(data + valueOffset, numValues - 1); // -1 so not to include null terminator
+        return true;
+    }
+    return false;
 }
 
 bool GeoTIFFReader::pGetGeoKeyDoubleArrayValue(TIFF* tif, uint16_t tiffTagLocation, uint16_t numValues, uint16_t valueOffset, std::vector<double>& dst)
 {
-uint32_t count = 0;
-void* data = NULL;
+    if (numValues == 0)
+        return false;
 
-	if(TIFFGetField(tif, tiffTagLocation, &count, &data) == 1)
-	{
-		if( valueOffset+numValues <= count )
-		{
-			dst.resize(numValues);
-			memcpy(&(dst[0]), ((double*)data) + valueOffset, numValues*sizeof(double));
-			return true;
-		}
-	}
-	return false;
+    uint16_t count = 0;
+    double* data = nullptr;
+
+    if (TIFFGetField(tif, tiffTagLocation, &count, &data) == 1
+        && data != nullptr
+        && valueOffset + numValues <= count)
+    {
+        dst.resize(numValues);
+        memcpy(dst.data(), data + valueOffset, numValues*sizeof(double));
+        return true;
+    }
+    return false;
 }
 
 bool GeoTIFFReader::pGetGeoKeyDoubleValue(TIFF* tif, uint16_t tiffTagLocation, uint16_t numValues, uint16_t valueOffset, double& dst)
 {
-uint32_t count = 0;
-void* data = NULL;
+    if (numValues != 1)
+        return false;
 
-	if(TIFFGetField(tif, tiffTagLocation, &count, &data) == 1 && numValues == 1)
-	{
-		dst = *(((double*)data) + valueOffset);
-		return true;
-	}
-	return false;
+    uint16_t count = 0;
+    double* data = nullptr;
+
+    if (TIFFGetField(tif, tiffTagLocation, &count, &data) == 1
+        && data != nullptr
+        && valueOffset < count)
+    {
+        dst = data[valueOffset];
+        return true;
+    }
+    return false;
 }
 
 void GeoTIFFReader::pUpdateFilesInfo(const char* directory)
@@ -611,7 +637,7 @@ std::vector<std::string> tifPathnames = pGetPathnameList(directory, ".tif");
 GeoTIFFFileInfo tiffInfo;
 
 	pGeoTiffs.clear();
-	pLastTiffUsed = NULL;
+	pLastTiffUsed = nullptr;
 	for (size_t i=0; i < tifPathnames.size(); i++)
 	{
 		if (pReadTagsAndKeys(tifPathnames[i].c_str(), tiffInfo) == true)
@@ -625,22 +651,28 @@ GeoTIFFFileInfo tiffInfo;
 void GeoTIFFReader::pUpdateFilesCacheSettings()
 {
 GeoTIFFReader::GeoTIFFFileInfo* tiffInfo;
-uint8_t bytesPerSample;
-uint32_t stripOrTileSizeInBytes;
+uint16_t bytesPerSample;
+int32_t stripOrTileSizeInBytes;
 
 	for (size_t i=0; i < pGeoTiffs.size(); i++)
 	{
 		tiffInfo = &(pGeoTiffs[i]);
 
-		bytesPerSample = tiffInfo-> m_bitsPerSample/8;
+		bytesPerSample = tiffInfo->m_bitsPerSample/8;
 
 		if( tiffInfo->m_rowsPerStrip > 0 )
-			stripOrTileSizeInBytes = (uint32_t) tiffInfo->m_bytesPerStrip;
+			stripOrTileSizeInBytes = tiffInfo->m_bytesPerStrip;
 		else
-			stripOrTileSizeInBytes = (uint32_t) tiffInfo->m_bytesPerTile;
+			stripOrTileSizeInBytes = tiffInfo->m_bytesPerTile;
 		
-		tiffInfo->m_cache.SetCacheEntrySize(bytesPerSample, stripOrTileSizeInBytes);
-		tiffInfo->m_cache.SetTotalSizeLimit(UINT32_MAX);
+		if (bytesPerSample <= UINT8_MAX && stripOrTileSizeInBytes >= 0)
+		{
+			tiffInfo->m_cache.SetCacheEntrySize(static_cast<uint8_t>(bytesPerSample),
+			                                    static_cast<uint32_t>(stripOrTileSizeInBytes));
+			tiffInfo->m_cache.SetTotalSizeLimit(UINT32_MAX);
+		}
+		else
+			 throw std::runtime_error("Invalid value from GeoTIFF file.");
 	}
 }
 
@@ -707,39 +739,42 @@ void GeoTIFFReader::pToLowercase(std::string& s)
 		s[i] = tolower(s[i]);
 }
 
-
 std::string GeoTIFFReader::pGetRelativePath(const char* baseDir, const char* pathname)
 {
 #ifdef _WIN32
-	const char sep[3] = { '/', '\\', ':' };
+    const char sep[] = "/\\:";
 #else
-	const char sep[1] = { '/' };
+    const char sep[] = "/";
 #endif
 std::string baseDirCopy = baseDir;
 std::string pathnameCopy = pathname;
-char* token;
-std::vector<char*> tokens;
+std::vector<std::string> tokens;
+char* token = nullptr;
+char* saveptr = nullptr; 
 size_t searchFrom = 0;
 size_t findResult;
 std::string result = pathname;
 
-#ifdef _WIN32 // pathnames are case sensitive in Linux, but not in Windows
+#ifdef _WIN32
+	// pathnames are case sensitive in Linux, but not in Windows
 	pToLowercase(baseDirCopy);
 	pToLowercase(pathnameCopy);
+
+	#define strtok_r strtok_s
 #endif
 
-	token = strtok(const_cast<char*>(baseDirCopy.c_str()), sep);
-	while (token != NULL)
+	token = strtok_r(baseDirCopy.data(), sep, &saveptr);
+	while (token != nullptr)
 	{
 		tokens.push_back(token);
-		token = strtok(NULL, sep);
+		token = strtok_r(nullptr, sep, &saveptr);
 	}
 
 	for (size_t i = 0; i < tokens.size(); i++)
 	{
 		findResult = pathnameCopy.find(tokens[i], searchFrom);
 		if (findResult != std::string::npos)
-			searchFrom = findResult + strlen(tokens[i]) + 1;
+			searchFrom = findResult + tokens[i].size() + 1;
 	}
 
 	result = result.substr(searchFrom);
@@ -750,7 +785,7 @@ std::string result = pathname;
 	return result;
 }
 
-bool GeoTIFFReader::pCompareTiffInfoOnResolution(GeoTIFFFileInfo* tiffInfo1, GeoTIFFFileInfo* tiffInfo2)
+bool GeoTIFFReader::pCompareTiffInfoOnResolution(const GeoTIFFFileInfo* tiffInfo1, const GeoTIFFFileInfo* tiffInfo2)
 {
 	return (tiffInfo1->ResolutionInMeters() < tiffInfo2->ResolutionInMeters());
 }
@@ -774,21 +809,21 @@ double pt[2] = {lon, lat};
 	return result;
 }
 
-bool GeoTIFFReader::GetClosestValue(double lat, double lon, void* value, double* closestPtLat/*=NULL*/, double* closestPtLon/*=NULL*/)
+bool GeoTIFFReader::GetClosestValue(double lat, double lon, void* value, double* closestPtLat/*=nullptr*/, double* closestPtLon/*=nullptr*/)
 {
 GetValueMemberFunc f = &GeoTIFFReader::pGetClosestValue;
 
 	return pGetValue(lat, lon, value, closestPtLat, closestPtLon, f);
 }
 
-bool GeoTIFFReader::GetClosestIntValue(double lat, double lon, int* value, double* closestPtLat/*=NULL*/, double* closestPtLon/*=NULL*/)
+bool GeoTIFFReader::GetClosestIntValue(double lat, double lon, int* value, double* closestPtLat/*=nullptr*/, double* closestPtLon/*=nullptr*/)
 {
 GetValueMemberFunc f = &GeoTIFFReader::pGetClosestIntValue;
 
 	return pGetValue(lat, lon, value, closestPtLat, closestPtLon, f);
 }
 
-bool GeoTIFFReader::GetClosestFltValue(double lat, double lon, float* value, double* closestPtLat/*=NULL*/, double* closestPtLon/*=NULL*/)
+bool GeoTIFFReader::GetClosestFltValue(double lat, double lon, float* value, double* closestPtLat/*=nullptr*/, double* closestPtLon/*=nullptr*/)
 {
 GetValueMemberFunc f = &GeoTIFFReader::pGetClosestFltValue;
 
@@ -799,14 +834,14 @@ bool GeoTIFFReader::GetInterplValue(double lat, double lon, float* value)
 {
 GetValueMemberFunc f = &GeoTIFFReader::pGetInterplFltValue;
 
-	return pGetValue(lat, lon, value, NULL, NULL, f);
+	return pGetValue(lat, lon, value, nullptr, nullptr, f);
 }
 
 bool GeoTIFFReader::pGetValue(double lat, double lon, void* value,
 							  double* closestPtLat, double* closestPtLon,
 							  GetValueMemberFunc getValueFunc)
 {
-	if( pLastTiffUsed != NULL && pLastTiffUsed->IsIn(lat, lon) == true )
+	if( pLastTiffUsed != nullptr && pLastTiffUsed->IsIn(lat, lon) == true )
 		if( CALL_MEMBER_FN(*this, getValueFunc)(pLastTiffUsed, lat, lon, value, closestPtLat, closestPtLon) == true )
 			return true;
 
@@ -825,7 +860,7 @@ bool GeoTIFFReader::pGetValue(double lat, double lon, void* value,
 		}
 	}
 
-	pLastTiffUsed = NULL;
+	pLastTiffUsed = nullptr;
 	return false;
 }
 
@@ -835,7 +870,7 @@ bool GeoTIFFReader::pGetClosestValue(GeoTIFFFileInfo* tiffInfo, double lat, doub
 uint32_t x, y;
 
 	tiffInfo->GetPixelIndex(lat, lon, &x, &y);
-	if( closestPtLat != NULL && closestPtLon != NULL)
+	if( closestPtLat != nullptr && closestPtLon != nullptr)
 		tiffInfo->GetPixelWgs84Coord(x, y, closestPtLat, closestPtLon);
 	return pGetPixelValue(tiffInfo, x, y, value);
 }
@@ -846,9 +881,9 @@ bool GeoTIFFReader::pGetClosestIntValue(GeoTIFFFileInfo* tiffInfo, double lat, d
 uint32_t x, y;
 
 	tiffInfo->GetPixelIndex(lat, lon, &x, &y);
-	if( closestPtLat != NULL && closestPtLon != NULL)
+	if( closestPtLat != nullptr && closestPtLon != nullptr)
 		tiffInfo->GetPixelWgs84Coord(x, y, closestPtLat, closestPtLon);
-	return pGetPixelIntValue(tiffInfo, x, y, (int*)value);
+	return pGetPixelIntValue(tiffInfo, x, y, static_cast<int*>(value));
 }
 
 bool GeoTIFFReader::pGetClosestFltValue(GeoTIFFFileInfo* tiffInfo, double lat, double lon, void* value,
@@ -857,9 +892,9 @@ bool GeoTIFFReader::pGetClosestFltValue(GeoTIFFFileInfo* tiffInfo, double lat, d
 uint32_t x, y;
 
 	tiffInfo->GetPixelIndex(lat, lon, &x, &y);
-	if( closestPtLat != NULL && closestPtLon != NULL)
+	if( closestPtLat != nullptr && closestPtLon != nullptr)
 		tiffInfo->GetPixelWgs84Coord(x, y, closestPtLat, closestPtLon);
-	return pGetPixelFltValue(tiffInfo, x, y, (float*)value);
+	return pGetPixelFltValue(tiffInfo, x, y, static_cast<float*>(value));
 }
 
 bool GeoTIFFReader::pGetInterplFltValue(GeoTIFFFileInfo* tiffInfo, double lat, double lon, void* value, 
@@ -882,26 +917,26 @@ bool success;
 	double result;
 
 		tiffInfo->BilinearInterpl(x1, x2, y1, y2, val11, val12, val21, val22, xDbl, yDbl, &result);
-		*((float*)value) = result;
+		*(static_cast<float*>(value)) = result;
 		return true;
 	}
 
 	// try closest pixel value at last resort
-	return pGetClosestFltValue(tiffInfo, lat, lon, value, NULL, NULL);
+	return pGetClosestFltValue(tiffInfo, lat, lon, value, nullptr, nullptr);
 }
 
 // Return false if value could not be read or if it is the "no data" value.
 // Value must be able to contain tiffInfo->m_bitsPerSample/8 bytes.
 bool GeoTIFFReader::pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32_t y, void* value)
 {
-	if(tiffInfo->m_tiffPtr == NULL)
+	if(tiffInfo->m_tiffPtr == nullptr)
 	{
-		TIFFSetWarningHandler(NULL);
+		TIFFSetWarningHandler(nullptr);
 
 		tiffInfo->m_tiffPtr = TIFFOpen(tiffInfo->m_pathname.c_str(), "r");
 
 		// In case opening the file failed because too many files were already opened...
-		if(tiffInfo->m_tiffPtr == NULL)
+		if(tiffInfo->m_tiffPtr == nullptr)
 		{
 			CloseAllFiles(false);
 			tiffInfo->m_tiffPtr = TIFFOpen(tiffInfo->m_pathname.c_str(), "r");
@@ -916,7 +951,7 @@ bool GeoTIFFReader::pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32
 		uint32_t stripIndex = y / tiffInfo->m_rowsPerStrip;
 		uint32_t rowIndexWithinStrip = y % tiffInfo->m_rowsPerStrip;
 		uint16_t bytesPerSample = tiffInfo->m_bitsPerSample / 8;
-		uint32_t bytesOffsetWithinStrip;
+		tmsize_t bytesOffsetWithinStrip;
 		void* valueLocationWithinStrip;
 
 			// try to get value from cache first
@@ -927,12 +962,12 @@ bool GeoTIFFReader::pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32
 				return !pIsNoDataValue(tiffInfo, value);
 			}
 
-			if(tiffInfo->m_readBuf == NULL)
+			if(tiffInfo->m_readBuf == nullptr)
 				tiffInfo->m_readBuf = _TIFFmalloc(tiffInfo->m_bytesPerStrip);
-			numBytesRead = TIFFReadEncodedStrip(tiffInfo->m_tiffPtr, stripIndex, tiffInfo->m_readBuf, (tmsize_t) tiffInfo->m_bytesPerStrip);
-			if( (tmsize_t)bytesOffsetWithinStrip < numBytesRead)
+			numBytesRead = TIFFReadEncodedStrip(tiffInfo->m_tiffPtr, stripIndex, tiffInfo->m_readBuf, static_cast<tmsize_t>(tiffInfo->m_bytesPerStrip));
+			if( bytesOffsetWithinStrip < numBytesRead)
 			{
-				valueLocationWithinStrip = ((uint8_t*)tiffInfo->m_readBuf) + bytesOffsetWithinStrip;
+				valueLocationWithinStrip = (static_cast<uint8_t*>(tiffInfo->m_readBuf)) + bytesOffsetWithinStrip;
 				memcpy(value, valueLocationWithinStrip, bytesPerSample);
 				tiffInfo->m_cache.CacheStripData(stripIndex, tiffInfo->m_readBuf, numBytesRead);
 				//pCacheMissCount++;
@@ -946,7 +981,7 @@ bool GeoTIFFReader::pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32
 		uint16_t bytesPerSample = tiffInfo->m_bitsPerSample / 8;
 		uint32_t xWithinTile = x % tiffInfo->m_tileWidth;
 		uint32_t yWithinTile = y % tiffInfo->m_tileHeight;
-		uint32_t byteOffsetWithinTile;
+		tmsize_t byteOffsetWithinTile;
 		void* valueLocationWithinTile;
 
 			// try to get value from cache first
@@ -959,12 +994,12 @@ bool GeoTIFFReader::pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32
 				return !pIsNoDataValue(tiffInfo, value);
 			}
 
-			if(tiffInfo->m_readBuf == NULL)
+			if(tiffInfo->m_readBuf == nullptr)
 				tiffInfo->m_readBuf = _TIFFmalloc(tiffInfo->m_bytesPerTile);
-			numBytesRead = TIFFReadEncodedTile(tiffInfo->m_tiffPtr, tileIndex, tiffInfo->m_readBuf, (tmsize_t) tiffInfo->m_bytesPerTile);
-			if( (tmsize_t)byteOffsetWithinTile < numBytesRead)
+			numBytesRead = TIFFReadEncodedTile(tiffInfo->m_tiffPtr, tileIndex, tiffInfo->m_readBuf, static_cast<tmsize_t>(tiffInfo->m_bytesPerTile));
+			if( byteOffsetWithinTile < numBytesRead)
 			{
-				valueLocationWithinTile = ((uint8_t*)tiffInfo->m_readBuf) + byteOffsetWithinTile;
+				valueLocationWithinTile = (static_cast<uint8_t*>(tiffInfo->m_readBuf)) + byteOffsetWithinTile;
 				memcpy(value, valueLocationWithinTile, bytesPerSample);
 				tiffInfo->m_cache.CacheTileData(tileIndex, tiffInfo->m_readBuf, numBytesRead);
 				//pCacheMissCount++;
@@ -987,25 +1022,25 @@ uint8_t buf[4];
 		switch(tiffDataType)
 		{
 			case TIFF_UINT8:
-				*value = (float) *((uint8_t*)buf);
+				*value = static_cast<float>(*reinterpret_cast<const uint8_t*>(buf));
 				return true;
 			case TIFF_INT8:
-				*value = (float) *((int8_t*)buf);
+				*value = static_cast<float>(*reinterpret_cast<const int8_t*>(buf));
 				return true;
 			case TIFF_UINT16:
-				*value = (float) *((uint16_t*)buf);
+				*value = static_cast<float>(*reinterpret_cast<const uint16_t*>(buf));
 				return true;
 			case TIFF_INT16:
-				*value = (float) *((int16_t*)buf);
+				*value = static_cast<float>(*reinterpret_cast<const int16_t*>(buf));
 				return true;
 			case TIFF_UINT32:
-				*value = (float) *((uint32_t*)buf);
+				*value = static_cast<float>(*reinterpret_cast<const uint32_t*>(buf));
 				return true;
 			case TIFF_INT32:
-				*value = (float) *((int32_t*)buf);
+				*value = static_cast<float>(*reinterpret_cast<const int32_t*>(buf));
 				return true;
 			case TIFF_FLOAT32:
-				*value = *((float*)buf);
+				*value = *reinterpret_cast<const float*>(buf);
 				return true;
 		}
 	}
@@ -1024,25 +1059,25 @@ uint8_t buf[4];
 		switch(tiffDataType)
 		{
 			case TIFF_UINT8:
-				*value = (int) *((uint8_t*)buf);
+				*value = static_cast<int>(*reinterpret_cast<const uint8_t*>(buf));
 				return true;
 			case TIFF_INT8:
-				*value = (int) *((int8_t*)buf);
+				*value = static_cast<int>(*reinterpret_cast<const int8_t*>(buf));
 				return true;
 			case TIFF_UINT16:
-				*value = (int) *((uint16_t*)buf);
+				*value = static_cast<int>(*reinterpret_cast<const uint16_t*>(buf));
 				return true;
 			case TIFF_INT16:
-				*value = (int) *((int16_t*)buf);
+				*value = static_cast<int>(*reinterpret_cast<const int16_t*>(buf));
 				return true;
 			case TIFF_UINT32:
-				*value = (int) *((uint32_t*)buf);
+				*value = static_cast<int>(*reinterpret_cast<const uint32_t*>(buf));
 				return true;
 			case TIFF_INT32:
-				*value = (int) *((int32_t*)buf);
+				*value = static_cast<int>(*reinterpret_cast<const int32_t*>(buf));
 				return true;
 			case TIFF_FLOAT32:
-				*value = (int) *((float*)buf);
+				*value = static_cast<int>(*reinterpret_cast<const float*>(buf));
 				return true;
 		}
 	}
@@ -1050,28 +1085,28 @@ uint8_t buf[4];
 	return false;
 }
 
-bool GeoTIFFReader::pIsNoDataValue(GeoTIFFFileInfo* tiffInfo, void* value)
+bool GeoTIFFReader::pIsNoDataValue(const GeoTIFFFileInfo* tiffInfo, const void* value)
 {
 	if( tiffInfo->m_noDataValuePresent == false )
 		return false;
 
-	int tiffDataType = (((int)(tiffInfo->m_bitsPerSample)) << 16) + tiffInfo->m_sampleFormat;
+	int tiffDataType = ((static_cast<int>(tiffInfo->m_bitsPerSample)) << 16) + tiffInfo->m_sampleFormat;
 	switch(tiffDataType)
 	{
 		case TIFF_UINT8:
-			return (tiffInfo->m_noDataValue == *((uint8_t*)value));
+			return tiffInfo->m_noDataValue == *(static_cast<const uint8_t*>(value));
 		case TIFF_INT8:
-			return (tiffInfo->m_noDataValue == *((int8_t*)value));
+			return tiffInfo->m_noDataValue == *(static_cast<const int8_t*>(value));
 		case TIFF_UINT16:
-			return (tiffInfo->m_noDataValue == *((uint16_t*)value));
+			return tiffInfo->m_noDataValue == *(static_cast<const uint16_t*>(value));
 		case TIFF_INT16:
-			return (tiffInfo->m_noDataValue == *((int16_t*)value));
+			return tiffInfo->m_noDataValue == *(static_cast<const int16_t*>(value));
 		case TIFF_UINT32:
-			return (tiffInfo->m_noDataValue == (int32_t) *((uint32_t*)value));
+			return tiffInfo->m_noDataValue == static_cast<int32_t>(*(static_cast<const uint32_t*>(value)));
 		case TIFF_INT32:
-			return (tiffInfo->m_noDataValue == *((int32_t*)value));
+			return tiffInfo->m_noDataValue == *(static_cast<const int32_t*>(value));
 		case TIFF_FLOAT32:
-			return (tiffInfo->m_noDataValue == *((float*)value));
+			return tiffInfo->m_noDataValue == *(static_cast<const float*>(value));
 	}
 
 	return false;
@@ -1082,48 +1117,53 @@ void GeoTIFFReader::pSerializeTiffInfoFile(std::ostream& os, GeoTIFFFileInfo& ti
 	// NOTE: Increment GeoTIFFReader::GEOTIFF_INDEX_VERSION each time pSerializeTiffInfoFile()
 	//       and pDeserializeTiffInfoFile() are updated.
 
-	os.write((char*) &tiffInfo.m_coordSystem, sizeof(tiffInfo.m_coordSystem));
-	os.write((char*) &tiffInfo.m_rasterHeight, sizeof(tiffInfo.m_rasterHeight));
-	os.write((char*) &tiffInfo.m_rasterWidth, sizeof(tiffInfo.m_rasterWidth));
-	os.write((char*) &tiffInfo.m_topLimit, sizeof(tiffInfo.m_topLimit));
-	os.write((char*) &tiffInfo.m_bottomLimit, sizeof(tiffInfo.m_bottomLimit));
-	os.write((char*) &tiffInfo.m_leftLimit, sizeof(tiffInfo.m_leftLimit));
-	os.write((char*) &tiffInfo.m_rightLimit, sizeof(tiffInfo.m_rightLimit));
-	os.write((char*) &tiffInfo.m_pixelHeight, sizeof(tiffInfo.m_pixelHeight));
-	os.write((char*) &tiffInfo.m_pixelWidth, sizeof(tiffInfo.m_pixelWidth));
-	os.write((char*) &tiffInfo.m_zone, sizeof(tiffInfo.m_zone));
-	os.write((char*) &tiffInfo.m_northp, sizeof(tiffInfo.m_northp));
+    auto writeField = [&os](auto& field)
+    {
+        os.write(reinterpret_cast<char*>(&field), sizeof(field));
+    };
+
+	writeField(tiffInfo.m_coordSystem);
+	writeField(tiffInfo.m_rasterHeight);
+	writeField(tiffInfo.m_rasterWidth);
+	writeField(tiffInfo.m_topLimit);
+	writeField(tiffInfo.m_bottomLimit);
+	writeField(tiffInfo.m_leftLimit);
+	writeField(tiffInfo.m_rightLimit);
+	writeField(tiffInfo.m_pixelHeight);
+	writeField(tiffInfo.m_pixelWidth);
+	writeField(tiffInfo.m_zone);
+	writeField(tiffInfo.m_northp);
 	std::string relPath = pGetRelativePath(pDir.c_str(), tiffInfo.m_pathname.c_str());
 	pSerializeString(os, relPath);
-	os.write((char*) &tiffInfo.m_applyDatumTransform, sizeof(tiffInfo.m_applyDatumTransform));
+	writeField(tiffInfo.m_applyDatumTransform);
 	pSerializeDoubleVector(os, tiffInfo.m_toWgs84HelmertParams);
 
-	os.write((char*) &tiffInfo.m_compression, sizeof(tiffInfo.m_compression));
-	os.write((char*) &tiffInfo.m_rowsPerStrip, sizeof(tiffInfo.m_rowsPerStrip));
-	os.write((char*) &tiffInfo.m_bitsPerSample, sizeof(tiffInfo.m_bitsPerSample));
-	os.write((char*) &tiffInfo.m_samplesPerPixel, sizeof(tiffInfo.m_samplesPerPixel));
-	os.write((char*) &tiffInfo.m_sampleFormat, sizeof(tiffInfo.m_sampleFormat));
-	os.write((char*) &tiffInfo.m_tileHeight, sizeof(tiffInfo.m_tileHeight));
-	os.write((char*) &tiffInfo.m_tileWidth, sizeof(tiffInfo.m_tileWidth));
-	os.write((char*) &tiffInfo.m_bytesPerStrip, sizeof(tiffInfo.m_bytesPerStrip));
-	os.write((char*) &tiffInfo.m_bytesPerTile, sizeof(tiffInfo.m_bytesPerTile));
-	os.write((char*) &tiffInfo.m_noDataValue, sizeof(tiffInfo.m_noDataValue));
-	os.write((char*) &tiffInfo.m_noDataValuePresent, sizeof(tiffInfo.m_noDataValuePresent));
+	writeField(tiffInfo.m_compression);
+	writeField(tiffInfo.m_rowsPerStrip);
+	writeField(tiffInfo.m_bitsPerSample);
+	writeField(tiffInfo.m_samplesPerPixel);
+	writeField(tiffInfo.m_sampleFormat);
+	writeField(tiffInfo.m_tileHeight);
+	writeField(tiffInfo.m_tileWidth);
+	writeField(tiffInfo.m_bytesPerStrip);
+	writeField(tiffInfo.m_bytesPerTile);
+	writeField(tiffInfo.m_noDataValue);
+	writeField(tiffInfo.m_noDataValuePresent);
 
-	os.write((char*) &tiffInfo.m_ModelPixelScale, 3*sizeof(double));
-	os.write((char*) &tiffInfo.m_ModelTiepoint, 6*sizeof(double));
+	os.write(reinterpret_cast<char*>(&tiffInfo.m_ModelPixelScale), 3*sizeof(double));
+	os.write(reinterpret_cast<char*>(&tiffInfo.m_ModelTiepoint), 6*sizeof(double));
 
-	os.write((char*) &tiffInfo.m_GTModelTypeGeoKey, sizeof(tiffInfo.m_GTModelTypeGeoKey));
-	os.write((char*) &tiffInfo.m_GTRasterTypeGeoKey, sizeof(tiffInfo.m_GTRasterTypeGeoKey));
-	os.write((char*) &tiffInfo.m_GeogAngularUnitsGeoKey, sizeof(tiffInfo.m_GeogAngularUnitsGeoKey));
-	os.write((char*) &tiffInfo.m_ProjectedCSTypeGeoKey, sizeof(tiffInfo.m_ProjectedCSTypeGeoKey));
-	os.write((char*) &tiffInfo.m_ProjLinearUnitsGeoKey, sizeof(tiffInfo.m_ProjLinearUnitsGeoKey));
-	os.write((char*) &tiffInfo.m_GeographicTypeGeoKey, sizeof(tiffInfo.m_GeographicTypeGeoKey));
+	writeField(tiffInfo.m_GTModelTypeGeoKey);
+	writeField(tiffInfo.m_GTRasterTypeGeoKey);
+	writeField(tiffInfo.m_GeogAngularUnitsGeoKey);
+	writeField(tiffInfo.m_ProjectedCSTypeGeoKey);
+	writeField(tiffInfo.m_ProjLinearUnitsGeoKey);
+	writeField(tiffInfo.m_GeographicTypeGeoKey);
 	pSerializeDoubleVector(os, tiffInfo.m_GeogTOWGS84GeoKey);
 	pSerializeString(os, tiffInfo.m_GTCitationGeoKey);
 	pSerializeString(os, tiffInfo.m_GeogCitationGeoKey);
-	os.write((char*) &tiffInfo.m_GeogSemiMajorAxisGeoKey, sizeof(tiffInfo.m_GeogSemiMajorAxisGeoKey));
-	os.write((char*) &tiffInfo.m_GeogInvFlatteningGeoKey, sizeof(tiffInfo.m_GeogInvFlatteningGeoKey));
+	writeField(tiffInfo.m_GeogSemiMajorAxisGeoKey);
+	writeField(tiffInfo.m_GeogInvFlatteningGeoKey);
 }
 
 void GeoTIFFReader::pDeserializeTiffInfoFile(std::istream& is, GeoTIFFFileInfo& tiffInfo)
@@ -1131,82 +1171,87 @@ void GeoTIFFReader::pDeserializeTiffInfoFile(std::istream& is, GeoTIFFFileInfo& 
 	// NOTE: Increment GeoTIFFReader::GEOTIFF_INDEX_VERSION each time pSerializeTiffInfoFile()
 	//       and pDeserializeTiffInfoFile() are updated.
 
-	is.read((char*) &tiffInfo.m_coordSystem, sizeof(tiffInfo.m_coordSystem));
-	is.read((char*) &tiffInfo.m_rasterHeight, sizeof(tiffInfo.m_rasterHeight));
-	is.read((char*) &tiffInfo.m_rasterWidth, sizeof(tiffInfo.m_rasterWidth));
-	is.read((char*) &tiffInfo.m_topLimit, sizeof(tiffInfo.m_topLimit));
-	is.read((char*) &tiffInfo.m_bottomLimit, sizeof(tiffInfo.m_bottomLimit));
-	is.read((char*) &tiffInfo.m_leftLimit, sizeof(tiffInfo.m_leftLimit));
-	is.read((char*) &tiffInfo.m_rightLimit, sizeof(tiffInfo.m_rightLimit));
-	is.read((char*) &tiffInfo.m_pixelHeight, sizeof(tiffInfo.m_pixelHeight));
-	is.read((char*) &tiffInfo.m_pixelWidth, sizeof(tiffInfo.m_pixelWidth));
-	is.read((char*) &tiffInfo.m_zone, sizeof(tiffInfo.m_zone));
-	is.read((char*) &tiffInfo.m_northp, sizeof(tiffInfo.m_northp));
+    auto readField = [&is](auto& field)
+    {
+        is.read(reinterpret_cast<char*>(&field), sizeof(field));
+    };
+
+	readField(tiffInfo.m_coordSystem);
+	readField(tiffInfo.m_rasterHeight);
+	readField(tiffInfo.m_rasterWidth);
+	readField(tiffInfo.m_topLimit);
+	readField(tiffInfo.m_bottomLimit);
+	readField(tiffInfo.m_leftLimit);
+	readField(tiffInfo.m_rightLimit);
+	readField(tiffInfo.m_pixelHeight);
+	readField(tiffInfo.m_pixelWidth);
+	readField(tiffInfo.m_zone);
+	readField(tiffInfo.m_northp);
 	pDeserializeString(is, tiffInfo.m_pathname);
 	tiffInfo.m_pathname = pDir + "/" + tiffInfo.m_pathname;
-	is.read((char*) &tiffInfo.m_applyDatumTransform, sizeof(tiffInfo.m_applyDatumTransform));
+	readField(tiffInfo.m_applyDatumTransform);
 	pDeserializeDoubleVector(is, tiffInfo.m_toWgs84HelmertParams);
 
-	is.read((char*) &tiffInfo.m_compression, sizeof(tiffInfo.m_compression));
-	is.read((char*) &tiffInfo.m_rowsPerStrip, sizeof(tiffInfo.m_rowsPerStrip));
-	is.read((char*) &tiffInfo.m_bitsPerSample, sizeof(tiffInfo.m_bitsPerSample));
-	is.read((char*) &tiffInfo.m_samplesPerPixel, sizeof(tiffInfo.m_samplesPerPixel));
-	is.read((char*) &tiffInfo.m_sampleFormat, sizeof(tiffInfo.m_sampleFormat));
-	is.read((char*) &tiffInfo.m_tileHeight, sizeof(tiffInfo.m_tileHeight));
-	is.read((char*) &tiffInfo.m_tileWidth, sizeof(tiffInfo.m_tileWidth));
-	is.read((char*) &tiffInfo.m_bytesPerStrip, sizeof(tiffInfo.m_bytesPerStrip));
-	is.read((char*) &tiffInfo.m_bytesPerTile, sizeof(tiffInfo.m_bytesPerTile));
-	is.read((char*) &tiffInfo.m_noDataValue, sizeof(tiffInfo.m_noDataValue));
-	is.read((char*) &tiffInfo.m_noDataValuePresent, sizeof(tiffInfo.m_noDataValuePresent));
+	readField(tiffInfo.m_compression);
+	readField(tiffInfo.m_rowsPerStrip);
+	readField(tiffInfo.m_bitsPerSample);
+	readField(tiffInfo.m_samplesPerPixel);
+	readField(tiffInfo.m_sampleFormat);
+	readField(tiffInfo.m_tileHeight);
+	readField(tiffInfo.m_tileWidth);
+	readField(tiffInfo.m_bytesPerStrip);
+	readField(tiffInfo.m_bytesPerTile);
+	readField(tiffInfo.m_noDataValue);
+	readField(tiffInfo.m_noDataValuePresent);
 
-	is.read((char*) &tiffInfo.m_ModelPixelScale, 3*sizeof(double));
-	is.read((char*) &tiffInfo.m_ModelTiepoint, 6*sizeof(double));
+	is.read(reinterpret_cast<char*>(&tiffInfo.m_ModelPixelScale), 3*sizeof(double));
+	is.read(reinterpret_cast<char*>(&tiffInfo.m_ModelTiepoint), 6*sizeof(double));
 
-	is.read((char*) &tiffInfo.m_GTModelTypeGeoKey, sizeof(tiffInfo.m_GTModelTypeGeoKey));
-	is.read((char*) &tiffInfo.m_GTRasterTypeGeoKey, sizeof(tiffInfo.m_GTRasterTypeGeoKey));
-	is.read((char*) &tiffInfo.m_GeogAngularUnitsGeoKey, sizeof(tiffInfo.m_GeogAngularUnitsGeoKey));
-	is.read((char*) &tiffInfo.m_ProjectedCSTypeGeoKey, sizeof(tiffInfo.m_ProjectedCSTypeGeoKey));
-	is.read((char*) &tiffInfo.m_ProjLinearUnitsGeoKey, sizeof(tiffInfo.m_ProjLinearUnitsGeoKey));
-	is.read((char*) &tiffInfo.m_GeographicTypeGeoKey, sizeof(tiffInfo.m_GeographicTypeGeoKey));
+	readField(tiffInfo.m_GTModelTypeGeoKey);
+	readField(tiffInfo.m_GTRasterTypeGeoKey);
+	readField(tiffInfo.m_GeogAngularUnitsGeoKey);
+	readField(tiffInfo.m_ProjectedCSTypeGeoKey);
+	readField(tiffInfo.m_ProjLinearUnitsGeoKey);
+	readField(tiffInfo.m_GeographicTypeGeoKey);
 	pDeserializeDoubleVector(is, tiffInfo.m_GeogTOWGS84GeoKey);
 	pDeserializeString(is, tiffInfo.m_GTCitationGeoKey);
 	pDeserializeString(is, tiffInfo.m_GeogCitationGeoKey);
-	is.read((char*) &tiffInfo.m_GeogSemiMajorAxisGeoKey, sizeof(tiffInfo.m_GeogSemiMajorAxisGeoKey));
-	is.read((char*) &tiffInfo.m_GeogInvFlatteningGeoKey, sizeof(tiffInfo.m_GeogInvFlatteningGeoKey));
+	readField(tiffInfo.m_GeogSemiMajorAxisGeoKey);
+	readField(tiffInfo.m_GeogInvFlatteningGeoKey);
 
 	tiffInfo.Close();
 }
 
-void GeoTIFFReader::pSerializeString(std::ostream& os, std::string& str)
+void GeoTIFFReader::pSerializeString(std::ostream& os, const std::string& str)
 {
 	size_t numChars = str.size();
-	os.write((char*) &numChars, sizeof(numChars));
+	os.write(reinterpret_cast<char*>(&numChars), sizeof(numChars));
 	if(numChars > 0)
-		os.write(&(str[0]), (std::streamsize)(numChars*sizeof(char)));
+		os.write(str.data(), static_cast<std::streamsize>(numChars*sizeof(char)));
 }
 
 void GeoTIFFReader::pDeserializeString(std::istream& is, std::string& str)
 {
 	size_t numChars = 0;
-	is.read((char*) &numChars, sizeof(numChars));
+	is.read(reinterpret_cast<char*>(&numChars), sizeof(numChars));
 	str.resize(numChars);
 	if(numChars > 0)
-		is.read(&(str[0]), (std::streamsize)(numChars*sizeof(char)));
+		is.read(str.data(), static_cast<std::streamsize>(numChars*sizeof(char)));
 }
 
-void GeoTIFFReader::pSerializeDoubleVector(std::ostream& os, std::vector<double>& v)
+void GeoTIFFReader::pSerializeDoubleVector(std::ostream& os, const std::vector<double>& v)
 {
 	size_t numItems = v.size();
-	os.write((char*) &numItems, sizeof(numItems));
+	os.write(reinterpret_cast<const char*>(&numItems), sizeof(numItems));
 	if(numItems > 0)
-		os.write((char*) &(v[0]), (std::streamsize)(numItems*sizeof(double)));
+		os.write(reinterpret_cast<const char*>(v.data()), static_cast<std::streamsize>(numItems*sizeof(double)));
 }
 
 void GeoTIFFReader::pDeserializeDoubleVector(std::istream& is, std::vector<double>& v)
 {
 	size_t numItems = 0;
-	is.read((char*) &numItems, sizeof(numItems));
+	is.read(reinterpret_cast<char*>(&numItems), sizeof(numItems));
 	v.resize(numItems);
 	if(numItems > 0)
-		is.read((char*) &(v[0]), (std::streamsize)(numItems*sizeof(double)));
+		is.read(reinterpret_cast<char*>(v.data()), static_cast<std::streamsize>(numItems*sizeof(double)));
 }

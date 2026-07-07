@@ -155,10 +155,10 @@ double ITURP_DigitalMaps::_SquareGridBilinearInterpolation(const double* mapArra
 int R, C;
 double irc, I00, I01, I10, I11;
 
-	R = (int)r;
+	R = static_cast<int>(r);
 	R = std::max(R, 0);
 	R = std::min(R, numRows-2);
-	C = (int)c;
+	C = static_cast<int>(c);
 	C = std::max(C, 0);
 	C = std::min(C, rowSize-2);
 	I00 = mapArray[ R    * rowSize +  C   ];
@@ -172,8 +172,8 @@ double irc, I00, I01, I10, I11;
 
 bool ITURP_DigitalMaps::_InitDigitalMap(std::vector<double>& digitalMapVect, int expectedSize, const char* pathname)
 {
-	digitalMapVect.resize((size_t)expectedSize);
-	if( _ReadDigitalMapFile(digitalMapVect.data(), expectedSize, pathname) == false )
+	digitalMapVect.resize(static_cast<size_t>(expectedSize));
+	if( _ReadDigitalMapFile(digitalMapVect.data(), digitalMapVect.size(), pathname) == false )
 	{
 		digitalMapVect.resize(0);
 		return false;
@@ -181,27 +181,27 @@ bool ITURP_DigitalMaps::_InitDigitalMap(std::vector<double>& digitalMapVect, int
 	return true;
 }
 
-bool ITURP_DigitalMaps::_ReadDigitalMapFile(double* mapArray, int mapArraySize, const char* pathname)
+bool ITURP_DigitalMaps::_ReadDigitalMapFile(double* mapArray, size_t mapArraySize, const char* pathname)
 {
-std::fstream txtFile;
+std::ifstream txtFile(pathname);
 std::string line;
-char* token;
-int arrayIndex = 0;
-const char* delims = " \t";
+size_t arrayIndex = 0;
+const std::string delims = " \t";
 
-	txtFile.open(pathname, std::ios::in);
-	if(txtFile)
+	while (std::getline(txtFile, line))
 	{
-		while( std::getline(txtFile, line) )
+		size_t start = line.find_first_not_of(delims);
+		while (start != std::string::npos)
 		{
-			token = std::strtok((char*)line.c_str(), delims);
-			while( token != NULL )
+			size_t end = line.find_first_of(delims, start);
+			std::string token = line.substr(start, end - start);
+			if (!token.empty())
 			{
 				if( arrayIndex < mapArraySize )
-					mapArray[arrayIndex] = atof(token);
+					mapArray[arrayIndex] = atof(token.c_str());
 				arrayIndex++;
-				token = strtok(NULL, delims);
 			}
+			start = line.find_first_not_of(delims, end);
 		}
 	}
 	txtFile.close();

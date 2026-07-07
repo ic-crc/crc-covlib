@@ -7,6 +7,7 @@
  */
 
 #pragma once
+#include <cstddef>
 #include <vector>
 
 
@@ -28,7 +29,7 @@ public:
 
 private:
 	static bool _InitDigitalMap(std::vector<double>& digitalMapVect, int expectedSize, const char* pathname);
-	static bool _ReadDigitalMapFile(double* mapArray, int mapArraySize, const char* pathname);
+	static bool _ReadDigitalMapFile(double* mapArray, size_t mapArraySize, const char* pathname);
 	static double _SquareGridBilinearInterpolation(const double* mapArray, int numRows, int rowSize, double r, double c);
 
 	static const int _DN50_SIZE = 29161;

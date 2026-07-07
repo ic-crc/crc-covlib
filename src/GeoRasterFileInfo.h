@@ -27,7 +27,7 @@ public:
 
 	void Clear();
 	
-	double ResolutionInMeters();
+	double ResolutionInMeters() const;
 
 	bool Wgs84ToNativeCoords(double lat_wgs84, double lon_wgs84, double* nativeXCoord, double* nativeYCoord);
 	void NativeToWgs84Coords(double nativeXCoord, double nativeYCoord, double* lat_wgs84, double* lon_wgs84);

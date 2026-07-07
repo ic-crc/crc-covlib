@@ -40,7 +40,7 @@ void GeoRasterFileInfo::Clear()
 	m_pathname = "";
 }
 
-double GeoRasterFileInfo::ResolutionInMeters()
+double GeoRasterFileInfo::ResolutionInMeters() const
 {
 	if(m_coordSystem == GEOGRAPHIC)
 	{

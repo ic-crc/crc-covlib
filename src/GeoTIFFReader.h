@@ -32,9 +32,9 @@ public:
 	void SetFile(const char* pathname);
 	const char* GetFile() const;
 
-	bool GetClosestValue(double lat, double lon, void* value, double* closestPtLat=NULL, double* closestPtLon=NULL);
-	bool GetClosestIntValue(double lat, double lon, int* value, double* closestPtLat=NULL, double* closestPtLon=NULL);
-	bool GetClosestFltValue(double lat, double lon, float* value, double* closestPtLat=NULL, double* closestPtLon=NULL);
+	bool GetClosestValue(double lat, double lon, void* value, double* closestPtLat=nullptr, double* closestPtLon=nullptr);
+	bool GetClosestIntValue(double lat, double lon, int* value, double* closestPtLat=nullptr, double* closestPtLon=nullptr);
+	bool GetClosestFltValue(double lat, double lon, float* value, double* closestPtLat=nullptr, double* closestPtLon=nullptr);
 	bool GetInterplValue(double lat, double lon, float* value);
 
 	void CloseAllFiles(bool clearCaches);
@@ -114,14 +114,14 @@ protected:
 	bool pGetPixelValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32_t y, void* value);
 	bool pGetPixelFltValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32_t y, float* value);
 	bool pGetPixelIntValue(GeoTIFFFileInfo* tiffInfo, uint32_t x, uint32_t y, int* value);
-	bool pIsNoDataValue(GeoTIFFFileInfo* tiffInfo, void* value);
-	static bool pCompareTiffInfoOnResolution(GeoTIFFFileInfo* tiffInfo1, GeoTIFFFileInfo* tiffInfo2);
+	bool pIsNoDataValue(const GeoTIFFFileInfo* tiffInfo, const void* value);
+	static bool pCompareTiffInfoOnResolution(const GeoTIFFFileInfo* tiffInfo1, const GeoTIFFFileInfo* tiffInfo2);
 	std::vector<GeoTIFFReader::GeoTIFFFileInfo*> pGetGeoTiffFileInfoList(double lat, double lon);
 	void pSerializeTiffInfoFile(std::ostream& os, GeoTIFFFileInfo& tiffInfo);
 	void pDeserializeTiffInfoFile(std::istream& is, GeoTIFFFileInfo& tiffInfo);
-	void pSerializeString(std::ostream& os, std::string& str);
+	void pSerializeString(std::ostream& os, const std::string& str);
 	void pDeserializeString(std::istream& is, std::string& str);
-	void pSerializeDoubleVector(std::ostream& os, std::vector<double>& v);
+	void pSerializeDoubleVector(std::ostream& os, const std::vector<double>& v);
 	void pDeserializeDoubleVector(std::istream& is, std::vector<double>& v);
 
 	std::string pDir;
