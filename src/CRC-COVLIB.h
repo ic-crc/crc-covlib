@@ -617,7 +617,7 @@ namespace Crc
 
 		// Propagation model selection
 		extern "C" CRCCOVLIB_API void __stdcall SetPropagationModel(ISimulation* sim, PropagationModel propagationModel);
-		extern "C" CRCCOVLIB_API __stdcall PropagationModel GetPropagationModel(ISimulation* sim);
+		extern "C" CRCCOVLIB_API PropagationModel __stdcall GetPropagationModel(ISimulation* sim);
 
 		// Longley-Rice propagation model parameters
 		extern "C" CRCCOVLIB_API void __stdcall SetLongleyRiceSurfaceRefractivity(ISimulation* sim, double refractivity_NUnits);
@@ -772,7 +772,7 @@ namespace Crc
 		extern "C" CRCCOVLIB_API bool __stdcall AddCustomSurfaceElevData(ISimulation* sim, double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees, int numHorizSamples, int numVertSamples, const float* surfaceElevData_meters, bool defineNoDataValue=false, float noDataValue=0);
 		extern "C" CRCCOVLIB_API void __stdcall ClearCustomSurfaceElevData(ISimulation* sim);
 		extern "C" CRCCOVLIB_API double __stdcall GetSurfaceElevation(ISimulation* sim, double latitude_degrees, double longitude_degrees, double noDataValue=0);
-		extern "C" CRCCOVLIB_API __stdcall int GetSurfaceElevationProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile);
+		extern "C" CRCCOVLIB_API int __stdcall GetSurfaceElevationProfile(ISimulation* sim, double latitude_degrees, double longitude_degrees, double* outputProfile, int sizeOutputProfile);
 
 		// Reception area parameters
 		extern "C" CRCCOVLIB_API void __stdcall SetReceptionAreaCorners(ISimulation* sim, double lowerLeftCornerLat_degrees, double lowerLeftCornerLon_degrees, double upperRightCornerLat_degrees, double upperRightCornerLon_degrees);
