@@ -15,7 +15,8 @@ import os
 import sys
 from typing import Union
 import urllib.request
-from zipfile import ZipFile 
+import urllib.parse
+from zipfile import ZipFile
 
 
 __all__ = ['DownloadCoreDigitalMaps',
@@ -291,27 +292,43 @@ def _HandleProgress(blocknum: int, blocksize: int, totalsize: int) -> Union[obje
 
 
 def _Download(url: str, directory: str) -> Union[str, None]:
+    def _validate_itu_url(u: str) -> str:
+        parsed = urllib.parse.urlparse(u)
+        if parsed.scheme != 'https':
+            raise ValueError(f'Refusing download: unsupported URL scheme {parsed.scheme}')
+        if parsed.netloc != 'www.itu.int':
+            raise ValueError(f'Refusing download: unexpected domain {parsed.netloc}')
+        if not parsed.path or parsed.path.endswith('/'):
+            raise ValueError('Refusing download: URL path is missing or invalid')
+        return u
+
     os.makedirs(directory, exist_ok=True)
     filename = os.path.basename(url)
     pathname = os.path.join(directory, filename)
-    print('\ndownloading {}'.format(url))
+    url = _validate_itu_url(url)
+
+    print(f'\ndownloading {url}')
     _HandleProgress(0, 0, 0)
+
     try:
         newPathname, _ = urllib.request.urlretrieve(url, pathname, _HandleProgress)
-    except:
+    except Exception:
         # recommendation version may have been superseded
-        if url.find('-I!!ZIP') != -1:
+        if '-I!!ZIP' in url:
             url = url.replace('-I!!ZIP', '-S!!ZIP')
-
+            url = _validate_itu_url(url)
             filename = os.path.basename(url)
             pathname = os.path.join(directory, filename)
-            print('\ndownloading {}'.format(url))
+            print(f'\ndownloading {url}')
             _HandleProgress(0, 0, 0)
             newPathname, _ = urllib.request.urlretrieve(url, pathname, _HandleProgress)
+        else:
+            raise
+
     print('')
     return newPathname
 
-    
+
 def _ExtractAll(zipPathname: str, deleteZipArchive: bool, createNewDir: bool=False) -> None:
     """
     If createNewDir is set to True, the zip archive is extracted into a new direcotry named after

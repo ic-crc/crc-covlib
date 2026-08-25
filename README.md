@@ -26,6 +26,7 @@ crc-covlib includes the following functionalities:
 * Simulation results as field strength (dBµV/m), path loss (dB), transmission loss (dB) or received power (dBm).
 * Point-to-area simulation results exportable to text (\*.txt) and raster (\*.bil) formats. Contour drawings exportable in *.kml (Google Earth) and *.mif/mid (MapInfo) file formats.
 * Results and terrain profiles (terrain elevation, land cover, etc.) exportable to *.csv format.
+* **Multi-threaded use.** You can call crc-covlib from multiple threads provided that each thread uses a separate _Simulation_ instance. Thread creation and scheduling are the caller’s responsibility.
 * Other python-only functionalities are available on top of the main core functionalities (C++ implementation) listed above, including additional implementation of ITU recommendations (terrestrial and non-terrestrial propagation). For more details please see the [crc_covlib package documentation](./python-wrapper/README.md#crc_covlib-package-documentation) section.
 
 <p align = "center">

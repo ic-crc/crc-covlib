@@ -26,6 +26,7 @@ crc-covlib offre les fonctionnalités suivantes:
 * Résultats de simulations en intensité de champ (dBµV/m), perte de propagation (dB), pertes de transmission (dB) ou puissance reçue (dBm).
 * Résultats de simulations point-à-point générés en format texte (\*.txt) et matriciel (\*.bil). Zones de coutour générées en format *.kml (Google Earth) et *.mif/mid (MapInfo).
 * Génération de profils de terrain (élévation du terrain, couverture au sol, etc.) pouvant être sauvegardés en format *.csv.
+* **Utilisation multi‑thread.** Vous pouvez appeler crc-covlib à partir de plusieurs threads, à condition que chaque thread utilise une instance distincte de la classe _Simulation_.
 * D'autres fonctionnalités disponibles seulement pour le langage de programmation python sont aussi offertes en plus de celles implémentées en C++, dont des implémentations addtionnelles de recommendations de l'UIT (propagation terrestre et non-terrestre). Pour de plus amples détails, veuillez consulter la [documentation du paquet crc_covlib](./python-wrapper/README_FR.md#documentation-du-paquet-crc_covlib).
 
 
